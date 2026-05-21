@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadê o Dono? — Detalhe do Imóvel</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/layout.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --primary: #2563eb;
+        --primary-light: #ebf2ff;
+        --primary-border: #bfcfed;
+        --secondary: #6275af;
+        --secondary-light: #eef0f8;
+        --tertiary: #bc4800;
+        --tertiary-light: #fff0e8;
+        --tertiary-border: #f5c4a0;
+        --neutral: #757681;
+        --neutral-light: #f4f4f6;
+        --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --primary-shadow: 0 5.98px 23.203px 0 rgba(37, 99, 235, 0.2),
+          
+        --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --secondary-shadow: 0 5.98px 23.203px 0 rgba(98, 117, 175, 0.2),
+          
+        --tertiary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --tertiary-shadow: 0 5.98px 23.203px 0 rgba(188, 72, 0, 0.2),
+          
+        --neutral-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --neutral-shadow: 0 5.98px 23.203px 0 rgba(117, 118, 129, 0.2),
+          
+        --bg: #f5f6fa;
+        --surface: #ffffff;
+        --border: #e4e5ee;
+        --tp: #0f1117;
+        --ts: #3d3f52;
+        --tm: #757681;
+      }
+      html,
+      body {
+        min-height: 100vh;
+        font-family: "Sora", sans-serif;
+        background: var(--bg);
+        color: var(--tp);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .shell {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 32px 20px 60px;
+      }
+
+      /* back nav */
+      .back-nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .back-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--ts);
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-border);
+        color: var(--primary);
+      }
+      .back-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      .back-crumb {
+        font-size: 12px;
+        color: var(--tm);
+      }
+      .back-crumb strong {
+        color: var(--ts);
+        font-weight: 600;
+      }
+
+      /* hero card */
+      .hero-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      .hero-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .tag-critico {
+        background: var(--tertiary-light);
+        color: var(--tertiary);
+        border: 1px solid var(--tertiary-border);
+      }
+      .hero-addr {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--tp);
+        letter-spacing: -0.02em;
+        margin-bottom: 4px;
+      }
+      .hero-sub {
+        font-size: 13px;
+        color: var(--tm);
+      }
+      .hero-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .risk-score {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: var(--tertiary-gradient);
+        box-shadow: var(--tertiary-shadow);
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .risk-num {
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1;
+      }
+      .risk-label {
+        font-size: 8px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .hero-badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .hbadge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .hb-dengue {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+      .hb-estrutural {
+        background: var(--tertiary-light);
+        color: var(--tertiary);
+      }
+      .hb-lixo {
+        background: var(--secondary-light);
+        color: var(--secondary);
+      }
+
+      .hero-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 16px;
+        background: var(--bg);
+        border-radius: 12px;
+      }
+
+      .meta-label {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tm);
+        margin-bottom: 4px;
+      }
+      .meta-val {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--tp);
+      }
+
+      /* narrative risk */
+      .risk-narrative {
+        background: var(--tertiary-light);
+        border: 1.5px solid var(--tertiary-border);
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+      }
+      .risk-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: var(--tertiary-gradient);
+        box-shadow: var(--tertiary-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .risk-icon svg {
+        width: 22px;
+        height: 22px;
+        color: #fff;
+      }
+      .risk-text strong {
+        font-size: 14px;
+        font-weight: 700;
+        color: #7a2e00;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .risk-text p {
+        font-size: 13px;
+        color: #92400e;
+        line-height: 1.65;
+      }
+
+      /* receita de bolo */
+      .recipe-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 20px;
+      }
+      .recipe-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .recipe-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: var(--primary-gradient);
+        box-shadow: var(--primary-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .recipe-icon svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+      }
+      .recipe-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--tp);
+      }
+      .recipe-sub {
+        font-size: 12px;
+        color: var(--tm);
+      }
+
+      .step-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .recipe-step {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .recipe-step:last-child {
+        border-bottom: none;
+      }
+      .step-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+      .step-num {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        color: #fff;
+      }
+      .step-num.done {
+        background: linear-gradient(135deg, #86efac, #059669);
+      }
+      .step-num.current {
+        background: var(--primary-gradient);
+        box-shadow: var(--primary-shadow);
+        
+      }
+      .step-num.pending {
+        background: var(--neutral-light);
+        color: var(--neutral);
+        border: 1px solid var(--border);
+      }
+      .step-connector {
+        width: 2px;
+        flex: 1;
+        background: var(--border);
+        margin: 4px auto;
+        min-height: 16px;
+      }
+      .step-connector.done {
+        background: #86efac;
+      }
+      .step-body {
+        flex: 1;
+        padding-top: 5px;
+      }
+      .step-tag {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .step-tag.done {
+        color: #059669;
+      }
+      .step-tag.current {
+        color: var(--primary);
+      }
+      .step-tag.pending {
+        color: var(--neutral);
+      }
+      .step-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--tp);
+        margin-bottom: 3px;
+      }
+      .step-desc {
+        font-size: 12px;
+        color: var(--tm);
+        line-height: 1.5;
+      }
+      .step-date {
+        font-size: 10px;
+        color: var(--neutral);
+        margin-top: 4px;
+      }
+      .step-action {
+        margin-top: 8px;
+        padding: 8px 16px;
+        border-radius: 9999px;
+        font-family: "Sora", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        border: none;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .step-action.primary {
+        background: var(--primary-gradient);
+        box-shadow: var(--primary-shadow);
+        
+        color: #fff;
+      }
+      .step-action.primary:hover {
+        transform: translateY(-1px);
+        
+      }
+
+      /* notificacao proprietario */
+      .notif-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 20px;
+      }
+      .notif-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .notif-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: var(--secondary-gradient);
+        box-shadow: var(--secondary-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .notif-icon svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+      }
+      .notif-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--tp);
+      }
+      .notif-sub {
+        font-size: 12px;
+        color: var(--tm);
+        margin-bottom: 18px;
+        line-height: 1.5;
+      }
+      .notif-sub strong {
+        color: var(--ts);
+        font-weight: 600;
+      }
+
+      .opcoes-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .opcao-card {
+        border-radius: 14px;
+        padding: 18px 16px;
+        cursor: pointer;
+        border: 1.5px solid var(--border);
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+      }
+      .opcao-card:hover {
+        transform: translateY(-1px);
+      }
+      .op1 {
+        background: var(--primary-light);
+        border-color: var(--primary-border);
+      }
+      .op1:hover {
+        box-shadow: var(--primary-shadow);
+        border-color: var(--primary);
+      }
+      .op2 {
+        background: var(--secondary-light);
+        border-color: #cdd2e8;
+      }
+      .op2:hover {
+        box-shadow: var(--secondary-shadow);
+        border-color: var(--secondary);
+      }
+      .op3 {
+        background: var(--tertiary-light);
+        border-color: var(--tertiary-border);
+      }
+      .op3:hover {
+        box-shadow: var(--tertiary-shadow);
+        border-color: var(--tertiary);
+      }
+      .op-num {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+      .op1 .op-num {
+        color: var(--primary);
+      }
+      .op2 .op-num {
+        color: var(--secondary);
+      }
+      .op3 .op-num {
+        color: var(--tertiary);
+      }
+      .op-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--tp);
+        margin-bottom: 5px;
+      }
+      .op-desc {
+        font-size: 11px;
+        color: var(--tm);
+        line-height: 1.55;
+      }
+      .op-tag {
+        display: inline-block;
+        font-size: 8px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 2px 7px;
+        border-radius: 9999px;
+        margin-top: 8px;
+      }
+      .op1 .op-tag {
+        background: rgba(37, 99, 235, 0.12);
+        color: var(--primary);
+      }
+      .op2 .op-tag {
+        background: rgba(98, 117, 175, 0.12);
+        color: var(--secondary);
+      }
+      .op3 .op-tag {
+        background: rgba(188, 72, 0, 0.12);
+        color: var(--tertiary);
+      }
+
+      .legal-note {
+        display: flex;
+        gap: 10px;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 12px;
+        color: #92400e;
+        line-height: 1.6;
+      }
+      .legal-note svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: #b45309;
+      }
+
+      /* historico */
+      .hist-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 22px;
+      }
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .tl-item {
+        display: flex;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .tl-item:last-child {
+        border-bottom: none;
+      }
+      .tl-dot-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+      }
+      .tl-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: 3px;
+        flex-shrink: 0;
+      }
+      .tl-line {
+        width: 2px;
+        flex: 1;
+        background: var(--border);
+        margin: 4px auto;
+      }
+
+      .tl-date {
+        font-size: 10px;
+        color: var(--tm);
+        margin-bottom: 3px;
+      }
+      .tl-action {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--tp);
+        margin-bottom: 2px;
+      }
+      .tl-actor {
+        font-size: 11px;
+        color: var(--tm);
+      }
+
+      @media (max-width: 680px) {
+        .hero-meta-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .opcoes-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-top {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- BACK NAV -->
+      <div class="back-nav">
+        <button class="back-btn" aria-label="Voltar">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <span class="back-crumb"
+          >Mapa de ocorrências / <strong>Detalhe do imóvel</strong></span
+        >
+      </div>
+
+      <!-- HERO -->
+      <div class="hero-card">
+        <div class="hero-top">
+          <div class="hero-left">
+            <div class="hero-tag tag-critico">
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                />
+              </svg>
+              Quadrante 1 — Ação imediata
+            </div>
+            <div class="hero-addr">R. do Sol, 214</div>
+            <div class="hero-sub">
+              Santo Antônio · Recife, PE · Nordeste II · CEP 50010-000
+            </div>
+          </div>
+          <div class="hero-right">
+            <div class="risk-score">
+              <div class="risk-num">91</div>
+              <div class="risk-label">Risco</div>
+            </div>
+            <span style="font-size: 10px; color: var(--tm); text-align: right"
+              >Score de risco<br />calculado</span
+            >
+          </div>
+        </div>
+
+        <div class="hero-badges">
+          <span class="hbadge hb-dengue">🦟 Foco de dengue</span>
+          <span class="hbadge hb-estrutural">🏚️ Risco estrutural</span>
+          <span class="hbadge hb-lixo">🗑️ Lixo acumulado</span>
+        </div>
+
+        <div class="hero-meta-grid">
+          <div class="meta-item">
+            <div class="meta-label">Denúncias</div>
+            <div class="meta-val">3 abertas</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Última vistoria</div>
+            <div class="meta-val">Nunca</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Proprietário</div>
+            <div class="meta-val">Não localizado</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Situação legal</div>
+            <div class="meta-val">Espólio</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NARRATIVA DE RISCO -->
+      <div class="risk-narrative" role="alert">
+        <div class="risk-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+            />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <div class="risk-text">
+          <strong>Probabilidade de proliferação: muito alta (91/100)</strong>
+          <p>
+            Este imóvel acumula 3 fatores simultâneos — água parada confirmada
+            por denúncias fotográficas, acúmulo de entulho e vão aberto na
+            fachada. Em imóveis com perfil similar no Recife, o tempo médio para
+            confirmação de foco de dengue é de <strong>8 dias</strong> sem
+            intervenção. Recomendação: acionar Vigilância Ambiental e Defesa
+            Civil em conjunto para esta ocorrência.
+          </p>
+        </div>
+      </div>
+
+      <!-- RECEITA DE BOLO -->
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 11 12 14 22 4" />
+              <path
+                d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+              />
+            </svg>
+          </div>
+          <div>
+            <div class="recipe-title">Protocolo de ação — passo a passo</div>
+            <div class="recipe-sub">
+              Siga a ordem. Cada etapa desbloqueia a próxima.
+            </div>
+          </div>
+        </div>
+
+        <div class="step-list">
+          <div class="recipe-step">
+            <div class="step-left">
+              <div class="step-num done">✓</div>
+              <div class="step-connector done"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-tag done">Concluído</div>
+              <div class="step-title">
+                Denúncia recebida e triagem realizada
+              </div>
+              <div class="step-desc">
+                3 denúncias consolidadas. Imóvel classificado como Q1 — ação
+                imediata.
+              </div>
+              <div class="step-date">Concluído em 14 mai. 2024 às 09:14</div>
+            </div>
+          </div>
+
+          <div class="recipe-step">
+            <div class="step-left">
+              <div class="step-num current">2</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-tag current">Em andamento</div>
+              <div class="step-title">
+                Vistoria de campo com registro fotográfico
+              </div>
+              <div class="step-desc">
+                Agente deve confirmar in loco: água parada, vão aberto,
+                estrutura comprometida. Usar checklist offline se sem sinal.
+              </div>
+              <button class="step-action primary">
+                Iniciar vistoria agora
+              </button>
+            </div>
+          </div>
+
+          <div class="recipe-step">
+            <div class="step-left">
+              <div class="step-num pending">3</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-tag pending">Aguardando etapa 2</div>
+              <div class="step-title">Localizar e notificar o proprietário</div>
+              <div class="step-desc">
+                Cruzar dados: IPTU, Cartório de Registro de Imóveis, Receita
+                Federal. Gerar auto de infração com 3 opções de resolução.
+              </div>
+            </div>
+          </div>
+
+          <div class="recipe-step">
+            <div class="step-left">
+              <div class="step-num pending">4</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-tag pending">Aguardando etapa 3</div>
+              <div class="step-title">Prazo legal de resposta (30 dias)</div>
+              <div class="step-desc">
+                Proprietário tem 30 dias para apresentar plano de regularização,
+                aceitar mediação ou contestar judicialmente.
+              </div>
+            </div>
+          </div>
+
+          <div class="recipe-step">
+            <div class="step-left">
+              <div class="step-num pending">5</div>
+            </div>
+            <div class="step-body">
+              <div class="step-tag pending">Aguardando etapa 4</div>
+              <div class="step-title">Intervenção direta ou regularização</div>
+              <div class="step-desc">
+                Se não houver resposta: prefeitura executa limpeza/fechamento
+                por conta e lança débito ao proprietário. Ou: mediação com
+                construtora parceira é iniciada.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICAÇÃO AO PROPRIETÁRIO -->
+      <div class="notif-card">
+        <div class="notif-header">
+          <div class="notif-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </div>
+          <div class="notif-title">Notificação ao proprietário</div>
+        </div>
+        <p class="notif-sub">
+          Com base no <strong>Art. 5º, XXIII da CF/88</strong> (função social da
+          propriedade) e na <strong>Lei nº 10.257/01</strong> (Estatuto da
+          Cidade), o proprietário pode ser formalmente notificado a partir da
+          confirmação da vistoria. Selecione a via de encaminhamento:
+        </p>
+
+        <div class="opcoes-grid">
+          <div
+            class="opcao-card op1"
+            tabindex="0"
+            role="button"
+            onclick="selectOp(this)"
+          >
+            <div class="op-num">01</div>
+            <div class="op-title">Regularize por conta própria</div>
+            <div class="op-desc">
+              Proprietário apresenta plano de recuperação e executa obras de
+              limpeza, fechamento ou reforma no prazo acordado.
+            </div>
+            <span class="op-tag">Preferencial</span>
+          </div>
+          <div
+            class="opcao-card op2"
+            tabindex="0"
+            role="button"
+            onclick="selectOp(this)"
+          >
+            <div class="op-num">02</div>
+            <div class="op-title">Prefeitura intervém</div>
+            <div class="op-desc">
+              Equipe municipal executa a limpeza ou fechamento. Custo lançado
+              como dívida ativa ao proprietário com juros e multa.
+            </div>
+            <span class="op-tag">Intervenção pública</span>
+          </div>
+          <div
+            class="opcao-card op3"
+            tabindex="0"
+            role="button"
+            onclick="selectOp(this)"
+          >
+            <div class="op-num">03</div>
+            <div class="op-title">Venda ou cessão</div>
+            <div class="op-desc">
+              Mediação para venda a construtora parceira ou cessão ao município
+              para requalificação urbana ou habitação social.
+            </div>
+            <span class="op-tag">Off label</span>
+          </div>
+        </div>
+
+        <div class="legal-note">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span
+            >A entrada forçada em imóvel privado para ações de saúde pública
+            pode ser autorizada judicialmente com base no
+            <strong>Art. 78 da Lei nº 8.080/90</strong> (Lei Orgânica da Saúde)
+            e precedentes do STJ em casos de proliferação do Aedes aegypti.
+            Fluxo jurídico está em validação pela Procuradoria Municipal.</span
+          >
+        </div>
+      </div>
+
+      <!-- HISTÓRICO -->
+      <div class="hist-card">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+          "
+        >
+          <span
+            style="
+              font-size: 12px;
+              font-weight: 800;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              color: var(--tm);
+            "
+            >Histórico do imóvel</span
+          >
+          <button
+            style="
+              font-size: 11px;
+              font-weight: 600;
+              color: var(--primary);
+              background: none;
+              border: none;
+              cursor: pointer;
+              font-family: 'Sora', sans-serif;
+            "
+          >
+            Ver completo →
+          </button>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot-wrap">
+              <div class="tl-dot" style="background: var(--tertiary)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-date">14 mai. 2024, 09:14</div>
+              <div class="tl-action">
+                3ª denúncia registrada — classificação atualizada para Q1
+              </div>
+              <div class="tl-actor">Sistema · triagem automática</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot-wrap">
+              <div class="tl-dot" style="background: var(--secondary)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-date">12 mai. 2024, 14:30</div>
+              <div class="tl-action">
+                2ª denúncia registrada — tipo: lixo acumulado
+              </div>
+              <div class="tl-actor">Cidadão anônimo</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot-wrap">
+              <div class="tl-dot" style="background: var(--primary)"></div>
+              <div class="tl-line"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-date">08 mai. 2024, 11:22</div>
+              <div class="tl-action">
+                1ª denúncia registrada — tipo: foco de dengue
+              </div>
+              <div class="tl-actor">
+                Maria das Graças O. · protocolo #2024-0187
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot-wrap">
+              <div class="tl-dot" style="background: var(--neutral)"></div>
+            </div>
+            <div class="tl-body">
+              <div class="tl-date">Mar. 2023</div>
+              <div class="tl-action">
+                Imóvel detectado como fechado em varredura de zona
+              </div>
+              <div class="tl-actor">Controle Urbano · vistoria periódica</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function selectOp(el) {
+        document.querySelectorAll(".opcao-card").forEach(function (c) {
+          c.style.outline = "none";
+          c.style.transform = "";
+        });
+        el.style.outline = "2.5px solid currentColor";
+        el.style.transform = "translateY(-2px)";
+      }
+    </script>
+    <script src="../../assets/js/router.js"></script>
+  </body>
+</html>

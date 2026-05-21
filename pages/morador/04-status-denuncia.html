@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadê o Dono? — Status da Denúncia</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/layout.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --primary: #2563eb;
+        --primary-light: #ebf2ff;
+        --primary-border: #bfcfed;
+        --secondary: #6275af;
+        --secondary-light: #eef0f8;
+        --tertiary: #bc4800;
+        --tertiary-light: #fff0e8;
+        --tertiary-border: #f5c4a0;
+        --neutral: #757681;
+        --neutral-light: #f4f4f6;
+        --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --primary-shadow: 0 5.98px 23.203px 0 rgba(37, 99, 235, 0.2),
+          
+        --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --secondary-shadow: 0 5.98px 23.203px 0 rgba(98, 117, 175, 0.2),
+          
+        --tertiary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --tertiary-shadow: 0 5.98px 23.203px 0 rgba(188, 72, 0, 0.2),
+          
+        --neutral-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --neutral-shadow: 0 5.98px 23.203px 0 rgba(117, 118, 129, 0.2),
+          
+        --bg: #f5f6fa;
+        --surface: #ffffff;
+        --border: #e4e5ee;
+        --tp: #0f1117;
+        --ts: #3d3f52;
+        --tm: #757681;
+      }
+      html,
+      body {
+        min-height: 100vh;
+        font-family: "Sora", sans-serif;
+        background: var(--bg);
+        color: var(--tp);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* topbar mobile-style */
+      .topbar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 0 20px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .back-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--ts);
+        transition: all 0.2s;
+      }
+      .back-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-border);
+        color: var(--primary);
+      }
+      .back-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      .tb-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--tp);
+        flex: 1;
+      }
+      .share-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--ts);
+        transition: all 0.2s;
+      }
+      .share-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+      .share-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .shell {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 24px 20px 80px;
+      }
+
+      /* protocolo hero */
+      .proto-hero {
+        background: var(--primary-gradient);
+        box-shadow: var(--primary-shadow);
+        
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .proto-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .proto-icon svg {
+        width: 26px;
+        height: 26px;
+        color: #fff;
+      }
+
+      .proto-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 5px;
+      }
+      .proto-num {
+        font-size: 22px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.01em;
+        margin-bottom: 3px;
+      }
+      .proto-sub {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .proto-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 9999px;
+        padding: 5px 12px;
+        font-size: 10px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .dot-sm {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #86efac;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(134, 239, 172, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 6px rgba(134, 239, 172, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(134, 239, 172, 0);
+        }
+      }
+
+      /* resumo info */
+      .info-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+        gap: 12px;
+      }
+      .info-row:last-child {
+        border-bottom: none;
+      }
+      .info-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--tm);
+        flex-shrink: 0;
+      }
+      .info-val {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--tp);
+        text-align: right;
+      }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+      .sp-vistoria {
+        background: var(--secondary-light);
+        color: var(--secondary);
+      }
+      .sp-resolvido {
+        background: #ecfdf5;
+        color: #059669;
+      }
+      .sp-analise {
+        background: #fff8e1;
+        color: #b45309;
+      }
+      .pill-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+
+      /* progress bar geral */
+      .progress-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+      }
+      .pb-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .pb-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--tp);
+      }
+      .pb-pct {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .pb-bar {
+        height: 8px;
+        background: var(--bg);
+        border-radius: 9999px;
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+      .pb-fill {
+        height: 100%;
+        border-radius: 9999px;
+        background: var(--primary-gradient);
+        transition: width 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .stages {
+        display: flex;
+        gap: 0;
+      }
+      .stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .stage-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .stage-dot.done {
+        background: var(--primary);
+      }
+      .stage-dot.current {
+        background: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(98, 117, 175, 0.25);
+      }
+      .stage-dot.pending {
+        background: var(--border);
+      }
+      .stage-label {
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--tm);
+        text-align: center;
+      }
+      .stage-label.done {
+        color: var(--primary);
+      }
+      .stage-label.current {
+        color: var(--secondary);
+      }
+
+      /* timeline */
+      .timeline-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+      }
+      .section-label {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--tm);
+        margin-bottom: 16px;
+        display: block;
+      }
+      .tl {
+        display: flex;
+        flex-direction: column;
+      }
+      .tl-item {
+        display: flex;
+        gap: 14px;
+      }
+      .tl-spine {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .tl-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin-top: 3px;
+      }
+      .tl-dot.done {
+        background: var(--primary-gradient);
+        box-shadow: var(--primary-shadow);
+        
+      }
+      .tl-dot.current {
+        background: var(--secondary-gradient);
+        box-shadow: var(--secondary-shadow);
+        
+      }
+      .tl-dot.pending {
+        background: var(--surface);
+        border: 2px solid var(--border);
+      }
+      .tl-line {
+        width: 2px;
+        flex: 1;
+        min-height: 28px;
+        margin: 5px auto;
+      }
+      .tl-line.done {
+        background: var(--primary-border);
+      }
+      .tl-line.pending {
+        background: var(--border);
+      }
+      .tl-content {
+        padding-bottom: 22px;
+        flex: 1;
+      }
+      .tl-item:last-child .tl-content {
+        padding-bottom: 0;
+      }
+      .tl-date {
+        font-size: 10px;
+        color: var(--tm);
+        margin-bottom: 3px;
+      }
+      .tl-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--tp);
+        margin-bottom: 3px;
+        line-height: 1.35;
+      }
+      .tl-desc {
+        font-size: 12px;
+        color: var(--tm);
+        line-height: 1.55;
+      }
+      .tl-pending .tl-title {
+        color: var(--tm);
+        font-weight: 500;
+      }
+
+      /* anon note */
+      .anon-note {
+        display: flex;
+        gap: 12px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        align-items: flex-start;
+      }
+      .anon-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #86efac, #059669);
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .anon-icon svg {
+        width: 18px;
+        height: 18px;
+        color: #fff;
+      }
+      .anon-text {
+        font-size: 12px;
+        color: #15803d;
+        line-height: 1.6;
+      }
+      .anon-text strong {
+        font-weight: 700;
+        color: #166534;
+      }
+
+      /* nova denúncia CTA */
+      .nova-btn {
+        width: 100%;
+        padding: 17px;
+        background: var(--primary-gradient);
+        box-shadow: var(--primary-shadow);
+        
+        border-radius: 9999px;
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        margin-bottom: 12px;
+      }
+      .nova-btn:hover {
+        transform: translateY(-1px);
+        
+      }
+
+      .sec-btn {
+        width: 100%;
+        padding: 14px;
+        background: none;
+        border: 1.5px solid var(--border);
+        border-radius: 9999px;
+        color: var(--ts);
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .sec-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-border);
+        color: var(--primary);
+      }
+
+      /* compartilhar */
+      .share-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .share-chip {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 11px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ts);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: "Sora", sans-serif;
+      }
+      .share-chip svg {
+        width: 16px;
+        height: 16px;
+      }
+      .share-chip:hover {
+        background: var(--primary-light);
+        border-color: var(--primary-border);
+        color: var(--primary);
+      }
+
+      @media (max-width: 480px) {
+        .proto-badge {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <button
+        class="back-btn"
+        aria-label="Voltar"
+        onclick="window.history.back()"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <span class="tb-title">Minha denúncia</span>
+      <button class="share-btn" aria-label="Compartilhar">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="shell">
+      <!-- PROTOCOLO HERO -->
+      <div class="proto-hero">
+        <div class="proto-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+        </div>
+        <div class="proto-text">
+          <div class="proto-label">Protocolo de denúncia</div>
+          <div class="proto-num">#2024-0187</div>
+          <div class="proto-sub">Registrado em 08 mai. 2024 às 11:22</div>
+        </div>
+        <div class="proto-badge">
+          <div class="dot-sm"></div>
+          Em vistoria
+        </div>
+      </div>
+
+      <!-- RESUMO -->
+      <div class="info-card">
+        <div class="info-row">
+          <span class="info-label">Imóvel</span>
+          <span class="info-val">R. do Sol, 214 — Santo Antônio</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Tipo</span>
+          <span class="info-val">Foco de dengue · Imóvel abandonado</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status</span>
+          <span class="status-pill sp-vistoria"
+            ><div class="pill-dot" style="background: var(--secondary)"></div>
+            Em vistoria</span
+          >
+        </div>
+        <div class="info-row">
+          <span class="info-label">Identidade</span>
+          <span class="info-val" style="color: #059669">Anônima ✓</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Zona</span>
+          <span class="info-val">Norte · Nordeste II</span>
+        </div>
+      </div>
+
+      <!-- PROGRESSO GERAL -->
+      <div class="progress-block">
+        <div class="pb-header">
+          <span class="pb-label">Andamento geral</span>
+          <span class="pb-pct">66%</span>
+        </div>
+        <div class="pb-bar">
+          <div class="pb-fill" id="pb-fill" style="width: 0"></div>
+        </div>
+        <div class="stages">
+          <div class="stage">
+            <div class="stage-dot done"></div>
+            <div class="stage-label done">Recebida</div>
+          </div>
+          <div class="stage">
+            <div class="stage-dot done"></div>
+            <div class="stage-label done">Triagem</div>
+          </div>
+          <div class="stage">
+            <div class="stage-dot current"></div>
+            <div class="stage-label current">Vistoria</div>
+          </div>
+          <div class="stage">
+            <div class="stage-dot pending"></div>
+            <div class="stage-label">Notif.</div>
+          </div>
+          <div class="stage">
+            <div class="stage-dot pending"></div>
+            <div class="stage-label">Resolução</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="timeline-card">
+        <span class="section-label">Linha do tempo</span>
+        <div class="tl">
+          <div class="tl-item">
+            <div class="tl-spine">
+              <div class="tl-dot done"></div>
+              <div class="tl-line done"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">08 mai. 2024 · 11:22</div>
+              <div class="tl-title">Denúncia registrada</div>
+              <div class="tl-desc">
+                Protocolo #2024-0187 gerado. Fotos e localização confirmadas.
+                Identidade protegida.
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-spine">
+              <div class="tl-dot done"></div>
+              <div class="tl-line done"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">09 mai. 2024 · 08:00</div>
+              <div class="tl-title">
+                Triagem concluída — classificado como Q1
+              </div>
+              <div class="tl-desc">
+                Imóvel classificado como urgente e importante. Encaminhado para
+                vistoria prioritária pela Vigilância Ambiental.
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-spine">
+              <div class="tl-dot current"></div>
+              <div class="tl-line pending"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">Agora · em andamento</div>
+              <div class="tl-title">Vistoria de campo em curso</div>
+              <div class="tl-desc">
+                Agente Carlos Eduardo Santos está com a ocorrência designada.
+                Previsão de registro: até 16 mai. 2024.
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item tl-pending">
+            <div class="tl-spine">
+              <div class="tl-dot pending"></div>
+              <div class="tl-line pending"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">Aguardando</div>
+              <div class="tl-title">Notificação ao proprietário</div>
+              <div class="tl-desc">
+                Após a vistoria, o responsável pelo imóvel será formalmente
+                notificado com prazo de 30 dias para resolução.
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item tl-pending">
+            <div class="tl-spine">
+              <div class="tl-dot pending"></div>
+            </div>
+            <div class="tl-content">
+              <div class="tl-date">Aguardando</div>
+              <div class="tl-title">Resolução e fechamento</div>
+              <div class="tl-desc">
+                Limpeza, fechamento ou regularização confirmados. Você receberá
+                notificação quando concluído.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANONIMATO -->
+      <div class="anon-note">
+        <div class="anon-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <polyline points="9 12 11 14 15 10" />
+          </svg>
+        </div>
+        <div class="anon-text">
+          <strong>Sua identidade está protegida.</strong> Nenhuma informação
+          pessoal foi vinculada a esta denúncia. Os agentes de campo recebem
+          apenas a localização e o tipo de problema — nunca seu nome ou contato.
+        </div>
+      </div>
+
+      <!-- COMPARTILHAR -->
+      <div class="share-row">
+        <button class="share-chip">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+            />
+          </svg>
+          WhatsApp
+        </button>
+        <button class="share-chip">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          Copiar protocolo
+        </button>
+        <button class="share-chip">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Baixar PDF
+        </button>
+      </div>
+
+      <!-- CTAs -->
+      <button class="nova-btn" onclick="window.location.href='denuncia.html'">
+        Fazer outra denúncia
+      </button>
+      <button
+        class="sec-btn"
+        onclick="window.location.href='04-status-denuncia.html'"
+      >
+        Ver todas as minhas denúncias
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("load", function () {
+        setTimeout(function () {
+          var el = document.getElementById("pb-fill");
+          if (el) {
+            el.style.transition = "width 1.2s cubic-bezier(.23,1,.32,1)";
+            el.style.width = "66%";
+          }
+        }, 300);
+      })

@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadê o Dono? — Home do Morador</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/layout.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --sapphire-gradient: linear-gradient(135deg, #3b82f6 0%, #1565c0 100%);
+        --sapphire-shadow: 0 2px 8px rgba(21, 101, 192, 0.2);
+        --sapphire-deep: #1565c0;
+        --ruby-gradient: linear-gradient(135deg, #ef5350 0%, #c62828 100%);
+        --ruby-shadow: 0 2px 8px rgba(198, 40, 40, 0.18);
+        --emerald-gradient: linear-gradient(135deg, #66bb6a 0%, #2e7d32 100%);
+        --emerald-shadow: 0 2px 8px rgba(46, 125, 50, 0.18);
+        --bg: #f4f7fb;
+        --surface: #ffffff;
+        --border: #e3e8f2;
+        --border-hover: #bbdefb;
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --text-muted: #9ca3af;
+        --sidebar-w: 260px;
+        --header-h: 64px;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: "Sora", sans-serif;
+        background: var(--bg);
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* dot pulse */
+      .dot-pulse {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #69f0ae;
+        box-shadow: 0 0 0 0 rgba(105, 240, 174, 0.7);
+        animation: pulse 2s infinite;
+        flex-shrink: 0;
+      }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(105, 240, 174, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 8px rgba(105, 240, 174, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(105, 240, 174, 0);
+        }
+      }
+
+      /* layout */
+      .app-shell {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* sidebar */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 22px 20px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .logo-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--sapphire-deep);
+        box-shadow: 0 1px 4px rgba(21, 101, 192, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .logo-mark svg {
+        width: 18px;
+        height: 18px;
+        color: #fff;
+      }
+      .logo-text {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.2;
+      }
+      .logo-sub {
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .sidebar-nav {
+        flex: 1;
+        padding: 16px 12px;
+        overflow-y: auto;
+      }
+      .nav-section-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 0 8px;
+        margin: 16px 0 6px;
+        display: block;
+      }
+      .nav-section-label:first-child {
+        margin-top: 0;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        position: relative;
+        margin-bottom: 2px;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: "Sora", sans-serif;
+      }
+      .nav-item:hover {
+        background: #f0f4ff;
+        color: var(--sapphire-deep);
+      }
+      .nav-item.active {
+        background: #ebf3fe;
+        color: var(--sapphire-deep);
+        font-weight: 600;
+      }
+      .nav-item svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: var(--sapphire-deep);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 9999px;
+      }
+      .nav-badge.warn {
+        background: #f59e0b;
+      }
+      .sidebar-footer {
+        padding: 16px 12px;
+        border-top: 1px solid var(--border);
+      }
+      .user-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .user-row:hover {
+        background: #f9fafb;
+      }
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #ebf3fe;
+        border: 2px solid var(--border-hover);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--sapphire-deep);
+        flex-shrink: 0;
+      }
+      .user-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .user-role {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .user-chevron {
+        margin-left: auto;
+        color: var(--text-muted);
+        width: 14px;
+        height: 14px;
+      }
+
+      /* main */
+      .main {
+        margin-left: var(--sidebar-w);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      /* topbar */
+      .topbar {
+        height: var(--header-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 28px;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .hamburger {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: none;
+        cursor: pointer;
+        color: var(--text-secondary);
+      }
+      .hamburger svg {
+        width: 18px;
+        height: 18px;
+      }
+      .topbar-greeting {
+        flex: 1;
+      }
+      .topbar-greeting h1 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .topbar-greeting p {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 1px;
+      }
+      .eyebrow-pill {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 14px;
+        background: #ebf3fe;
+        border: 1px solid #bbdefb;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sapphire-deep);
+        white-space: nowrap;
+      }
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .icon-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition: all 0.2s;
+        position: relative;
+      }
+      .icon-btn:hover {
+        background: #f0f4ff;
+        border-color: var(--border-hover);
+        color: var(--sapphire-deep);
+      }
+      .icon-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+      .notif-dot {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #e53935;
+        border: 1.5px solid var(--surface);
+      }
+      .topbar-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--sapphire-deep);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        color: #fff;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      /* page */
+      .page {
+        padding: 28px;
+        flex: 1;
+      }
+
+      /* stats */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 22px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        cursor: default;
+      }
+      .stat-card:hover {
+        border-color: var(--border-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+      }
+      .stat-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+      }
+      .stat-value {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--text-primary);
+        line-height: 1;
+        letter-spacing: -0.03em;
+        margin-bottom: 6px;
+      }
+      .stat-delta {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 9999px;
+      }
+      .delta-up {
+        background: #ecfdf5;
+        color: #059669;
+      }
+      .delta-warn {
+        background: #fff8e1;
+        color: #b45309;
+      }
+      .stat-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        border-radius: 0 0 16px 16px;
+      }
+
+      /* main grid */
+      .main-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 20px;
+        align-items: start;
+      }
+
+      /* cta block */
+      .cta-block {
+        position: relative;
+        padding: 28px 32px;
+        background: var(--sapphire-deep);
+        box-shadow: 0 2px 12px rgba(21, 101, 192, 0.18);
+        border-radius: 22px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .cta-block:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(21, 101, 192, 0.25);
+      }
+      .cta-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 9999px;
+        padding: 4px 12px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 12px;
+      }
+      .cta-h2 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.15;
+        margin-bottom: 6px;
+      }
+      .cta-sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.5;
+      }
+      .cta-btn {
+        padding: 14px 28px;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        border-radius: 9999px;
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 18px;
+      }
+      .cta-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+      .cta-icon-big {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .cta-icon-big svg {
+        width: 38px;
+        height: 38px;
+        color: #fff;
+      }
+
+      /* anon banner */
+      .anon-banner {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 14px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+      }
+      .anon-icon-box {
+        width: 40px;
+        height: 40px;
+        background: #2e7d32;
+        box-shadow: 0 1px 4px rgba(46, 125, 50, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .anon-icon-box svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+      }
+      .anon-text {
+        font-size: 13px;
+        color: #15803d;
+        line-height: 1.55;
+      }
+      .anon-text strong {
+        font-weight: 700;
+        color: #166534;
+      }
+
+      /* section header */
+      .section-hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .section-hd h2 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .see-all {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sapphire-deep);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        transition: background 0.2s;
+        font-family: "Sora", sans-serif;
+      }
+      .see-all:hover {
+        background: #ebf3fe;
+      }
+
+      /* denuncia cards */
+      .card-denuncia {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .card-denuncia:hover {
+        border-color: var(--border-hover);
+        box-shadow: 0 4px 18px rgba(21, 101, 192, 0.1);
+        transform: translateX(3px);
+      }
+      .card-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .card-addr {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 3px;
+      }
+      .card-tipo {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .bdot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+      .s-analise {
+        background: #fff8e1;
+        color: #92400e;
+      }
+      .bd-analise {
+        background: #f59e0b;
+      }
+      .s-vistoria {
+        background: #ebf3fe;
+        color: #1565c0;
+      }
+      .bd-vistoria {
+        background: #1565c0;
+      }
+      .s-resolvido {
+        background: #ecfdf5;
+        color: #065f46;
+      }
+      .bd-resolvido {
+        background: #059669;
+      }
+      .s-critico {
+        background: #fef2f2;
+        color: #991b1b;
+      }
+      .bd-critico {
+        background: #ef4444;
+      }
+      .pbar {
+        height: 3px;
+        background: #f3f4f6;
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+      .pfill {
+        height: 100%;
+        border-radius: 9999px;
+        transition: width 1s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .pf-analise {
+        background: linear-gradient(90deg, #fcd34d, #f59e0b);
+      }
+      .pf-vistoria {
+        background: linear-gradient(90deg, #60a5fa, #1565c0);
+      }
+      .pf-resolvido {
+        background: linear-gradient(90deg, #6ee7b7, #059669);
+      }
+      .pf-critico {
+        background: linear-gradient(90deg, #fca5a5, #ef4444);
+      }
+      .card-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+      }
+      .card-meta {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .card-proto {
+        font-size: 10px;
+        color: #d1d5db;
+      }
+
+      /* sidebar right */
+      .widget-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .widget-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+      }
+      .quick-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .quick-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fafbfd;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        font-family: "Sora", sans-serif;
+      }
+      .quick-btn:hover {
+        border-color: var(--border-hover);
+        background: #ebf3fe;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+      }
+      .q-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .q-blue  { background: var(--sapphire-deep); box-shadow: 0 1px 4px rgba(21,101,192,0.18); }
+      .q-red   { background: #c62828;              box-shadow: 0 1px 4px rgba(198,40,40,0.18); }
+      .q-green { background: #2e7d32;              box-shadow: 0 1px 4px rgba(46,125,50,0.18); }
+      .q-gray {
+        background: #f3f4f6;
+        border: 1px solid var(--border);
+      }
+      .q-icon svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+      }
+      .q-gray svg {
+        color: var(--text-secondary);
+      }
+      .q-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-align: center;
+        line-height: 1.3;
+      }
+      .map-mock {
+        border-radius: 12px;
+        background: linear-gradient(
+          145deg,
+          #ebf3fe 0%,
+          #dbeafe 40%,
+          #e0f2f1 100%
+        );
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 12px;
+        border: 1px solid #bbdefb;
+      }
+      .map-grid-bg {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            rgba(21, 101, 192, 0.06) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(21, 101, 192, 0.06) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .map-pin {
+        position: absolute;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+      .map-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sapphire-deep);
+        z-index: 1;
+      }
+      .map-open {
+        width: 100%;
+        padding: 10px;
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-family: "Sora", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sapphire-deep);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.2s;
+      }
+      .map-open:hover {
+        background: #ebf3fe;
+        border-color: var(--border-hover);
+      }
+      .map-open svg {
+        width: 14px;
+        height: 14px;
+      }
+      .tipo-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .tipo-row:last-child {
+        border-bottom: none;
+      }
+      .tipo-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .tipo-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .tipo-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+      .tipo-count {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      /* mobile nav */
+      .mobile-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: 10px 0 max(12px, env(safe-area-inset-bottom));
+        z-index: 200;
+      }
+      .mnav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+      }
+      .mnav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 4px 12px;
+        border-radius: 10px;
+        transition: all 0.2s;
+        border: none;
+        background: none;
+        font-family: "Sora", sans-serif;
+        min-width: 60px;
+      }
+      .mnav-item svg {
+        width: 22px;
+        height: 22px;
+      }
+      .mnav-item.active {
+        color: var(--sapphire-deep);
+      }
+      .fab-wrap {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .fab-core {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--sapphire-deep);
+        box-shadow: 0 2px 10px rgba(21, 101, 192, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transform: translateY(-14px);
+        transition: box-shadow 0.2s, transform 0.2s;
+      }
+      .fab-core svg {
+        width: 24px;
+        height: 24px;
+        color: #fff;
+      }
+      .fab-label {
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--sapphire-deep);
+        transform: translateY(-10px);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      /* overlay */
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 99;
+      }
+
+      /* responsive */
+      @media (max-width: 1100px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+        .sidebar-right-col {
+          display: none;
+        }
+      }
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .sidebar-overlay.open {
+          display: block;
+        }
+        .main {
+          margin-left: 0;
+        }
+        .hamburger {
+          display: flex;
+        }
+        .topbar {
+          padding: 0 16px;
+          gap: 10px;
+        }
+        .eyebrow-pill {
+          display: none;
+        }
+        .page {
+          padding: 16px 14px 90px;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+        .stat-value {
+          font-size: 26px;
+        }
+        .cta-block {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+        .cta-icon-big {
+          display: none;
+        }
+        .cta-h2 {
+          font-size: 20px;
+        }
+        .mobile-nav {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <div class="app-shell">
+      <aside
+        class="sidebar"
+        id="sidebar"
+        role="navigation"
+        aria-label="Menu principal"
+      >
+        <div class="sidebar-logo">
+          <div class="logo-mark">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <path d="M9 22V12h6v10" />
+            </svg>
+          </div>
+          <div>
+            <div class="logo-text">Cadê o Dono?</div>
+            <div class="logo-sub">Vigilância Urbana</div>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <span class="nav-section-label">Principal</span>
+          <a
+            class="nav-item active"
+            href="cade_o_dono_home_morador.html"
+            aria-current="page"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <path d="M9 22V12h6v10" />
+            </svg>
+            Início
+          </a>
+          <a class="nav-item" href="denuncia.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            Nova Denúncia
+            <span class="nav-badge">+</span>
+          </a>
+          <a class="nav-item" href="04-status-denuncia.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M3 9h18M9 21V9" />
+            </svg>
+            Minhas Denúncias
+            <span class="nav-badge warn">3</span>
+          </a>
+          <a class="nav-item" href="../gestor/05-mapa-imoveis.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Mapa de Imóveis
+          </a>
+          <span class="nav-section-label">Acompanhamento</span>
+          <a class="nav-item" href="06-notificacoes.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3z"
+              />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+            </svg>
+            Notificações
+            <span class="nav-badge">2</span>
+          </a>
+          <a class="nav-item" href="../gestor/07-status-bairro.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"
+              />
+            </svg>
+            Status do Bairro
+          </a>
+          <span class="nav-section-label">Conta</span>
+          <a class="nav-item" href="08-meu-perfil.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M6 20v-2a6 6 0 0 1 12 0v2" />
+            </svg>
+            Meu Perfil
+          </a>
+          <a class="nav-item" href="09-configuracoes.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+              />
+            </svg>
+            Configurações
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="user-row" role="button" tabindex="0">
+            <div class="user-avatar">MG</div>
+            <div>
+              <div class="user-name">Maria das Graças</div>
+              <div class="user-role">Moradora · Santo Antônio</div>
+            </div>
+            <svg
+              class="user-chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+        </div>
+      </aside>
+
+      <div class="main">
+        <header class="topbar">
+          <button
+            class="hamburger"
+            onclick="toggleSidebar()"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            id="hamburger"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <div class="topbar-greeting">
+            <h1>Bom dia, Maria</h1>
+            <p>Recife &middot; Santo Ant&ocirc;nio</p>
+          </div>
+          <div class="eyebrow-pill" role="status" aria-live="polite">
+            <span class="dot-pulse" aria-hidden="true"></span>
+            47 den&uacute;ncias ativas no bairro
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-btn" aria-label="Notificações">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                onclick="window.location.href='06-notificacoes.html'"
+              >
+                <path
+                  d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3z"
+                />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+              </svg>
+              <span class="notif-dot" aria-hidden="true"></span>
+            </button>
+            <button class="icon-btn" aria-label="Mapa">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </button>
+            <div
+              class="topbar-avatar"
+              role="button"
+              tabindex="0"
+              aria-label="Perfil"
+              onclick="window.location.href='08-meu-perfil.html'"
+            >
+              MG
+            </div>
+          </div>
+        </header>
+
+        <main class="page">
+          <div class="stats-grid" role="list" aria-label="Resumo">
+            <div class="stat-card" role="listitem">
+              <div class="stat-label">Minhas den&uacute;ncias</div>
+              <div class="stat-value" data-target="7">0</div>
+              <span class="stat-delta delta-up">&uarr; 2 este m&ecirc;s</span>
+              <div
+                class="stat-bar"
+                style="background: var(--sapphire-gradient)"
+              ></div>
+            </div>
+            <div class="stat-card" role="listitem">
+              <div class="stat-label">Em andamento</div>
+              <div class="stat-value" data-target="3">0</div>
+              <span class="stat-delta delta-warn">&#9201; Aguardando</span>
+              <div
+                class="stat-bar"
+                style="background: linear-gradient(90deg, #fcd34d, #f59e0b)"
+              ></div>
+            </div>
+            <div class="stat-card" role="listitem">
+              <div class="stat-label">Resolvidas</div>
+              <div class="stat-value" data-target="4">0</div>
+              <span class="stat-delta delta-up"
+                >&#10003; Conclu&iacute;das</span
+              >
+              <div
+                class="stat-bar"
+                style="background: var(--emerald-gradient)"
+              ></div>
+            </div>
+            <div class="stat-card" role="listitem">
+              <div class="stat-label">Tempo m&eacute;dio</div>
+              <div class="stat-value" data-target="6" data-suffix="d">0d</div>
+              <span class="stat-delta delta-up">&darr; Melhorando</span>
+              <div
+                class="stat-bar"
+                style="background: var(--sapphire-gradient)"
+              ></div>
+            </div>
+          </div>
+
+          <div class="main-grid">
+            <div>
+              <div
+                class="cta-block"
+                role="button"
+                tabindex="0"
+                onclick="window.location.href='denuncia.html'"
+                onkeydown="if(event.key==='Enter'||event.key===' '){this.click()}"
+              >
+                <div>
+                  <div class="cta-tag">
+                    <span class="dot-pulse" aria-hidden="true"></span>
+                    A&ccedil;&atilde;o r&aacute;pida
+                  </div>
+                  <h2 class="cta-h2">Registrar Den&uacute;ncia</h2>
+                  <p class="cta-sub">
+                    Foto, localiza&ccedil;&atilde;o e tipo de problema.<br />Leva
+                    menos de 2 minutos. Pode ser an&ocirc;nimo.
+                  </p>
+                  <button
+                    class="cta-btn"
+                    onclick="event.stopPropagation();window.location.href='denuncia.html'"
+                  >
+                    Denunciar agora
+                  </button>
+                </div>
+                <div class="cta-icon-big" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+                    />
+                    <circle cx="12" cy="13" r="4" />
+                  </svg>
+                </div>
+              </div>
+
+              <div class="anon-banner" role="note">
+                <div class="anon-icon-box" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <polyline points="9 12 11 14 15 10" />
+                  </svg>
+                </div>
+                <p class="anon-text">
+                  <strong
+                    >Den&uacute;ncia an&ocirc;nima dispon&iacute;vel.</strong
+                  >
+                  Seu nome nunca ser&aacute; revelado sem a sua
+                  autoriza&ccedil;&atilde;o. O protocolo de acompanhamento chega
+                  por e&#8209;mail ou SMS.
+                </p>
+              </div>
+
+              <div class="section-hd">
+                <h2>Acompanhamento</h2>
+                <button
+                  class="see-all"
+                  onclick="window.location.href='04-status-denuncia.html'"
+                >
+                  Ver todas &rarr;
+                </button>
+              </div>
+
+              <article class="card-denuncia" tabindex="0">
+                <div class="card-row">
+                  <div>
+                    <div class="card-addr">
+                      R. do Sol, 214 &mdash; Santo Ant&ocirc;nio
+                    </div>
+                    <div class="card-tipo">
+                      Foco de dengue &middot; Im&oacute;vel abandonado
+                    </div>
+                  </div>
+                  <span class="status-badge s-vistoria"
+                    ><span class="bdot bd-vistoria" aria-hidden="true"></span>Em
+                    vistoria</span
+                  >
+                </div>
+                <div
+                  class="pbar"
+                  role="progressbar"
+                  aria-valuenow="66"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="pfill pf-vistoria"
+                    data-w="66%"
+                    style="width: 0"
+                  ></div>
+                </div>
+                <div class="card-foot">
+                  <span class="card-meta"
+                    >Registrado 3 dias atr&aacute;s &middot; Agente
+                    designado</span
+                  ><span class="card-proto">#2024-0187</span>
+                </div>
+              </article>
+
+              <article class="card-denuncia" tabindex="0">
+                <div class="card-row">
+                  <div>
+                    <div class="card-addr">
+                      Beco do Ros&aacute;rio, s/n &mdash; Boa Vista
+                    </div>
+                    <div class="card-tipo">
+                      Lixo acumulado &middot; Risco sanit&aacute;rio
+                    </div>
+                  </div>
+                  <span class="status-badge s-analise"
+                    ><span class="bdot bd-analise" aria-hidden="true"></span>Em
+                    an&aacute;lise</span
+                  >
+                </div>
+                <div
+                  class="pbar"
+                  role="progressbar"
+                  aria-valuenow="33"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="pfill pf-analise"
+                    data-w="33%"
+                    style="width: 0"
+                  ></div>
+                </div>
+                <div class="card-foot">
+                  <span class="card-meta"
+                    >Registrado ontem &middot; Aguardando triagem</span
+                  ><span class="card-proto">#2024-0201</span>
+                </div>
+              </article>
+
+              <article class="card-denuncia" tabindex="0">
+                <div class="card-row">
+                  <div>
+                    <div class="card-addr">Av. Marqu&ecirc;s de Olinda, 88</div>
+                    <div class="card-tipo">
+                      Risco estrutural &middot; Fachada deteriorada
+                    </div>
+                  </div>
+                  <span class="status-badge s-critico"
+                    ><span class="bdot bd-critico" aria-hidden="true"></span
+                    >Cr&iacute;tico</span
+                  >
+                </div>
+                <div
+                  class="pbar"
+                  role="progressbar"
+                  aria-valuenow="15"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="pfill pf-critico"
+                    data-w="15%"
+                    style="width: 0"
+                  ></div>
+                </div>
+                <div class="card-foot">
+                  <span class="card-meta"
+                    >Registrado h&aacute; 8 horas &middot; Alta prioridade</span
+                  ><span class="card-proto">#2024-0214</span>
+                </div>
+              </article>
+
+              <article class="card-denuncia" tabindex="0">
+                <div class="card-row">
+                  <div>
+                    <div class="card-addr">
+                      R. da Aurora, 310 &mdash; S&atilde;o Jos&eacute;
+                    </div>
+                    <div class="card-tipo">
+                      Invas&atilde;o &middot; Im&oacute;vel abandonado
+                    </div>
+                  </div>
+                  <span class="status-badge s-resolvido"
+                    ><span class="bdot bd-resolvido" aria-hidden="true"></span
+                    >Resolvido</span
+                  >
+                </div>
+                <div
+                  class="pbar"
+                  role="progressbar"
+                  aria-valuenow="100"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  <div
+                    class="pfill pf-resolvido"
+                    data-w="100%"
+                    style="width: 0"
+                  ></div>
+                </div>
+                <div class="card-foot">
+                  <span class="card-meta"
+                    >Conclu&iacute;do h&aacute; 5 dias &middot;
+                    Regularizado</span
+                  ><span class="card-proto">#2024-0154</span>
+                </div>
+              </article>
+            </div>
+
+            <aside class="sidebar-right-col" aria-label="Painel lateral">
+              <div class="widget-card">
+                <div class="widget-title">
+                  A&ccedil;&otilde;es r&aacute;pidas
+                </div>
+                <div class="quick-grid">
+                  <button
+                    class="quick-btn"
+                    onclick="window.location.href='denuncia.html'"
+                  >
+                    <div class="q-icon q-blue">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                    </div>
+                    <span class="q-label">Nova<br />Den&uacute;ncia</span>
+                  </button>
+                  <button
+                    class="quick-btn"
+                    onclick="window.location.href='denuncia.html'"
+                  >
+                    <div class="q-icon q-red">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                        />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                    </div>
+                    <span class="q-label">Urgente /<br />Risco</span>
+                  </button>
+                  <button
+                    class="quick-btn"
+                    onclick="window.location.href='../gestor/05-mapa-imoveis.html'"
+                  >
+                    <div class="q-icon q-green">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                        />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                    </div>
+                    <span class="q-label">Ver<br />Mapa</span>
+                  </button>
+                  <button
+                    class="quick-btn"
+                    onclick="window.location.href='04-status-denuncia.html'"
+                  >
+                    <div class="q-icon q-gray">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 .49-4.9L1 10" />
+                      </svg>
+                    </div>
+                    <span class="q-label">Hist&oacute;rico</span>
+                  </button>
+                </div>
+              </div>
+              <div class="widget-card">
+                <div class="widget-title">Im&oacute;veis no bairro</div>
+                <div class="map-mock" aria-label="Mapa do bairro">
+                  <div class="map-grid-bg" aria-hidden="true"></div>
+                  <div
+                    class="map-pin"
+                    style="top: 35%; left: 40%; background: #1565c0"
+                    aria-hidden="true"
+                  ></div>
+                  <div
+                    class="map-pin"
+                    style="top: 55%; left: 60%; background: #e53935"
+                    aria-hidden="true"
+                  ></div>
+                  <div
+                    class="map-pin"
+                    style="top: 45%; left: 25%; background: #f59e0b"
+                    aria-hidden="true"
+                  ></div>
+                  <div
+                    class="map-pin"
+                    style="top: 65%; left: 70%; background: #059669"
+                    aria-hidden="true"
+                  ></div>
+                  <div
+                    class="map-pin"
+                    style="top: 25%; left: 55%; background: #e53935"
+                    aria-hidden="true"
+                  ></div>
+                  <span class="map-label"
+                    >Santo Ant&ocirc;nio &middot; Recife</span
+                  >
+                </div>
+                <button
+                  class="map-open"
+                  onclick="window.location.href='../gestor/05-mapa-imoveis.html'"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" />
+                    <line x1="8" y1="2" x2="8" y2="18" />
+                    <line x1="16" y1="6" x2="16" y2="22" />
+                  </svg>
+                  Abrir mapa completo
+                </button>
+              </div>
+              <div class="widget-card">
+                <div class="widget-title">Tipos de problema</div>
+                <div role="list">
+                  <div class="tipo-row" role="listitem">
+                    <div class="tipo-left">
+                      <div class="tipo-dot" style="background: #1565c0"></div>
+                      <span class="tipo-name">Foco de dengue</span>
+                    </div>
+                    <span class="tipo-count">18</span>
+                  </div>
+                  <div class="tipo-row" role="listitem">
+                    <div class="tipo-left">
+                      <div class="tipo-dot" style="background: #e53935"></div>
+                      <span class="tipo-name">Risco estrutural</span>
+                    </div>
+                    <span class="tipo-count">11</span>
+                  </div>
+                  <div class="tipo-row" role="listitem">
+                    <div class="tipo-left">
+                      <div class="tipo-dot" style="background: #f59e0b"></div>
+                      <span class="tipo-name">Lixo acumulado</span>
+                    </div>
+                    <span class="tipo-count">9</span>
+                  </div>
+                  <div class="tipo-row" role="listitem">
+                    <div class="tipo-left">
+                      <div class="tipo-dot" style="background: #059669"></div>
+                      <span class="tipo-name">Im&oacute;vel abandonado</span>
+                    </div>
+                    <span class="tipo-count">7</span>
+                  </div>
+                  <div class="tipo-row" role="listitem">
+                    <div class="tipo-left">
+                      <div class="tipo-dot" style="background: #9ca3af"></div>
+                      <span class="tipo-name">Invas&atilde;o / outro</span>
+                    </div>
+                    <span class="tipo-count">2</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </main>
+
+        <nav class="mobile-nav" aria-label="Navegação mobile">
+          <div class="mnav-inner">
+            <button
+              class="mnav-item active"
+              aria-label="Início"
+              aria-current="page"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <path d="M9 22V12h6v10" />
+              </svg>
+              In&iacute;cio
+            </button>
+            <button
+              class="mnav-item"
+              aria-label="Mapa"
+              onclick="window.location.href='../gestor/05-mapa-imoveis.html'"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Mapa
+            </button>
+            <div class="fab-wrap">
+              <button
+                class="fab-core"
+                onclick="window.location.href='denuncia.html'"
+                aria-label="Nova denúncia"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+              <span class="fab-label">Denunciar</span>
+            </div>
+            <button
+              class="mnav-item"
+              aria-label="Histórico"
+              onclick="window.location.href='04-status-denuncia.html'"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M9 21V9" />
+              </svg>
+              Hist&oacute;rico
+            </button>
+            <button
+              class="mnav-item"
+              aria-label="Perfil"
+              onclick="window.location.href='08-meu-perfil.html'"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M6 20v-2a6 6 0 0 1 12 0v2" />
+              </svg>
+              Perfil
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <script>
+      function toggleSidebar() {
+        var sb = document.getElementById("sidebar"),
+          ov = document.getElementById("overlay"),
+          hb = document.getElementById("hamburger"),
+          open = sb.classList.toggle("open");
+        ov.classList.toggle("open", open);
+        hb.setAttribute("aria-expanded", open);
+      }
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("open");
+        document
+          .getElementById("hamburger")
+          .setAttribute("aria-expanded", "false");
+      }
+      window.addEventListener("load", function () {
+        document.querySelectorAll(".pfill[data-w]").forEach(function (el) {
+          setTimeout(function () {
+            el.style.transition = "width 1s cubic-bezier(.23,1,.32,1)";
+            el.style.width = el.getAttribute("data-w");
+          }, 300);
+        });
+        document
+          .querySelectorAll(".stat-value[data-target]")
+          .forEach(function (el) {
+            var target = parseInt(el.getAttribute("data-target")),
+              suffix = el.getAttribute("data-suffix") || "",
+              cur = 0,
+              step = Math.ceil(target / 18);
+            var iv = setInterval(function () {
+              cur = Math.min(cur + step, target);
+              el.textContent = cur + suffix;
+              if (cur >= target) clearInterval(iv);
+            }, 45);
+          });
+      });
+    </script>
+    <script src="../../assets/js/router.js"></script>
+  </body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadê o Dono? — Dashboard Gestor</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/layout.css" />
+    <script src="../../assets/js/inline-scripts.js" defer></script>
+    <style>
+      /* ── Variáveis locais ── */
+      :root {
+        --tm: var(--text-muted);
+      }
+
+      /* ── Hamburger (mobile only) ── */
+      .hamburger {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: none;
+        cursor: pointer;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+      }
+      .hamburger svg { width: 18px; height: 18px; }
+
+      /* ── Overlay ── */
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 99;
+      }
+
+      @media (max-width: 768px) {
+        .hamburger { display: flex; }
+        .sidebar {
+          display: flex !important;
+          position: fixed;
+          top: 0; left: 0; bottom: 0;
+          z-index: 100;
+          transform: translateX(-100%);
+          transition: transform 0.3s cubic-bezier(0.23,1,0.32,1);
+        }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-overlay.open { display: block; }
+      }
+
+      /* ── Topbar ── */
+      .tb-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+      .zone-chip {
+        display: inline-flex; align-items: center;
+        background: var(--primary-light); color: var(--primary);
+        border: 1px solid var(--primary-border);
+        border-radius: 20px; padding: 2px 10px;
+        font-size: 11px; font-weight: 600; margin-left: 8px;
+      }
+
+      /* ── KPI cards ── */
+      .kpi-val {
+        font-size: 36px; font-weight: 800;
+        color: var(--text-primary); letter-spacing: -0.03em;
+        line-height: 1.1; margin: 4px 0;
+      }
+      .kpi-delta { font-size: 11px; font-weight: 600; }
+      .d-up   { color: var(--success); }
+      .d-down { color: var(--danger); }
+      .d-warn { color: var(--warning); }
+
+      /* ── Section header ── */
+      .sec-hd {
+        display: flex; align-items: center;
+        justify-content: space-between;
+        margin: 24px 0 12px;
+      }
+      .sec-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+      .sec-link {
+        background: none; border: none; padding: 0;
+        font-size: 12px; font-weight: 600; color: var(--primary);
+        cursor: pointer; transition: opacity 0.2s;
+      }
+      .sec-link:hover { opacity: 0.7; }
+
+      /* ── Eisenhower matrix ── */
+      .eisenhower-wrap { margin-bottom: 8px; }
+      .eis-container {
+        display: flex; gap: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px; padding: 12px;
+      }
+      .eis-axis-y {
+        writing-mode: vertical-rl; transform: rotate(180deg);
+        font-size: 10px; font-weight: 700; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: 0.08em;
+        display: flex; align-items: center;
+      }
+      .eis-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+      .eis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .eis-axis-x {
+        font-size: 10px; font-weight: 700; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: 0.08em;
+        text-align: right;
+      }
+      .eis-q {
+        border-radius: 10px; padding: 12px;
+        cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .eis-q:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+      .q1 { background: var(--tertiary-light); border: 1px solid var(--tertiary-border); }
+      .q2 { background: var(--primary-light);  border: 1px solid var(--primary-border); }
+      .q3 { background: var(--secondary-light); border: 1px solid var(--secondary-border); }
+      .q4 { background: var(--neutral-light);  border: 1px solid var(--neutral-border); }
+      .eis-count { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px; }
+      .q1 .eis-count { color: var(--tertiary); }
+      .q2 .eis-count { color: var(--primary); }
+      .q3 .eis-count { color: var(--secondary); }
+      .q4 .eis-count { color: var(--neutral); }
+      .eis-q-label { font-size: 10px; font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
+      .eis-q-title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+      .eis-q-sub   { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+      .eis-badge {
+        display: inline-block; padding: 3px 8px;
+        border-radius: 6px; font-size: 11px; font-weight: 700;
+      }
+
+      /* ── Imóvel cards ── */
+      .imovel-card {
+        display: flex; align-items: flex-start; gap: 12px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 12px; padding: 14px;
+        margin-bottom: 10px;
+        transition: box-shadow 0.2s, transform 0.2s;
+        cursor: pointer;
+      }
+      .imovel-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+      .imovel-priority {
+        width: 36px; height: 36px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 800; flex-shrink: 0;
+      }
+      .p-critico { background: var(--tertiary-light); color: var(--tertiary); }
+      .p-alto    { background: var(--primary-light);  color: var(--primary); }
+      .p-medio   { background: var(--secondary-light); color: var(--secondary); }
+      .imovel-info  { flex: 1; }
+      .imovel-addr  { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+      .imovel-meta  { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+      .imovel-tag   { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px; }
+      .tag-dengue    { background: var(--tertiary-light); color: var(--tertiary); }
+      .tag-estrutural{ background: #fef2f2; color: #dc2626; }
+      .tag-lixo      { background: var(--neutral-light); color: var(--neutral); }
+      .imovel-right  { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+      .pbar {
+        height: 4px; background: var(--neutral-light);
+        border-radius: 4px; overflow: hidden;
+      }
+      .pfill { height: 100%; border-radius: 4px; }
+      .pf-critico { background: var(--tertiary); }
+      .pf-alto    { background: var(--primary); }
+      .pf-medio   { background: var(--secondary); }
+
+      /* ── Right sidebar widgets ── */
+      .main-grid > aside {
+        display: flex; flex-direction: column; gap: 16px;
+      }
+      .widget {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 14px; padding: 16px;
+      }
+      .widget-title {
+        font-size: 12px; font-weight: 700; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: 0.06em;
+        margin-bottom: 12px;
+      }
+
+      /* Zona buttons */
+      .zona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .zona-btn {
+        display: flex; flex-direction: column; align-items: center;
+        background: var(--neutral-light); border: 1px solid var(--neutral-border);
+        border-radius: 10px; padding: 10px 6px;
+        font-family: "Sora", sans-serif; font-size: 11px; font-weight: 600;
+        color: var(--text-secondary); cursor: pointer;
+        transition: all 0.2s;
+      }
+      .zona-btn:hover { border-color: var(--primary); color: var(--primary); }
+      .zona-btn.active {
+        background: var(--primary-light); border-color: var(--primary-border);
+        color: var(--primary);
+      }
+      .zona-count { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 2px; }
+
+      /* Map placeholder */
+      .map-placeholder {
+        position: relative; height: 140px;
+        background: var(--neutral-light); border-radius: 10px;
+        overflow: hidden; margin-bottom: 10px;
+      }
+      .map-bg {
+        position: absolute; inset: 0;
+        background: repeating-linear-gradient(
+          0deg, transparent, transparent 19px, var(--border) 19px, var(--border) 20px
+        ),
+        repeating-linear-gradient(
+          90deg, transparent, transparent 19px, var(--border) 19px, var(--border) 20px
+        );
+        opacity: 0.5;
+      }
+      .map-pin {
+        position: absolute; width: 10px; height: 10px;
+        border-radius: 50%; border: 2px solid white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        transform: translate(-50%, -50%);
+      }
+      .map-chip {
+        position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+        background: rgba(255,255,255,0.92); border: 1px solid var(--border);
+        border-radius: 20px; padding: 3px 10px;
+        font-size: 10px; font-weight: 600; color: var(--text-secondary);
+        white-space: nowrap;
+      }
+
+      /* Equipes */
+      .equipe-row {
+        display: flex; align-items: center; gap: 8px;
+        margin-bottom: 10px;
+      }
+      .equipe-row:last-child { margin-bottom: 0; }
+      .equipe-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+      .equipe-name { font-size: 12px; font-weight: 600; color: var(--text-secondary); width: 90px; flex-shrink: 0; }
+      .equipe-bar {
+        flex: 1; height: 6px; background: var(--neutral-light);
+        border-radius: 4px; overflow: hidden;
+      }
+      .ebar-fill { height: 100%; border-radius: 4px; }
+      .equipe-num { font-size: 11px; font-weight: 700; color: var(--text-muted); width: 28px; text-align: right; }
+
+      /* Indicadores */
+      .ind-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .ind-card {
+        background: var(--neutral-light); border-radius: 10px;
+        padding: 10px; text-align: center;
+      }
+      .ind-label { font-size: 10px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+      .ind-val   { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+      .ind-sub   { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+      /* ── Sidebar footer ── */
+      .sb-footer { padding: 16px; border-top: 1px solid var(--border); }
+      .sb-user   { display: flex; align-items: center; gap: 10px; }
+      .sb-avatar {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: var(--primary);
+        box-shadow: 0 1px 4px rgba(37, 99, 235, 0.18);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 700; color: white;
+        flex-shrink: 0;
+      }
+      .sb-uname  { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+      .sb-urole  { font-size: 11px; color: var(--text-muted); }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div class="app">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sb-logo">
+          <div class="sb-logo-mark">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <path d="M9 22V12h6v10" />
+            </svg>
+          </div>
+          <div>
+            <div class="sb-logo-text">Cadê o Dono?</div>
+            <div class="sb-logo-sub">Painel do Gestor</div>
+          </div>
+        </div>
+        <nav class="sb-nav">
+          <span class="sb-section">Visão geral</span>
+          <a class="sb-item active" href="02-dashboard-gestor.html" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+          </a>
+          <a class="sb-item" href="10-mapa-georef.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+            </svg>
+            Mapa georreferenciado
+          </a>
+          <a class="sb-item" href="11-imoveis-criticos.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            </svg>
+            Imóveis críticos
+            <span class="sb-badge warn">11</span>
+          </a>
+          <span class="sb-section">Operação</span>
+          <a class="sb-item" href="12-gestao-equipes.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Gestão de equipes
+          </a>
+          <a class="sb-item" href="13-relatorios.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+            </svg>
+            Relatórios
+            <span class="sb-badge">3</span>
+          </a>
+          <a class="sb-item" href="14-agendamentos.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            Agendamentos
+          </a>
+          <span class="sb-section">Integrações</span>
+          <a class="sb-item" href="15-vigilancia-ambiental.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Vigilância Ambiental
+          </a>
+          <a class="sb-item" href="16-defesa-civil.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Defesa Civil
+          </a>
+        </nav>
+        <div class="sb-footer">
+          <div class="sb-user">
+            <div class="sb-avatar">RC</div>
+            <div>
+              <div class="sb-uname">Renata Cavalcanti</div>
+              <div class="sb-urole">Coord. Vigilância Ambiental</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="main">
+        <header class="topbar">
+          <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Abrir menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <div class="tb-left">
+            <div class="tb-title">
+              <span class="dot-live"></span>
+              Dashboard Operacional
+              <div class="zone-chip">Zona Norte</div>
+            </div>
+            <div class="tb-sub">Recife · atualizado agora</div>
+          </div>
+          <div class="tb-actions">
+            <button class="icon-btn" aria-label="Notificações">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              <span class="notif-dot"></span>
+            </button>
+            <button class="icon-btn" aria-label="Exportar">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+            </button>
+            <div class="tb-avatar">RC</div>
+          </div>
+        </header>
+
+        <main class="page">
+          <!-- KPIs -->
+          <div class="kpi-grid" role="list">
+            <div class="kpi-card" role="listitem">
+              <div class="kpi-label">Denúncias abertas</div>
+              <div class="kpi-val" data-target="247">0</div>
+              <span class="kpi-delta d-down">↑ 18 hoje</span>
+              <div
+                class="kpi-bar"
+                style="background: var(--tertiary-gradient)"
+              ></div>
+            </div>
+            <div class="kpi-card" role="listitem">
+              <div class="kpi-label">Em vistoria</div>
+              <div class="kpi-val" data-target="63">0</div>
+              <span class="kpi-delta d-warn">↑ 5 hoje</span>
+              <div
+                class="kpi-bar"
+                style="background: var(--secondary-gradient)"
+              ></div>
+            </div>
+            <div class="kpi-card" role="listitem">
+              <div class="kpi-label">Regularizados (mês)</div>
+              <div class="kpi-val" data-target="41">0</div>
+              <span class="kpi-delta d-up">↑ 12%</span>
+              <div
+                class="kpi-bar"
+                style="background: linear-gradient(90deg, #86efac, #059669)"
+              ></div>
+            </div>
+            <div class="kpi-card" role="listitem">
+              <div class="kpi-label">Tempo médio vistoria</div>
+              <div class="kpi-val">6,2d</div>
+              <span class="kpi-delta d-up">↓ meta: 7d</span>
+              <div
+                class="kpi-bar"
+                style="background: var(--primary-gradient)"
+              ></div>
+            </div>
+          </div>
+
+          <div class="main-grid">
+            <div>
+              <!-- EISENHOWER -->
+              <div class="eisenhower-wrap">
+                <div class="sec-hd">
+                  <span class="sec-title"
+                    >Matriz de Prioridade — Eisenhower</span
+                  >
+                  <button class="sec-link">Ver todos →</button>
+                </div>
+                <div class="eis-container">
+                  <div class="eis-axis-y">Urgente</div>
+                  <div class="eis-content">
+                    <div class="eis-grid">
+                      <div
+                        class="eis-q q1"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Quadrante 1: Urgente e importante"
+                      >
+                        <div class="eis-count">11</div>
+                        <div class="eis-q-label">Q1 — Urgente + Importante</div>
+                        <div class="eis-q-title">Ação imediata</div>
+                        <div class="eis-q-sub">
+                          Risco estrutural iminente, focos ativos de dengue
+                          confirmados. Defesa Civil + Vig. Ambiental.
+                        </div>
+                      </div>
+                      <div
+                        class="eis-q q2"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Quadrante 2: Importante mas não urgente"
+                      >
+                        <div class="eis-count">38</div>
+                        <div class="eis-q-label">
+                          Q2 — Importante · não urgente
+                        </div>
+                        <div class="eis-q-title">Agendar vistoria</div>
+                        <div class="eis-q-sub">
+                          Imóveis suspeitos sem confirmação. Programar para a
+                          semana — escalonamento preventivo.
+                        </div>
+                      </div>
+                      <div
+                        class="eis-q q3"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Quadrante 3: Urgente mas não importante"
+                      >
+                        <div class="eis-count">29</div>
+                        <div class="eis-q-label">
+                          Q3 — Urgente · não importante
+                        </div>
+                        <div class="eis-q-title">Delegar</div>
+                        <div class="eis-q-sub">
+                          Denúncias recentes que precisam de triagem. Encaminhar
+                          para agentes de campo disponíveis.
+                        </div>
+                      </div>
+                      <div
+                        class="eis-q q4"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Quadrante 4: Monitorar"
+                      >
+                        <div class="eis-count">74</div>
+                        <div class="eis-q-label">Q4 — Monitorar</div>
+                        <div class="eis-q-title">Observar</div>
+                        <div class="eis-q-sub">
+                          Imóveis fechados sem sinais ativos de risco. Revisão
+                          trimestral por Controle Urbano.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="eis-axis-x">Importante →</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- IMÓVEIS CRÍTICOS -->
+              <div class="sec-hd">
+                <span class="sec-title">Imóveis Q1 — Ação imediata</span>
+                <button class="sec-link">Ver lista completa →</button>
+              </div>
+
+              <d

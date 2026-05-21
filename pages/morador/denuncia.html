@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadê o Dono? — Nova Denúncia</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/layout.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --sapphire-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --sapphire-shadow: 0 5.98px 23.203px 0 rgba(21, 101, 192, 0.22),
+          
+        --sapphire-deep: #1565c0;
+        --sapphire-mid: #64b5f6;
+        --emerald-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --emerald-shadow: 0 5.98px 23.203px 0 rgba(46, 125, 50, 0.2),
+          
+        --ruby-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --ruby-shadow: 0 5.98px 23.203px 0 rgba(198, 40, 40, 0.2),
+          
+        --bg: #f4f7fb;
+        --surface: #ffffff;
+        --border: #e3e8f2;
+        --bh: #bbdefb;
+        --tp: #111827;
+        --ts: #4b5563;
+        --tm: #9ca3af;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        font-family: "Sora", sans-serif;
+        background: var(--bg);
+        color: var(--tp);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── shimmer ── */
+      .sh-host {
+        overflow: hidden;
+      }
+      .sh-host::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -200px;
+        width: 120px;
+        height: 100%;
+        background: #fff;
+        
+        transform: skewX(-20deg);
+        mix-blend-mode: plus-lighter;
+        pointer-events: none;
+        opacity: 0;
+        animation: shimmer 3.8s linear infinite;
+        animation-delay: 1s;
+        z-index: 2;
+      }
+      @keyframes shimmer {
+        0% {
+          left: -200px;
+          opacity: 0;
+        }
+        15% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 0.75;
+          left: 55%;
+        }
+        85% {
+          opacity: 0.4;
+        }
+        100% {
+          left: 135%;
+          opacity: 0;
+        }
+      }
+
+      /* ── dot pulse ── */
+      .dot-pulse {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #69f0ae;
+        box-shadow: 0 0 0 0 rgba(105, 240, 174, 0.7);
+        animation: pulse 2s infinite;
+        flex-shrink: 0;
+      }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(105, 240, 174, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 8px rgba(105, 240, 174, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(105, 240, 174, 0);
+        }
+      }
+
+      /* ── layout ── */
+      .shell {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 16px 48px;
+      }
+
+      /* ── topbar ── */
+      .topbar {
+        width: 100%;
+        max-width: 680px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 4px;
+        margin-bottom: 8px;
+      }
+      .back-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ts);
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+      .back-btn:hover {
+        background: #f0f4ff;
+        border-color: var(--bh);
+        color: var(--sapphire-deep);
+      }
+      .back-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+      .topbar-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--tp);
+        flex: 1;
+      }
+      .topbar-step {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--tm);
+      }
+
+      /* ── stepper ── */
+      .stepper-wrap {
+        width: 100%;
+        max-width: 680px;
+        margin-bottom: 28px;
+      }
+      .stepper {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-bottom: 10px;
+      }
+      .step-item {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex: 1;
+      }
+      .step-item:last-child {
+        flex: none;
+      }
+      .step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        flex-shrink: 0;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+        z-index: 1;
+        border: 2px solid var(--border);
+        background: var(--surface);
+        color: var(--tm);
+      }
+      .step-circle.done {
+        background: var(--emerald-gradient);
+        box-shadow: var(--emerald-shadow);
+        
+        color: #fff;
+      }
+      .step-circle.active {
+        background: var(--sapphire-gradient);
+        box-shadow: var(--sapphire-shadow);
+        
+        color: #fff;
+      }
+      .step-line {
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+        transition: background 0.4s ease;
+        margin: 0 4px;
+      }
+      .step-line.done {
+        background: #81c784;
+      }
+      .step-labels {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0;
+      }
+      .step-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--tm);
+        text-align: center;
+        width: 32px;
+        transition: color 0.3s;
+      }
+      .step-label.active {
+        color: var(--sapphire-deep);
+      }
+      .step-label.done {
+        color: #2e7d32;
+      }
+
+      /* ── card ── */
+      .card {
+        width: 100%;
+        max-width: 680px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 32px;
+        position: relative;
+      }
+
+      .step-panel {
+        display: none;
+      }
+      .step-panel.active {
+        display: block;
+        animation: fadein 0.3s ease;
+      }
+      @keyframes fadein {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .panel-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #ebf3fe;
+        border: 1px solid #bbdefb;
+        border-radius: 9999px;
+        padding: 4px 12px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--sapphire-deep);
+        margin-bottom: 14px;
+      }
+      .panel-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--tp);
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+      .panel-sub {
+        font-size: 14px;
+        color: var(--ts);
+        line-height: 1.6;
+        margin-bottom: 28px;
+      }
+
+      /* ── foto upload ── */
+      .upload-zone {
+        border: 2px dashed var(--bh);
+        border-radius: 16px;
+        padding: 40px 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        background: #fafcff;
+        position: relative;
+        margin-bottom: 20px;
+      }
+      .upload-zone:hover {
+        border-color: var(--sapphire-deep);
+        background: #ebf3fe;
+      }
+      .upload-zone.filled {
+        border-style: solid;
+        border-color: #81c784;
+        background: #f0fdf4;
+      }
+      .upload-zone input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .upload-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--sapphire-gradient);
+        box-shadow: var(--sapphire-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 14px;
+      }
+      .upload-icon svg {
+        width: 26px;
+        height: 26px;
+        color: #fff;
+      }
+      .upload-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--tp);
+        margin-bottom: 4px;
+      }
+      .upload-sub {
+        font-size: 12px;
+        color: var(--tm);
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .preview-thumb {
+        aspect-ratio: 1;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        background: #ebf3fe;
+        border: 1px solid var(--bh);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .preview-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .preview-thumb .rm-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 22px;
+        height: 22px;
+        background: rgba(0, 0, 0, 0.55);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        transition: background 0.2s;
+      }
+      .preview-thumb .rm-btn:hover {
+        background: rgba(198, 40, 40, 0.85);
+      }
+
+      .add-more {
+        aspect-ratio: 1;
+        border-radius: 12px;
+        border: 2px dashed var(--bh);
+        background: #fafcff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--sapphire-mid);
+        font-size: 26px;
+        font-weight: 300;
+        transition: all 0.2s;
+        position: relative;
+      }
+      .add-more:hover {
+        border-color: var(--sapphire-deep);
+        background: #ebf3fe;
+      }
+      .add-more input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+
+      .tip-box {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 12px;
+        color: #92400e;
+        line-height: 1.55;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .tip-box svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* ── localização ── */
+      .location-search {
+        position: relative;
+        margin-bottom: 14px;
+      }
+      .location-search input {
+        width: 100%;
+        padding: 14px 48px 14px 44px;
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        font-family: "Sora", sans-serif;
+        font-size: 14px;
+        color: var(--tp);
+        background: var(--surface);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .location-search input:focus {
+        border-color: var(--sapphire-mid);
+      }
+      .location-search .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--tm);
+      }
+      .location-search .search-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+      .location-search .gps-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: var(--sapphire-gradient);
+        box-shadow: 0 2px 8px rgba(21, 101, 192, 0.3);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .location-search .gps-btn svg {
+        width: 16px;
+        height: 16px;
+        color: #fff;
+      }
+
+      .map-mock {
+        border-radius: 16px;
+        background: linear-gradient(
+          145deg,
+          #ebf3fe 0%,
+          #dbeafe 45%,
+          #e0f2f1 100%
+        );
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+        border: 1.5px solid var(--bh);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .map-grid-bg {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            rgba(21, 101, 192, 0.07) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(21, 101, 192, 0.07) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+      .map-center-pin {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -80%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: pin-drop 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+        animation-delay: 0.3s;
+      }
+      @keyframes pin-drop {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -120%) scale(0.7);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -80%) scale(1);
+        }
+      }
+      .pin-head {
+        width: 36px;
+        height: 36px;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        background: var(--sapphire-gradient);
+        box-shadow: var(--sapphire-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pin-head svg {
+        width: 16px;
+        height: 16px;
+        color: #fff;
+        transform: rotate(45deg);
+      }
+      .pin-shadow {
+        width: 14px;
+        height: 5px;
+        background: rgba(21, 101, 192, 0.25);
+        border-radius: 50%;
+        margin-top: 4px;
+      }
+      .map-label-chip {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(4px);
+        border: 1px solid var(--bh);
+        border-radius: 9999px;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sapphire-deep);
+        white-space: nowrap;
+      }
+
+      .address-confirm {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #ebf3fe;
+        border: 1px solid var(--bh);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .address-confirm:hover {
+        border-color: var(--sapphire-deep);
+      }
+      .addr-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--sapphire-gradient);
+        box-shadow: var(--sapphire-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .addr-icon svg {
+        width: 16px;
+        height: 16px;
+        color: #fff;
+      }
+      .addr-text strong {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--tp);
+        display: block;
+      }
+      .addr-text span {
+        font-size: 12px;
+        color: var(--ts);
+      }
+      .addr-edit {
+        margin-left: auto;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--sapphire-deep);
+      }
+
+      /* ── tipo problema ── */
+      .tipo-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .tipo-card {
+        padding: 16px 12px;
+        border-radius: 14px;
+        border: 2px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+      }
+      .tipo-card:hover {
+        border-color: var(--bh);
+        background: #fafcff;
+        transform: translateY(-1px);
+      }
+      .tipo-card.selected {
+        border-color: var(--sapphire-deep);
+        background: #ebf3fe;
+        box-shadow: 0 4px 16px rgba(21, 101, 192, 0.15);
+      }
+      .tipo-card.selected.danger {
+        border-color: #c62828;
+        background: #fff0f0;
+        box-shadow: 0 4px 16px rgba(198, 40, 40, 0.15);
+      }
+      .tipo-check {
+        display: none;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--sapphire-gradient);
+        box-shadow: var(--sapphire-shadow);
+        align-items: center;
+        justify-content: center;
+      }
+      .tipo-check svg {
+        width: 10px;
+        height: 10px;
+        color: #fff;
+      }
+      .tipo-card.selected .tipo-check {
+        display: flex;
+      }
+      .tipo-card.selected.danger .tipo-check {
+        background: var(--ruby-gradient);
+        box-shadow: var(--ruby-shadow);
+      }
+      .tipo-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+      .tipo-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--tp);
+        line-height: 1.3;
+      }
+      .tipo-card.selected .tipo-label {
+        color: var(--sapphire-deep);
+      }
+      .tipo-card.selected.danger .tipo-label {
+        color: #c62828;
+      }
+
+      .urgente-banner {
+        display: none;
+        align-items: center;
+        gap: 12px;
+        background: #fff0f0;
+        border: 1px solid #ffcdd2;
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        animation: fadein 0.3s ease;
+      }
+      .urgente-banner.show {
+        display: flex;
+      }
+      .urgente-banner svg {
+        width: 20px;
+        height: 20px;
+        color: #c62828;
+        flex-shrink: 0;
+      }
+      .urgente-banner p {
+        font-size: 13px;
+        color: #7f1d1d;
+        line-height: 1.5;
+      }
+      .urgente-banner strong {
+        font-weight: 700;
+        color: #c62828;
+      }
+
+      .desc-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--tp);
+        margin-bottom: 8px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .desc-textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 14px 16px;
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        font-family: "Sora", sans-serif;
+        font-size: 14px;
+        color: var(--tp);
+        resize: vertical;
+        outline: none;
+        transition: border-color 0.2s;
+        background: var(--surface);
+        line-height: 1.6;
+      }
+      .desc-textarea:focus {
+        border-color: var(--sapphire-mid);
+      }
+      .char-count {
+        font-size: 11px;
+        color: var(--tm);
+        text-align: right;
+        margin-top: 5px;
+      }
+
+      /* ── confirmação ── */
+      .confirm-summary {
+        border: 1.5px solid var(--border);
+        border-radius: 18px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+      .cs-header {
+        background: var(--sapphire-gradient);
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+        padding: 18px 22px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .cs-header-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .cs-header-icon svg {
+        width: 18px;
+        height: 18px;
+        color: #fff;
+      }
+      .cs-header-text strong {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        display: block;
+      }
+      .cs-header-text span {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .cs-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 14px 22px;
+        border-top: 1px solid var(--border);
+      }
+      .cs-row-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #ebf3fe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .cs-row-icon svg {
+        width: 16px;
+        height: 16px;
+        color: var(--sapphire-deep);
+      }
+      .cs-row-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--tm);
+        margin-bottom: 3px;
+      }
+      .cs-row-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--tp);
+        line-height: 1.4;
+      }
+      .cs-row-sub {
+        font-size: 12px;
+        color: var(--ts);
+        margin-top: 2px;
+      }
+
+      .fotos-mini {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .foto-mini-thumb {
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ebf3fe, #bbdefb);
+        border: 1px solid var(--bh);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--sapphire-deep);
+        position: relative;
+        overflow: hidden;
+      }
+      .foto-mini-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* anonimato toggle */
+      .anon-toggle {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .anon-toggle:hover {
+        border-color: #86efac;
+      }
+      .anon-icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--emerald-gradient);
+        box-shadow: var(--emerald-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .anon-icon-box svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+      }
+      .anon-text-block {
+        flex: 1;
+      }
+      .anon-text-block strong {
+        font-size: 14px;
+        font-weight: 700;
+        color: #166534;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .anon-text-block span {
+        font-size: 12px;
+        color: #15803d;
+      }
+      .toggle-switch {
+        width: 44px;
+        height: 24px;
+        border-radius: 9999px;
+        background: #d1d5db;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.3s;
+        flex-shrink: 0;
+      }
+      .toggle-switch.on {
+        background: #2e7d32;
+      }
+      .toggle-knob {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .toggle-switch.on .toggle-knob {
+        transform: translateX(20px);
+      }
+
+      /* contact info */
+      .contact-row {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .contact-field {
+        flex: 1;
+      }
+      .contact-field label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ts);
+        display: block;
+        margin-bottom: 6px;
+      }
+      .contact-field input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        font-family: "Sora", sans-serif;
+        font-size: 14px;
+        color: var(--tp);
+        background: var(--surface);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .contact-field input:focus {
+        border-color: var(--sapphire-mid);
+      }
+      .contact-field input:disabled {
+        background: #f3f4f6;
+        color: var(--tm);
+        cursor: not-allowed;
+      }
+
+      /* ── botões de nav ── */
+      .actions {
+        width: 100%;
+        max-width: 680px;
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+      }
+      .btn-back {
+        padding: 16px 28px;
+        background: none;
+        border: 1.5px solid var(--border);
+        border-radius: 9999px;
+        font-family: "Sora", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ts);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        white-space: nowrap;
+      }
+      .btn-back:hover {
+        border-color: var(--bh);
+        color: var(--sapphire-deep);
+        background: #ebf3fe;
+      }
+
+      .btn-next {
+        flex: 1;
+        position: relative;
+        padding: 16px 32px;
+        background: var(--sapphire-gradient);
+        box-shadow: var(--sapphire-shadow);
+        
+        border-radius: 9999px;
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        overflow: hidden;
+        transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+          box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .btn-next:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      }
+      .btn-next:active {
+        transform: scale(0.98);
+      }
+      .btn-next::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -180px;
+        width: 110px;
+        height: 100%;
+        background: #fff;
+        box-shadow: 0 0 28px 18px rgba(255, 255, 255, 0.5);
+        transform: skewX(-20deg);
+        mix-blend-mode: plus-lighter;
+        pointer-events: none;
+        opacity: 0;
+        animation: shimmer 3.2s linear infinite;
+        animation-delay: 0.6s;
+      }
+
+      .btn-submit {
+        flex: 1;
+        position: relative;
+        padding: 18px 32px;
+        background: var(--emerald-gradient);
+        box-shadow: var(--emerald-shadow);
+        
+        border-radius: 9999px;
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        overflow: hidden;
+        transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+          box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .btn-submit svg {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+      .btn-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      }
+      .btn-submit::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -180px;
+        width: 110px;
+        height: 100%;
+        background: #fff;
+        box-shadow: 0 0 28px 18px rgba(255, 255, 255, 0.5);
+        transform: skewX(-20deg);
+        mix-blend-mode: plus-lighter;
+        pointer-events: none;
+        opacity: 0;
+        animation: shimmer 3.2s linear infinite;
+        animation-delay: 0.9s;
+      }
+
+      /* ── success screen ── */
+      .success-screen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 16px 0;
+        animation: fadein 0.4s ease;
+      }
+      .success-screen.show {
+        display: flex;
+      }
+      .success-ring {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: var(--emerald-gradient);
+        box-shadow: var(--emerald-shadow);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        animation: pop 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+        animation-delay: 0.1s;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .success-ring svg {
+        width: 42px;
+        height: 42px;
+        color: #fff;
+      }
+      .success-h {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--tp);
+        margin-bottom: 8px;
+      }
+      .success-sub {
+        font-size: 15px;
+        color: var(--ts);
+        line-height: 1.6;
+        margin-bottom: 28px;
+        max-width: 420px;
+      }
+      .protocol-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #ebf3fe;
+        border: 1px solid var(--bh);
+        border-radius: 14px;
+        padding: 12px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--sapphire-deep);
+        margin-bottom: 32px;
+      }
+      .protocol-chip svg {
+        width: 18px;
+        height: 18px;
+      }
+      .btn-home {
+        padding: 16px 40px;
+        background: var(--sapphire-gradient);
+        box-shadow: var(--sapphire-shadow);
+        
+        border-radius: 9999px;
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .btn-home:hover {
+        transform: translateY(-1px);
+      }
+
+      /* ── responsive ── */
+      @media (max-width: 520px) {
+        .card {
+          padding: 22px 18px;
+        }
+        .tipo-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .contact-row {
+          flex-direction: column;
+        }
+        .preview-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .panel-title {
+          font-size: 19px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <button class="back-btn" onclick="goBack()" aria-label="Voltar">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <span class="topbar-title" id="topbar-title">Nova Denúncia</span>
+        <span class="topbar-step" id="topbar-step" aria-live="polite"
+          >Passo 1 de 4</span
+        >
+      </div>
+
+      <!-- STEPPER -->
+      <div class="stepper-wrap">
+        <div class="stepper" role="list" aria-label="Progresso do formulário">
+          <div class="step-item" role="listitem">
+            <div class="step-circle active" id="sc1" aria-label="Passo 1: Foto">
+              1
+            </div>
+            <div class="step-line" id="sl1"></div>
+          </div>
+          <div class="step-item" role="listitem">
+            <div class="step-circle" id="sc2" aria-label="Passo 2: Localização">
+              2
+            </div>
+            <div class="step-line" id="sl2"></div>
+          </div>
+          <div class="step-item" role="listitem">
+            <div class="step-circle" id="sc3" aria-label="Passo 3: Tipo">3</div>
+            <div class="step-line" id="sl3"></div>
+          </div>
+          <div class="step-item" role="listitem">
+            <div class="step-circle" id="sc4" aria-label="Passo 4: Confirmar">
+              4
+            </div>
+          </div>
+        </div>
+        <div class="step-labels">
+          <span class="step-label active" id="sl-1">Foto</span>
+          <span class="step-label" id="sl-2">Local</span>
+          <span class="step-label" id="sl-3">Tipo</span>
+          <span class="step-label" id="sl-4">Enviar</span>
+        </div>
+      </div>
+
+      <!-- CARD -->
+      <div class="card">
+        <!-- ── PASSO 1: FOTO ── -->
+        <div
+          class="step-panel active"
+          id="panel-1"
+          role="region"
+          aria-labelledby="title-1"
+        >
+          <div class="panel-eyebrow">
+            <span class="dot-pulse" aria-hidden="true"></span> Passo 1
+          </div>
+          <h2 class="panel-title" id="title-1">Fotografe o imóvel</h2>
+          <p class="panel-sub">
+            Registre o problema com fotos claras. As imagens alimentam o
+            processo de notificação do proprietário e podem ser usadas como
+            evidência documental.
+          </p>
+
+          <div
+            class="upload-zone"
+            id="upload-zone"
+            onclick="document.getElementById('file-input').click()"
+            role="button"
+            tabindex="0"
+            aria-label="Adicionar fotos do imóvel"
+          >
+            <input
+              type="file"
+              id="file-input"
+              accept="image/*"
+              multiple
+              onchange="handleFiles(this)"
+            />
+            <div class="upload-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+                />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+            </div>
+            <div class="upload-title">Tirar foto ou escolher da galeria</div>
+            <div class="upload-sub">JPEG, PNG, HEIC — até 10 MB por foto</div>
+          </div>
+
+          <div
+            class="preview-grid"
+            id="preview-grid"
+            style="display: none"
+          ></div>
+
+          <div class="tip-box">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span
+              ><strong>Dica:</strong> Fotografe a fachada do imóvel, vãos
+              abertos, acúmulo de lixo ou sinais visíveis do problema. Quanto
+              mais clara a evidência, mais rápida a triagem.</span
+            >
+          </div>
+        </div>
+
+        <!-- ── PASSO 2: LOCALIZAÇÃO ── -->
+        <div
+          class="step-panel"
+          id="panel-2"
+          role="region"
+          aria-labelledby="title-2"
+        >
+          <div class="panel-eyebrow">
+            <span class="dot-pulse" aria-hidden="true"></span> Passo 2
+          </div>
+          <h2 class="panel-title" id="title-2">Localização do imóvel</h2>
+          <p class="panel-sub">
+            Confirme onde o imóvel fica. A localização precisa é essencial para
+            que o agente encontre o endereço correto durante a vistoria.
+          </p>
+
+          <div class="location-search">
+            <span class="search-icon" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              id="address-input"
+              placeholder="Digite o endereço ou ponto de referência"
+              aria-label="Buscar endereço"
+              value=""
+            />
+            <div
+              class="gps-btn"
+              onclick="useGPS()"
+              role="button"
+              tabindex="0"
+              aria-label="Usar minha localização atual"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="map-mock" aria-label="Mapa com localização do imóvel">
+            <div class="map-grid-bg" aria-hidden="true"></div>
+            <div class="map-center-pin" aria-hidden="true">
+              <div class="pin-head">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <div class="pin-shadow"></div>
+            </div>
+            <div class="map-label-chip" id="map-chip">
+              Arraste para ajustar a posição
+            </div>
+          </div>
+
+          <div
+            class="address-confirm"
+            id="address-confirm"
+            role="button"
+            tabindex="0"
+            aria-label="Endereço confirmado: R. do Sol, 214 — Santo Antônio"
+          >
+            <div class="addr-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </div>
+            <div class="addr-text">
+              <strong id="confirmed-addr"
+                >R. do Sol, 214 — Santo Antônio</strong
+              >
+              <span>Recife, PE — Nordeste II</span>
+            </div>
+            <span class="addr-edit">Editar</span>
+          </div>
+        </div>
+
+        <!-- ── PASSO 3: TIPO ── -->
+        <div
+          class="step-panel"
+          id="panel-3"
+          role="region"
+          aria-labelledby="title-3"
+        >
+          <div class="panel-eyebrow">
+            <span class="dot-pulse" aria-hidden="true"></span> Passo 3
+          </div>
+          <h2 class="panel-title" id="title-3">Qual é o problema?</h2>
+          <p class="panel-sub">
+            Selecione o tipo principal. Isso determina qual equipe será acionada
+            — Vigilância Ambiental, Defesa Civil ou Controle Urbano.
+          </p>
+
+          <div class="tipo-grid" role="group" aria-label="Tipo de problema">
+            <div
+              class="tipo-card"
+              onclick="selectTipo(this,'dengue')"
+              role="checkbox"
+              aria-checked="false"
+              tabindex="0"
+            >
+              <span class="tipo-check" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+              <div class="tipo-icon" style="background: #e3f2fd">🦟</div>
+              <span class="tipo-label">Foco de Dengue</span>
+            </div>
+
+            <div
+              class="tipo-card danger"
+              onclick="selectTipo(this,'estrutural')"
+              role="checkbox"
+              aria-checked="false"
+              tabindex="0"
+            >
+              <span class="tipo-check" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+              <div class="tipo-icon" style="background: #fef2f2">🏚️</div>
+              <span class="tipo-label">Risco Estrutural</span>
+            </div>
+
+            <div
+              class="tipo-card"
+              onclick="selectTipo(this,'lixo')"
+              role="checkbox"
+              aria-checked="false"
+              tabindex="0"
+            >
+              <span class="tipo-check" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+              <div class="tipo-icon" style="background: #fff8e1">🗑️</div>
+              <span class="tipo-label">Lixo Acumulado</span>
+            </div>
+
+            <div
+              class="tipo-card"
+              onclick="selectTipo(this,'abandonado')"
+              role="checkbox"
+              aria-checked="false"
+              tabindex="0"
+            >
+              <span class="tipo-check" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+              <div class="tipo-icon" style="background: #ebf3fe">🔒</div>
+              <span class="tipo-label">Imóvel Abandonado</span>
+            </div>
+
+            <div
+              class="tipo-card danger"
+              onclick="selectTipo(this,'invasao')"
+              role="checkbox"
+              aria-checked="false"
+              tabindex="0"
+            >
+              <span class="tipo-check" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+              <div class="tipo-icon" style="background: #fef2f2">🚨</div>
+              <span class="tipo-label">Invasão</span>
+            </div>
+
+            <div
+              class="tipo-card"
+              onclick="selectTipo(this,'sanitario')"
+              role="checkbox"
+              aria-checked="false"
+              tabindex="0"
+            >
+              <span class="tipo-check" aria-hidden="true"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+              <div class="tipo-icon" style="background: #e8f5e9">☣️</div>
+              <span class="tipo-label">Risco Sanitário</span>
+            </div>
+          </div>
+
+          <div class="urgente-banner" id="urgente-banner" role="alert">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+              />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <p>
+              <strong>Risco imediato detectado.</strong> Este tipo de problema
+              tem prioridade de atendimento. Sua denúncia será encaminhada
+              diretamente para a equipe de plantão.
+            </p>
+          </div>
+
+          <div class="desc-label">
+            Descreva com suas palavras
+            <span
+              style="
+                color: var(--tm);
+                font-weight: 400;
+                text-transform: none;
+                letter-spacing: 0;
+              "
+              >(opcional)</span
+            >
+          </div>
+          <textarea
+            class="desc-textarea"
+            id="desc-textarea"
+            placeholder="Ex: O imóvel está com a porta arrombada há mais de 2 meses. Há água parada no quintal e acúmulo de lixo na calçada..."
+            oninput="updateCharCount(this)"
+            maxlength="500"
+          ></textarea>
+          <div class="char-count" id="char-count">0 / 500</div>
+        </div>
+
+        <!-- ── PASSO 4: CONFIRMAÇÃO ── -->
+        <div
+          class="step-panel"
+          id="panel-4"
+          role="region"
+          aria-labelledby="title-4"
+        >
+          <div class="panel-eyebrow">
+            <span class="dot-pulse" aria-hidden="true"></span> Passo 4
+          </div>
+          <h2 class="panel-title" id="title-4">Confirme e envie</h2>
+          <p class="panel-sub">
+            Revise as informações antes de registrar. Após o envio, você
+            receberá um protocolo para acompanhamento.
+          </p>
+
+          <div class="confirm-summary">
+            <div class="cs-header sh-host" style="position: relative">
+              <div class="cs-header-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
+              <div class="cs-header-text">
+                <strong>Denúncia #2024-0215</strong>
+                <span>Gerado automaticamente · Recife, PE</span>
+              </div>
+            </div>
+            <div class="cs-row">
+              <div class="cs-row-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <div>
+                <div class="cs-row-label">Localização</div>
+                <div class="cs-row-value" id="summary-addr">
+                  R. do Sol, 214 — Santo Antônio
+                </div>
+                <div class="cs-row-sub">Recife, PE · Nordeste II</div>
+              </div>
+            </div>
+            <div class="cs-row">
+              <div class="cs-row-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div>
+                <div class="cs-row-label">Tipo de problema</div>
+                <div class="cs-row-value" id="summary-tipo">—</div>
+                <div class="cs-row-sub" id="summary-equipe">—</div>
+              </div>
+            </div>
+            <div class="cs-row">
+              <div class="cs-row-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+                  />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </div>
+              <div>
+                <div class="cs-row-label">Fotos anexadas</div>
+                <div class="fotos-mini" id="summary-fotos">
+                  <div class="foto-mini-thumb">1</div>
+                  <div class="foto-mini-thumb">2</div>
+                  <div class="foto-mini-thumb">3</div>
+                </div>
+              </div>
+            </div>
+            <div class="cs-row" id="summary-desc-row" style="display: none">
+              <div class="cs-row-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="17" y1="10" x2="3" y2="10" />
+                  <line x1="21" y1="6" x2="3" y2="6" />
+                  <line x1="21" y1="14" x2="3" y2="14" />
+                  <line x1="13" y1="18" x2="3" y2="18" />
+                </svg>
+              </div>
+              <div>
+                <div class="cs-row-label">Descrição</div>
+                <div
+                  class="cs-row-value"
+                  id="summary-desc"
+                  style="font-weight: 400; font-size: 13px; color: var(--ts)"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="anon-toggle"
+            onclick="toggleAnon()"
+            role="button"
+            tabindex="0"
+            aria-pressed="false"
+            id="anon-toggle"
+            aria-label="Ativar modo anônimo"
+          >
+            <div class="anon-icon-box">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <polyline points="9 12 11 14 15 10" />
+              </svg>
+            </div>
+            <div class="anon-text-block">
+              <strong>Denúncia anônima</strong>
+              <span>Seu nome não será revelado à equipe de campo</span>
+            </div>
+            <div class="toggle-switch" id="anon-sw">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+
+          <div id="contact-section">
+            <div class="contact-row">
+              <div class="contact-field">
+                <label for="cf-nome">Nome (opcional)</label>
+                <input
+                  type="text"
+                  id="cf-nome"
+                  placeholder="Maria das Graças"
+                />
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-field">
+                <label for="cf-tel">Telefone / WhatsApp</label>
+                <input type="tel" id="cf-tel" placeholder="(81) 9 0000-0000" />
+              </div>
+              <div class="contact-field">
+                <label for="cf-email">E-mail</label>
+                <input type="email" id="cf-email" placeholder="seu@email.com" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SUCESSO ── -->
+        <div
+          class="success-screen"
+          id="success-screen"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="success-ring">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 class="success-h">Denúncia registrada!</h2>
+          <p class="success-sub">
+            Sua denúncia foi recebida e encaminhada para triagem. Você receberá
+            uma atualização assim que o agente for designado.
+          </p>
+          <div class="protocol-chip">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            Protocolo #2024-0215
+          </div>
+          <a href="cade_o_dono_home_morador.html">
+            <button class="btn-home">
+              Voltar ao início
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions" id="actions-row">
+        <button
+          class="btn-back"
+          id="btn-back"
+          onclick="goBack()"
+          style="display: none"
+        >
+          ← Voltar
+        </button>
+        <button class="btn-next" id="btn-next" onclick="goNext()">
+          Próximo →
+        </button>
+      </div>
+    </div>
+
+    <script>
+      var currentStep = 1;
+      var totalSteps = 4;
+      var selectedTipo = null;
+      var anonMode = false;
+      var uploadedFiles = [];
+
+      var tipoLabels = {
+        dengue: {
+          label: "Foco de Dengue",
+          equipe: "Vigilância Ambiental · Prioridade média",
+        },
+        estrutural: {
+          label: "Risco Estrutural",
+          equipe: "Defesa Civil · Prioridade ALTA",
+        },
+        lixo: {
+          label: "Lixo Acumulado",
+          equipe: "Controle Urbano · Prioridade média",
+        },
+        abandonado: {
+          label: "Imóvel Abandonado",
+          equipe: "Controle Urbano + Vigilância Ambiental",
+        },
+        invasao: { label: "Invasão", equipe: "Defesa Civil · Prioridade ALTA" },
+        sanitario: {
+          label: "Risco Sanitário",
+          equipe: "Vigilância Ambiental · Prioridade alta",
+        },
+      };
+      var dangerTipos = ["estrutural", "invasao"];
+
+      function updateStepper() {
+        for (var i = 1; i <= totalSteps; i++) {
+          var sc = document.getElementById("sc" + i);
+          var sl = document.getElementById("sl-" + i);
+          sc.className = "step-circle";
+          sl.className = "step-label";
+          if (i < currentStep) {
+            sc.classList.add("done");
+            sl.classList.add("done");
+          }
+          if (i === currentStep) {
+            sc.classList.add("active");
+            sl.classList.add("active");
+          }
+          if (i < totalSteps) {
+            var line = document.getElementById("sl" + i);
+            line.className = "step-line" + (i < currentStep ? " done" : "");
+          }
+        }
+        document.getElementById("topbar-step").textContent =
+          "Passo " + currentStep + " de " + totalSteps;
+        var titles = [
+          "",
+          "Fotografe o imóvel",
+          "Localização do imóvel",
+          "Qual é o problema?",
+          "Confirme e envie",
+        ];
+        document.getElementById("topbar-title").textContent =
+          titles[currentStep];
+      }
+
+      function showPanel(n) {
+        for (var i = 1; i <= totalSteps; i++) {
+          document.getElementById("panel-" + i).classList.remove("active");
+        }
+        document.getElementById("panel-" + n).classList.add("active");
+        var bb = document.getElementById("btn-back");
+        var bn = document.getElementById("btn-next");
+        bb.style.display = n > 1 ? "block" : "none";
+        if (n === totalSteps) {
+          bn.textContent = "";
+          bn.outerHTML =
+            '<button class="btn-submit" id="btn-next" onclick="submitForm()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Enviar Denúncia</button>';
+        } else {
+          var btnArea = document.getElementById("btn-next");
+          if (btnArea) {
+            btnArea.className = "btn-next";
+            btnArea.textContent = "Próximo →";
+            btnArea.onclick = goNext;
+          }
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function goNext() {
+        if (currentStep < totalSteps) {
+          if (currentStep === 4) {
+            updateSummary();
+          }
+          currentStep++;
+          if (currentStep === 4) {
+            updateSummary();
+          }
+          updateStepper();
+          showPanel(currentStep);
+        }
+      }
+
+      function goBack() {
+        if (currentStep > 1) {
+          currentStep--;
+          updateStepper();
+          showPanel(currentStep);
+        } else {
+          window.history.back();
+        }
+      }
+
+      function selectTipo(el, tipo) {
+        document.querySelectorAll(".tipo-card").forEach(function (c) {
+          c.classList.remove("selected");
+          c.setAttribute("aria-checked", "false");
+        });
+        el.classList.add("selected");
+        el.setAttribute("aria-checked", "true");
+        selectedTipo = tipo;
+        var isD = dangerTipos.indexOf(tipo) > -1;
+        document.getElementById("urgente-banner").classList.toggle("show", isD);
+      }
+
+      function updateCharCount(el) {
+        document.getElementById("char-count").textContent =
+          el.value.length + " / 500";
+      }
+
+      function toggleAnon() {
+        anonMode = !anonMode;
+        var sw = document.getElementById("anon-sw");
+        var tgl = document.getElementById("anon-toggle");
+        sw.classList.toggle("on", anonMode);
+        tgl.setAttribute("aria-pressed", anonMode);
+        var cs = document.getElementById("contact-section");
+        cs.style.opacity = anonMode ? ".4" : "1";
+        cs.querySelectorAll("input").forEach(function (i) {
+          i.disabled = anonMode;
+        });
+      }
+
+      function updateSummary() {
+        var addr =
+          document.getElementById("address-input").value ||
+          "R. do Sol, 214 — Santo Antônio";
+        document.getElementById("summary-addr").textContent = addr;
+        document.getElementById("confirmed-addr").textContent = addr;
+        if (selectedTipo && tipoLabels[selectedTipo]) {
+          document.getElementById("summary-tipo").textContent =
+            tipoLabels[selectedTipo].label;
+          document.getElementById("summary-equipe").textContent =
+            tipoLabels[selectedTipo].equipe;
+        }
+        var desc = document.getElementById("desc-textarea").value.trim();
+        if (desc) {
+          document.getElementById("summary-desc").textContent = desc;
+          document.getElementById("summary-desc-row").style.display = "flex";
+        }
+      }
+
+      function submitForm() {
+        document.getElementById("actions-row").style.display = "none";
+        document.querySelector(".stepper-wrap").style.display = "none";
+        for (var i = 1; i <= totalSteps; i++)
+          document.getElementById("panel-" + i).classList.remove("active");
+        document.getElementById("success-screen").classList.add("show");
+        document.getElementById("topbar-title").textContent =
+          "Denúncia Enviada";
+        document.getElementById("topbar-step").textContent = "";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function resetForm() {
+        currentStep = 1;
+        selectedTipo = null;
+        anonMode = false;
+        uploadedFiles = [];
+        document.getElementById("success-screen").classList.remove("show");
+        document.getElementById("actions-row").style.display = "flex";
+        document.querySelector(".stepper-wrap").style.display = "block";
+        document.getElementById("preview-grid").style.display = "none";
+        document.getElementById("upload-zone").style.display = "flex";
+        document.getElementById("address-input").value = "";
+        document.getElementById("desc-textarea").value = "";
+        document.getElementById("char-count").textContent = "0 / 500";
+        document.getElementById("anon-sw").classList.remove("on");
+        document.getElementById("contact-section").style.opacity = "1";
+        document
+          .getElementById("contact-section")
+          .querySelectorAll("input")
+          .forEach(function (i) {
+            i.disabled = false;
+            i.value = "";
+          });
+        document.querySelectorAll(".tipo-card").forEach(function (c) {
+          c.classList.remove("selected");
+        });
+        document.getElementById("urgente-banner").classList.remove("show");
+        var bn = document.getElementById("btn-next");
+        if (bn) {
+          bn.className = "btn-next";
+          bn.textContent = "Próximo →";
+          bn.onclick = goNext;
+        }
+        updateStepper();
+        showPanel(1);
+      }
+
+      function useGPS() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function (pos) {
+              document.getElementById("address-input").value =
+                "Localização detectada (" +
+                pos.coords.latitude.toFixed(4) +
+                ", " +
+                pos.coords.longitude.toFixed(4) +
+                ")";
+              document.getElementById("map-chip").textContent =
+                "Localização atual detectada";
+            },
+            function () {
+              document.getElementById("map-chip").textContent =
+                "Use o campo de busca acima";
+            }
+          );
+        }
+      }
+
+      function handleFiles(input) {
+        var files = Array.from(input.files);
+        if (!files.length) return;
+        uploadedFiles = uploadedFiles.concat(files);
+        var grid = document.getElementById("preview-grid");
+        var zone = document.getElementById("upload-zone");
+        grid.style.display = "grid";
+        zone.style.display = "none";
+        grid.innerHTML = "";
+        uploadedFiles.forEach(function (f, idx) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var thumb = document.createElement("div");
+            thumb.className = "preview-thumb";
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            img.alt = "Foto " + (idx + 1);
+            var rm = document.createElement("div");
+            rm.className = "rm-btn";
+            rm.textContent = "×";
+            rm.setAttribute("aria-label", "Remover foto " + (idx + 1));
+            (function (i) {
+              rm.onclick = function (ev) {
+                ev.stopPropagation();
+                uploadedFiles.splice(i, 1);
+                handleFilesFromArray();
+              };
+            })(idx);
+            thumb.appendChild(img);
+            thumb.appendChild(rm);
+            grid.appendChild(thumb);
+          };
+          reader.readAsDataURL(f);
+        });
+        var addMore = document.createElement("div");
+        addMore.className = "add-more";
+        addMore.setAttribute("aria-label", "Adicionar mais fotos");
+        addMore.innerHTML =
+          '+<input type="file" accept="image/*" multiple onchange="handleFiles(this)">';
+        grid.appendChild(addMore);
+      }
+
+      function handleFilesFromArray() {
+        var grid = document.getElementById("preview-grid");
+        if (!uploadedFiles.length) {
+          grid.style.display = "none";
+          document.getElementById("upload-zone").style.display = "flex";
+          return;
+        }
+        grid.style.display = "grid";
+        grid.innerHTML = "";
+        uploadedFiles.forEach(function (f, idx) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var thumb = document.createElement("div");
+            thumb.className = "preview-thumb";
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            img.alt = "Foto " + (idx + 1);
+            var rm = document.createElement("div");
+            rm.className = "rm-btn";
+            rm.textContent = "×";
+            (function (i) {
+              rm.onclick = function (ev) {
+                ev.stopPropagation();
+                uploadedFiles.splice(i, 1);
+                handleFilesFromArray();
+              };
+            })(idx);
+            thumb.appendChild(img);
+            thumb.appendChild(rm);
+            grid.appendChild(thumb);
+          };
+          reader.readAsDataURL(f);
+        });
+        var addMore = document.createElement("div");
+        addMore.className = "add-more";
+        addMore.setAttribute("aria-label", "Adicionar mais fotos");
+        addMore.innerHTML =
+          '+<input type="file" accept="image/*" multiple onchange="handleFiles(this)">';
+        grid.appendChild(addMore);
+      }
+
+      document.querySelectorAll(".tipo-card").forEach(function (c) {
+        c.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            c.click();
+          }
+        });
+      });
+    </script>
+    <script src="../../

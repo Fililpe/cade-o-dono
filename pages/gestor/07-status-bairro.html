@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Cad&ecirc; o Dono? &mdash; Status do Bairro</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/global.css" />
+    <link rel="stylesheet" href="../../assets/css/components.css" />
+    <link rel="stylesheet" href="../../assets/css/layout.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --primary: #2563eb;
+        --pl: #ebf2ff;
+        --pb: #bfcfed;
+        --secondary: #6275af;
+        --sl: #eef0f8;
+        --sb: #cdd2e8;
+        --tertiary: #bc4800;
+        --tl: #fff0e8;
+        --tb: #f5c4a0;
+        --neutral: #757681;
+        --nl: #f4f4f6;
+        --nb: #dcdde3;
+        --pg: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --ps: 0 2px 8px rgba(37, 99, 235, 0.18);
+        --sg: linear-gradient(135deg, #8c9cc8 0%, #6275af 100%);
+        --ss: 0 2px 8px rgba(98, 117, 175, 0.18);
+        --tg: linear-gradient(135deg, #e07840 0%, #bc4800 100%);
+        --ts: 0 2px 8px rgba(188, 72, 0, 0.18);
+        --ng: linear-gradient(135deg, #9b9ca8 0%, #757681 100%);
+        --ns: 0 2px 8px rgba(117, 118, 129, 0.12);
+        --bg: #f5f6fa;
+        --surface: #fff;
+        --border: #e4e5ee;
+        --tp: #0f1117;
+        --tx: #3d3f52;
+        --tm: #757681;
+        --sw: 240px;
+        --hh: 60px;
+      }
+      html,
+      body {
+        min-height: 100vh;
+        font-family: "Sora", sans-serif;
+        background: var(--bg);
+        color: var(--tp);
+        -webkit-font-smoothing: antialiased;
+      }
+      .app {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: var(--sw);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+      }
+      .sb-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 18px 18px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .sb-lm {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: var(--pg);
+        box-shadow: var(--ps);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .sb-lm svg {
+        width: 16px;
+        height: 16px;
+        color: #fff;
+      }
+      .sb-lt {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--tp);
+      }
+      .sb-ls {
+        font-size: 9px;
+        color: var(--tm);
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .sb-nav {
+        flex: 1;
+        padding: 14px 10px;
+        overflow-y: auto;
+      }
+      .sb-sec {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--tm);
+        padding: 0 8px;
+        margin: 14px 0 5px;
+        display: block;
+      }
+      .sb-sec:first-child {
+        margin-top: 0;
+      }
+      .sb-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--tx);
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: "Sora", sans-serif;
+        margin-bottom: 1px;
+      }
+      .sb-item:hover {
+        background: var(--pl);
+        color: var(--primary);
+      }
+      .sb-item.active {
+        background: var(--pl);
+        color: var(--primary);
+        font-weight: 700;
+      }
+      .sb-item svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .sb-badge {
+        margin-left: auto;
+        font-size: 9px;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 9999px;
+        background: var(--primary);
+        color: #fff;
+      }
+      .sb-badge.warn {
+        background: var(--tertiary);
+      }
+      .sb-footer {
+        padding: 12px 10px;
+        border-top: 1px solid var(--border);
+      }
+      .sb-user {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 10px;
+        border-radius: 9px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .sb-user:hover {
+        background: var(--bg);
+      }
+      .sb-av {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .sb-un {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--tp);
+      }
+      .sb-ur {
+        font-size: 10px;
+        color: var(--tm);
+      }
+      .main {
+        margin-left: var(--sw);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .topbar {
+        height: var(--hh);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .tb-l {
+        flex: 1;
+      }
+      .tb-t {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--tp);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .tb-s {
+        font-size: 11px;
+        color: var(--tm);
+        margin-top: 1px;
+      }
+      .tb-acts {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .ib {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--tx);
+        transition: all 0.2s;
+        position: relative;
+      }
+      .ib:hover {
+        background: var(--pl);
+        border-color: var(--pb);
+        color: var(--primary);
+      }
+      .ib svg {
+        width: 16px;
+        height: 16px;
+      }
+      .nd {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #ef4444;
+        border: 1.5px solid var(--surface);
+      }
+      .tb-av {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+        color: #fff;
+        cursor: pointer;
+      }
+      .page {
+        padding: 24px;
+        flex: 1;
+        overflow-y: auto;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .sec-hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .sec-t {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--tm);
+      }
+      .sec-lnk {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--primary);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 3px 7px;
+        border-radius: 6px;
+        transition: background 0.2s;
+        font-family: "Sora", sans-serif;
+      }
+      .sec-lnk:hover {
+        background: var(--pl);
+      }
+      .ic {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        
+      }
+      .ic svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+      }
+      .ic-p {
+        background: var(--pg);
+        box-shadow: var(--ps);
+      }
+      .ic-s {
+        background: var(--sg);
+        box-shadow: var(--ss);
+      }
+      .ic-t {
+        background: var(--tg);
+        box-shadow: var(--ts2);
+      }
+      .ic-n {
+        background: var(--ng);
+        box-shadow: var(--ns);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .pill-p {
+        background: var(--pl);
+        color: var(--primary);
+      }
+      .pill-s {
+        background: var(--sl);
+        color: var(--secondary);
+      }
+      .pill-t {
+        background: var(--tl);
+        color: var(--tertiary);
+      }
+      .pill-g {
+        background: #ecfdf5;
+        color: #059669;
+      }
+      .pdot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+      .btn-primary {
+        padding: 13px 24px;
+        background: var(--pg);
+        box-shadow: var(--ps);
+        
+        border-radius: 9999px;
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        
+      }
+      .btn-ghost {
+        padding: 11px 20px;
+        background: none;
+        border: 1.5px solid var(--border);
+        border-radius: 9999px;
+        color: var(--tx);
+        font-family: "Sora", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .btn-ghost:hover {
+        background: var(--pl);
+        border-color: var(--pb);
+        color: var(--primary);
+      }
+      .map-mock {
+        border-radius: 14px;
+        background: linear-gradient(
+          145deg,
+          var(--pl) 0%,
+          #dbeafe 50%,
+          var(--sl) 100%
+        );
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--pb);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .map-bg {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            rgba(37, 99, 235, 0.06) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px);
+        background-size: 22px 22px;
+      }
+      .map-pin {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+      .map-pin.lg {
+        width: 14px;
+        height: 14px;
+      }
+      .map-lbl {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid var(--pb);
+        border-radius: 9999px;
+        padding: 5px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--primary);
+        z-index: 1;
+      }
+      .pbar {
+        height: 4px;
+        background: var(--bg);
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+      .pfill {
+        height: 100%;
+        border-radius: 9999px;
+        transition: width 1s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .toggle {
+        width: 40px;
+        height: 22px;
+        border-radius: 9999px;
+        background: var(--nb);
+        cursor: pointer;
+        position: relative;
+        transition: background 0.3s;
+        flex-shrink: 0;
+        border: none;
+      }
+      .toggle.on {
+        background: var(--primary);
+      }
+      .toggle-k {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .toggle.on .toggle-k {
+        transform: translateX(18px);
+      }
+      .dot-live {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+        animation: plv 2s infinite;
+        flex-shrink: 0;
+      }
+      @keyframes plv {
+        0% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+        }
+      }
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+        .main {
+          margin-left: 0;
+        }
+        .page {
+          padding: 16px 14px 80px;
+        }
+      }
+      .risk-meter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 20px;
+        background: var(--tl);
+        border: 1.5px solid var(--tb);
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+      .meter-arc {
+        position: relative;
+        width: 140px;
+        height: 80px;
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+      .meter-bg {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 14px solid var(--border);
+        position: absolute;
+        top: 0;
+        left: 0;
+        clip-path: inset(0 0 50% 0);
+      }
+      .meter-fill {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 14px solid var(--tertiary);
+        position: absolute;
+        top: 0;
+        left: 0;
+        clip-path: inset(0 0 50% 0);
+        transform-origin: 50% 100%;
+        transform: rotate(calc(var(--pct, 0.65) * 180deg));
+        transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .meter-center {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--tertiary);
+      }
+      .meter-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--tertiary);
+        margin-bottom: 4px;
+      }
+      .meter-sub {
+        font-size: 11px;
+        color: var(--tm);
+        text-align: center;
+      }
+      .bairro-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .bg-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      .bg-num {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .bg-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--tm);
+      }
+      .tipo-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .tipo-bar-row:last-child {
+        border-bottom: none;
+      }
+      .tb-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--tx);
+        width: 120px;
+        flex-shrink: 0;
+      }
+      .tb-track {
+        flex: 1;
+        height: 6px;
+        background: var(--bg);
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+      .tb-fill {
+        height: 100%;
+        border-radius: 9999px;
+      }
+      .tb-num {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--tp);
+        width: 28px;
+        text-align: right;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="sb-logo">
+          <div class="sb-lm">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <path d="M9 22V12h6v10" />
+            </svg>
+          </div>
+          <div>
+            <div class="sb-lt">Cad&ecirc; o Dono?</div>
+            <div class="sb-ls">Morador</div>
+          </div>
+        </div>
+        <nav class="sb-nav">
+          <span class="sb-sec">Menu</span
+          ><a class="sb-item" href="../morador/cade_o_dono_home_morador.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg
+            >Início</a
+          ><a class="sb-item" href="../morador/denuncia.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 5v14M5 12h14" /></svg
+            >Nova Denúncia</a
+          ><a class="sb-item" href="../morador/04-status-denuncia.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+              /></svg
+            >Minhas Denúncias<span class="sb-badge">3</span></a
+          ><a class="sb-item" href="05-mapa-imoveis.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /></svg
+            >Mapa de Imóveis</a
+          ><a class="sb-item" href="../morador/06-notificacoes.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /></svg
+            >Notificações<span class="sb-badge">2</span></a
+          ><a class="sb-item active" href="07-status-bairro.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M2 12h20M2 6h20M2 18h20" /></svg
+            >Status do Bairro</a
+          ><a class="sb-item" href="../morador/08-meu-perfil.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /></svg
+            >Meu Perfil</a
+          ><a class="sb-item" href="../morador/09-configuracoes.html"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" /></svg
+            >Configurações</a
+          >
+        </nav>
+        <div class="sb-footer">
+          <div class="sb-user">
+            <div
+              class="sb-av"
+              style="
+                background: var(--pg);
+                box-shadow: var(--ps);
+                
+              "
+            >
+              MG
+            </div>
+            <div>
+              <div class="sb-un">Maria das Gra&ccedil;as</div>
+              <div class="sb-ur">Moradora &middot; Santo Ant&ocirc;nio</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <div class="main">
+        <header class="topbar">
+          <div class="tb-l">
+            <div class="tb-t">Status do Bairro</div>
+            <div class="tb-s">Santo Ant&ocirc;nio &middot; Recife</div>
+          </div>
+          <div class="tb-acts">
+            <button class="ib">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg
+              ><span class="nd"></span>
+            </button>
+            <div
+              class="tb-av"
+              style="
+                background: var(--pg);
+                box-shadow: var(--ps);
+                
+              "
+            >
+              MG
+            </div>
+          </div>
+        </header>
+        <main class="page">
+          <div class="risk-meter">
+            <div class="meter-arc">
+              <div class="meter-bg"></div>
+              <div class="meter-fill" style="--pct: 0.72"></div>
+              <div class="meter-center">72</div>
+            </div>
+            <div class="meter-label">N&iacute;vel de risco do bairro: Alto</div>
+            <div class="meter-sub">
+              Santo Ant&ocirc;nio &middot; atualizado agora &middot; baseado em
+              47 im&oacute;veis
+            </div>
+          </div>
+
+          <div class="bairro-grid">
+            <div class="bg-card">
+              <div class="bg-num" style="color: var(--tertiary)">11</div>
+              <div class="bg-label">Im&oacute;veis cr&iacute;ticos (Q1)</div>
+            </div>
+            <div class="bg-card">
+              <div class="bg-num" style="color: var(--secondary)">38</div>
+              <div class="bg-label">Em acompanhamento</div>
+            </div>
+            <div class="bg-card">
+              <div class="bg-num" style="color: var(--primary)">6,2d</div>
+              <div class="bg-label">Tempo m&eacute;dio vistoria</div>
+            </div>
+            <div class="bg-card">
+              <div class="bg-num" style="color: #059669">41</div>
+              <div class="bg-label">Resolvidos este m&ecirc;s</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="sec-hd">
+              <span class="sec-t">Tipo de problema no bairro</span>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">Foco de dengue</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="
+                    width: 78%;
+                    background: linear-gradient(90deg, #bfcfed, #2563eb);
+                  "
+                ></div>
+              </div>
+              <div class="tb-num">18</div>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">Risco estrutural</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="
+                    width: 47%;
+                    background: linear-gradient(90deg, #f5c4a0, #bc4800);
+                  "
+                ></div>
+              </div>
+              <div class="tb-num">11</div>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">Lixo acumulado</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="
+                    width: 38%;
+                    background: linear-gradient(90deg, #cdd2e8, #6275af);
+                  "
+                ></div>
+              </div>
+              <div class="tb-num">9</div>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">Im&oacute;vel abandonado</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="
+                    width: 30%;
+                    background: linear-gradient(90deg, #bfcfed, #2563eb);
+                  "
+                ></div>
+              </div>
+              <div class="tb-num">7</div>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">Outros</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="width: 8%; background: var(--nb)"
+                ></div>
+              </div>
+              <div class="tb-num">2</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="sec-hd">
+              <span class="sec-t">Compara&ccedil;&atilde;o por bairro</span>
+            </div>
+            <div class="tipo-bar-row">
+              <div
+                class="tb-name"
+                style="font-weight: 700; color: var(--primary)"
+              >
+                Santo Ant&ocirc;nio
+              </div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="
+                    width: 72%;
+                    background: linear-gradient(90deg, #bfcfed, #2563eb);
+                  "
+                ></div>
+              </div>
+              <div class="tb-num" style="color: var(--primary)">72</div>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">Boa Vista</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="width: 58%; background: var(--nb)"
+                ></div>
+              </div>
+              <div class="tb-num">58</div>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">S&atilde;o Jos&eacute;</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="width: 44%; background: var(--nb)"
+                ></div>
+              </div>
+              <div class="tb-num">44</div>
+            </div>
+            <div class="tipo-bar-row">
+              <div class="tb-name">Recife Antigo</div>
+              <div class="tb-track">
+                <div
+                  class="tb-fill"
+                  style="width: 31%; background: var(--nb)"
+                ></div>
+              </div>
+              <div class="tb-num">31</div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <

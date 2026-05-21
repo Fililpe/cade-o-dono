@@ -1,0 +1,383 @@
+/* ============================================
+   CADÊ O DONO? — SISTEMA GLOBAL DE ESTILOS
+   ============================================ */
+
+/* Reset & Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Cores Primárias */
+  --primary: #2563eb;
+  --primary-light: #ebf2ff;
+  --primary-border: #bfcfed;
+  --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --primary-shadow: 0 2px 8px rgba(37, 99, 235, 0.18);
+
+  /* Cores Secundárias */
+  --secondary: #6275af;
+  --secondary-light: #eef0f8;
+  --secondary-border: #cdd2e8;
+  --secondary-gradient: linear-gradient(135deg, #8c9cc8 0%, #6275af 100%);
+  --secondary-shadow: 0 2px 8px rgba(98, 117, 175, 0.18);
+
+  /* Cores Terciárias (Laranja/Destaque) */
+  --tertiary: #bc4800;
+  --tertiary-light: #fff0e8;
+  --tertiary-border: #f5c4a0;
+  --tertiary-gradient: linear-gradient(135deg, #e07840 0%, #bc4800 100%);
+  --tertiary-shadow: 0 2px 8px rgba(188, 72, 0, 0.18);
+
+  /* Cores Neutras */
+  --neutral: #757681;
+  --neutral-light: #f4f4f6;
+  --neutral-border: #dcdde3;
+  --neutral-gradient: linear-gradient(135deg, #9b9ca8 0%, #757681 100%);
+  --neutral-shadow: 0 2px 8px rgba(117, 118, 129, 0.12);
+
+  /* Cores de Status */
+  --success: #059669;
+  --success-light: #ecfdf5;
+  --warning: #b45309;
+  --warning-light: #fff8e1;
+  --danger: #dc2626;
+  --danger-light: #fef2f2;
+
+  /* Background & Surface */
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --border: #e4e5ee;
+
+  /* Typography */
+  --text-primary: #0f1117;
+  --text-secondary: #3d3f52;
+  --text-muted: #757681;
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --header-height: 60px;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-size: 32px;
+  line-height: 1.2;
+}
+h2 {
+  font-size: 24px;
+  line-height: 1.25;
+}
+h3 {
+  font-size: 18px;
+  line-height: 1.3;
+}
+h4 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+h5 {
+  font-size: 14px;
+  line-height: 1.4;
+}
+h6 {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--primary);
+  opacity: 0.8;
+}
+
+/* Links com estilo botão */
+a.btn,
+button {
+  font-family: "Sora", sans-serif;
+}
+
+/* Buttons */
+button,
+input[type="button"],
+input[type="submit"] {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+  font-family: "Sora", sans-serif;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Scroll */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-border);
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Dot Live */
+.dot-live {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: pulse 2s infinite;
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
+
+.mt-0 {
+  margin-top: 0 !important;
+}
+.mt-1 {
+  margin-top: 8px !important;
+}
+.mt-2 {
+  margin-top: 16px !important;
+}
+.mt-3 {
+  margin-top: 24px !important;
+}
+.mt-4 {
+  margin-top: 32px !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mb-1 {
+  margin-bottom: 8px !important;
+}
+.mb-2 {
+  margin-bottom: 16px !important;
+}
+.mb-3 {
+  margin-bottom: 24px !important;
+}
+.mb-4 {
+  margin-bottom: 32px !important;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+.p-1 {
+  padding: 8px !important;
+}
+.p-2 {
+  padding: 16px !important;
+}
+.p-3 {
+  padding: 24px !important;
+}
+.p-4 {
+  padding: 32px !important;
+}
+
+.gap-1 {
+  gap: 8px;
+}
+.gap-2 {
+  gap: 16px;
+}
+.gap-3 {
+  gap: 24px;
+}
+
+.flex {
+  display: flex;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden {
+  display: none !important;
+}
+.visible {
+  display: block !important;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+.opacity-50 {
+  opacity: 0.5;
+}
+.opacity-100 {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+  h3 {
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   TIPOGRAFIA RESPONSIVA
+   ============================================ */
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+  h3 {
+    font-size: 16px;
+  }
+}
