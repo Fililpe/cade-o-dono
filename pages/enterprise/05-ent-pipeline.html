@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pipeline — Cadê o Dono? Enterprise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -100,6 +101,15 @@
       transition: background .14s, border-color .14s, color .14s;
     }
     .kanban-add:hover { background: var(--ent-primary-light); border-color: var(--ent-primary-border); color: var(--ent-primary); }
+  
+    .ent-sb-sair {
+      display: flex; align-items: center; gap: 8px;
+      margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; color: #64748b;
+      text-decoration: none; transition: background .15s, color .15s;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
   </style>
 </head>
 <body>
@@ -107,7 +117,9 @@
   <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
   <aside class="ent-sidebar" id="sidebar">
     <div class="ent-sb-brand">
-      <div class="ent-sb-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="ent-sb-logo">
+          <img src="../../assets/img/logo.png" alt="Cadê o Dono?" style="width:100%;height:100%;object-fit:contain;">
+        </div>
       <div class="ent-sb-brand-text"><div class="ent-sb-brand-name">Cadê o Dono?</div><div class="ent-badge-ent">Enterprise</div></div>
     </div>
     <nav class="ent-sb-nav">
@@ -130,7 +142,12 @@
     <div class="ent-sb-user">
       <div class="ent-sb-avatar">BR</div>
       <div><div class="ent-sb-user-name">Brookfield Brasil</div><div class="ent-sb-user-role">Fundo Imobiliário</div></div>
-    </div>
+    
+    <a href="../../index.html" class="ent-sb-sair">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair da plataforma
+    </a>
+  </div>
   </aside>
 
   <main class="ent-main">
@@ -182,12 +199,12 @@
             <div class="pipe-card">
               <div class="pipe-card-priority" style="background:#059669;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">R. Haddock Lobo, 580</div><div class="pipe-card-bairro">Cerqueira César · SP</div></div>
+                <div><div class="pipe-card-address">Rua da Aurora, 580</div><div class="pipe-card-bairro">Torre · PE</div></div>
                 <span class="ent-risk risk-baixo">Baixo</span>
               </div>
               <div class="pipe-card-meta">
                 <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Terreno 920 m²</div>
-                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZEU-A</span>
+                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZE-2</span>
               </div>
               <div class="pipe-card-bottom">
                 <div class="pipe-card-vgv">R$ 22,1M</div>
@@ -197,12 +214,12 @@
             <div class="pipe-card">
               <div class="pipe-card-priority" style="background:#d97706;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">Al. Campinas, 800</div><div class="pipe-card-bairro">Jardim Paulista · SP</div></div>
+                <div><div class="pipe-card-address">Av. Dantas Barreto, 800</div><div class="pipe-card-bairro">Aflitos · PE</div></div>
                 <span class="ent-risk risk-medio">Médio</span>
               </div>
               <div class="pipe-card-meta">
                 <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Edificação 2.400 m²</div>
-                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 6px;">ZM-A</span>
+                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 6px;">ZEIS-3</span>
               </div>
               <div class="pipe-card-bottom">
                 <div class="pipe-card-vgv">R$ 48,6M</div>
@@ -212,12 +229,12 @@
             <div class="pipe-card">
               <div class="pipe-card-priority" style="background:#059669;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">R. Tupi, 345</div><div class="pipe-card-bairro">Perdizes · SP</div></div>
+                <div><div class="pipe-card-address">Rua do Hospício, 345</div><div class="pipe-card-bairro">Soledade · PE</div></div>
                 <span class="ent-risk risk-baixo">Baixo</span>
               </div>
               <div class="pipe-card-meta">
                 <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Terreno 580 m²</div>
-                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZEU-B</span>
+                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZD-1</span>
               </div>
               <div class="pipe-card-bottom">
                 <div class="pipe-card-vgv">R$ 13,8M</div>
@@ -242,7 +259,7 @@
             <div class="pipe-card">
               <div class="pipe-card-priority" style="background:#4f46e5;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">Av. Paulista, 2.073</div><div class="pipe-card-bairro">Bela Vista · SP</div></div>
+                <div><div class="pipe-card-address">Av. Marquês de Olinda, 2.073</div><div class="pipe-card-bairro">São José · PE</div></div>
                 <span class="ent-risk risk-medio">Médio</span>
               </div>
               <div class="pipe-card-meta">
@@ -257,12 +274,12 @@
             <div class="pipe-card">
               <div class="pipe-card-priority" style="background:#059669;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">R. Groenlândia, 1.033</div><div class="pipe-card-bairro">Itaim Bibi · SP</div></div>
+                <div><div class="pipe-card-address">Rua do Riachuelo, 1.033</div><div class="pipe-card-bairro">Ilha do Leite · PE</div></div>
                 <span class="ent-risk risk-baixo">Baixo</span>
               </div>
               <div class="pipe-card-meta">
                 <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Edificação 4.100 m²</div>
-                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZEU-A</span>
+                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZE-2</span>
               </div>
               <div class="pipe-card-bottom">
                 <div class="pipe-card-vgv">R$ 105,6M</div>
@@ -272,12 +289,12 @@
             <div class="pipe-card">
               <div class="pipe-card-priority" style="background:#d97706;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">R. Vergueiro, 3.200</div><div class="pipe-card-bairro">Paraíso · SP</div></div>
+                <div><div class="pipe-card-address">Av. Agamenon Magalhães, 3.200</div><div class="pipe-card-bairro">Ilha do Leite · PE</div></div>
                 <span class="ent-risk risk-medio">Médio</span>
               </div>
               <div class="pipe-card-meta">
                 <div class="pipe-meta-item">Galpão 2.800 m²</div>
-                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 6px;">ZM-B</span>
+                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 6px;">ZOR-1</span>
               </div>
               <div class="pipe-card-bottom">
                 <div class="pipe-card-vgv">R$ 62,4M</div>
@@ -302,7 +319,7 @@
             <div class="pipe-card" style="border-color:#c7d2fe;">
               <div class="pipe-card-priority" style="background:#4f46e5;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">R. Mourato Coelho, 310</div><div class="pipe-card-bairro">Pinheiros · SP</div></div>
+                <div><div class="pipe-card-address">Rua Floriano Peixoto, 310</div><div class="pipe-card-bairro">Santo Antônio · PE</div></div>
                 <span class="ent-risk risk-baixo">Baixo</span>
               </div>
               <div class="pipe-card-meta">
@@ -317,7 +334,7 @@
             <div class="pipe-card" style="border-color:#c7d2fe;">
               <div class="pipe-card-priority" style="background:#4f46e5;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">Al. Lorena, 425</div><div class="pipe-card-bairro">Jardins · SP</div></div>
+                <div><div class="pipe-card-address">Rua do Imperador, 425</div><div class="pipe-card-bairro">Aflitos · PE</div></div>
                 <span class="ent-risk risk-baixo">Baixo</span>
               </div>
               <div class="pipe-card-meta">
@@ -347,7 +364,7 @@
             <div class="pipe-card" style="border-color:#6ee7b7;">
               <div class="pipe-card-priority" style="background:#059669;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">R. Bela Cintra, 847</div><div class="pipe-card-bairro">Consolação · SP</div></div>
+                <div><div class="pipe-card-address">Rua Gervásio Pires, 847</div><div class="pipe-card-bairro">Boa Vista · PE</div></div>
                 <span class="ent-badge ent-badge-success" style="font-size:10px;padding:1px 8px;">✓ Assinado</span>
               </div>
               <div class="pipe-card-meta">
@@ -361,7 +378,7 @@
             <div class="pipe-card" style="border-color:#a5f3fc;">
               <div class="pipe-card-priority" style="background:#0891b2;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">Av. Rebouças, 980</div><div class="pipe-card-bairro">Pinheiros · SP</div></div>
+                <div><div class="pipe-card-address">Rua Henrique Dias, 980</div><div class="pipe-card-bairro">Santo Antônio · PE</div></div>
                 <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 8px;">Em cartório</span>
               </div>
               <div class="pipe-card-meta">
@@ -390,7 +407,7 @@
             <div class="pipe-card" style="opacity:.65;">
               <div class="pipe-card-priority" style="background:#0f172a;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">R. Oscar Freire, 800</div><div class="pipe-card-bairro">Pinheiros · SP</div></div>
+                <div><div class="pipe-card-address">Rua da Palma, 800</div><div class="pipe-card-bairro">Santo Antônio · PE</div></div>
                 <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 8px;">✓ Concluído</span>
               </div>
               <div class="pipe-card-bottom">
@@ -401,7 +418,7 @@
             <div class="pipe-card" style="opacity:.65;">
               <div class="pipe-card-priority" style="background:#0f172a;"></div>
               <div class="pipe-card-top">
-                <div><div class="pipe-card-address">Al. Itu, 1.250</div><div class="pipe-card-bairro">Cerqueira César · SP</div></div>
+                <div><div class="pipe-card-address">Rua do Riachuelo, 1.250</div><div class="pipe-card-bairro">Torre · PE</div></div>
                 <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 8px;">✓ Concluído</span>
               </div>
               <div class="pipe-card-bottom">

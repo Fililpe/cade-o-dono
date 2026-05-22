@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inteligência Territorial — Cadê o Dono? Enterprise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -97,6 +98,15 @@
     .vs-row span:last-child  { color: #0f172a; font-weight: 700; }
 
     @media (max-width: 900px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+  
+    .ent-sb-sair {
+      display: flex; align-items: center; gap: 8px;
+      margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; color: #64748b;
+      text-decoration: none; transition: background .15s, color .15s;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
   </style>
 </head>
 <body>
@@ -104,7 +114,9 @@
   <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
   <aside class="ent-sidebar" id="sidebar">
     <div class="ent-sb-brand">
-      <div class="ent-sb-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="ent-sb-logo">
+          <img src="../../assets/img/logo.png" alt="Cadê o Dono?" style="width:100%;height:100%;object-fit:contain;">
+        </div>
       <div class="ent-sb-brand-text"><div class="ent-sb-brand-name">Cadê o Dono?</div><div class="ent-badge-ent">Enterprise</div></div>
     </div>
     <nav class="ent-sb-nav">
@@ -127,7 +139,12 @@
     <div class="ent-sb-user">
       <div class="ent-sb-avatar">BR</div>
       <div><div class="ent-sb-user-name">Brookfield Brasil</div><div class="ent-sb-user-role">Fundo Imobiliário</div></div>
-    </div>
+    
+    <a href="../../index.html" class="ent-sb-sair">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair da plataforma
+    </a>
+  </div>
   </aside>
 
   <main class="ent-main">
@@ -135,7 +152,7 @@
       <button class="ent-hamburger" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <div class="ent-tb-breadcrumb"><span>Enterprise</span><span class="sep">›</span><span class="active">Inteligência Territorial</span></div>
       <div class="ent-tb-actions">
-        <select class="ent-select"><option>São Paulo Capital</option><option>Grande SP</option><option>Brasil (Tier 3)</option></select>
+        <select class="ent-select"><option>Centro do Recife</option><option>Grande Recife</option><option>Brasil (Tier 3)</option></select>
         <button class="ent-btn ent-btn-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Gerar relatório
@@ -147,7 +164,7 @@
     <div class="ent-content">
       <div class="ent-page-hd" style="margin-bottom:20px;">
         <div class="ent-page-title">Inteligência Territorial</div>
-        <div class="ent-page-sub">Análise de potencial construtivo, zoneamento, VGV e densidade urbana — São Paulo Capital · maio 2026</div>
+        <div class="ent-page-sub">Análise de potencial construtivo, zoneamento, VGV e densidade urbana — Centro do Recife · maio 2026</div>
       </div>
 
       <!-- Top KPIs -->
@@ -163,7 +180,7 @@
           <div class="ent-kpi-delta"><svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg><span class="delta-up">+340k m²</span> novo mês</div>
         </div>
         <div class="ent-kpi">
-          <div class="ent-kpi-label">Imóveis ZEU mapeados</div>
+          <div class="ent-kpi-label">Imóveis ZE-2 mapeados</div>
           <div class="ent-kpi-value">1.248</div>
           <div class="ent-kpi-delta"><span style="color:#64748b;">67% do total disponível</span></div>
         </div>
@@ -228,13 +245,13 @@
               <div class="col-label">Abr</div>
               <div class="col-label">Mai ▲</div>
             </div>
-            <div class="heatmap-row"><div class="hm-row-label">Pinheiros</div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6"></div><div class="hm-cell hm-6"></div><div class="hm-cell hm-7"></div><div class="hm-cell hm-7">142</div></div>
-            <div class="heatmap-row"><div class="hm-row-label">Consolação</div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6">97</div></div>
-            <div class="heatmap-row"><div class="hm-row-label">Higienópolis</div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5">78</div></div>
-            <div class="heatmap-row"><div class="hm-row-label">Itaim Bibi</div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6">63</div></div>
-            <div class="heatmap-row"><div class="hm-row-label">Bela Vista</div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4">58</div></div>
-            <div class="heatmap-row"><div class="hm-row-label">Perdizes</div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3">41</div></div>
-            <div class="heatmap-row"><div class="hm-row-label">Moema</div><div class="hm-cell hm-1"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3">28</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Santo Antônio</div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6"></div><div class="hm-cell hm-6"></div><div class="hm-cell hm-7"></div><div class="hm-cell hm-7">142</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Boa Vista</div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6">97</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Graças</div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5">78</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Ilha do Leite</div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6">63</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">São José</div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4">58</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Soledade</div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3">41</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Boa Viagem</div><div class="hm-cell hm-1"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3">28</div></div>
           </div>
         </div>
 
@@ -252,12 +269,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td style="color:#94a3b8;font-weight:700;">1</td><td class="ent-td-primary">Pinheiros</td><td>142</td><td style="font-weight:700;">R$ 820M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:92%;"></div></div><div class="region-score-num">92</div></div></td></tr>
-                <tr><td style="color:#94a3b8;font-weight:700;">2</td><td class="ent-td-primary">Consolação</td><td>97</td><td style="font-weight:700;">R$ 1,1B</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:88%;"></div></div><div class="region-score-num">88</div></div></td></tr>
-                <tr><td style="color:#94a3b8;font-weight:700;">3</td><td class="ent-td-primary">Higienópolis</td><td>78</td><td style="font-weight:700;">R$ 640M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:81%;"></div></div><div class="region-score-num">81</div></div></td></tr>
-                <tr><td style="color:#94a3b8;font-weight:700;">4</td><td class="ent-td-primary">Itaim Bibi</td><td>63</td><td style="font-weight:700;">R$ 540M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:75%;"></div></div><div class="region-score-num">75</div></div></td></tr>
-                <tr><td style="color:#94a3b8;font-weight:700;">5</td><td class="ent-td-primary">Bela Vista</td><td>58</td><td style="font-weight:700;">R$ 490M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:71%;"></div></div><div class="region-score-num">71</div></div></td></tr>
-                <tr><td style="color:#94a3b8;font-weight:700;">6</td><td class="ent-td-primary">Perdizes</td><td>41</td><td style="font-weight:700;">R$ 320M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:64%;"></div></div><div class="region-score-num">64</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">1</td><td class="ent-td-primary">Santo Antônio</td><td>142</td><td style="font-weight:700;">R$ 820M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:92%;"></div></div><div class="region-score-num">92</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">2</td><td class="ent-td-primary">Boa Vista</td><td>97</td><td style="font-weight:700;">R$ 1,1B</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:88%;"></div></div><div class="region-score-num">88</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">3</td><td class="ent-td-primary">Graças</td><td>78</td><td style="font-weight:700;">R$ 640M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:81%;"></div></div><div class="region-score-num">81</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">4</td><td class="ent-td-primary">Ilha do Leite</td><td>63</td><td style="font-weight:700;">R$ 540M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:75%;"></div></div><div class="region-score-num">75</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">5</td><td class="ent-td-primary">São José</td><td>58</td><td style="font-weight:700;">R$ 490M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:71%;"></div></div><div class="region-score-num">71</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">6</td><td class="ent-td-primary">Soledade</td><td>41</td><td style="font-weight:700;">R$ 320M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:64%;"></div></div><div class="region-score-num">64</div></div></td></tr>
               </tbody>
             </table>
           </div>
@@ -267,7 +284,7 @@
       <!-- Zoning breakdown -->
       <div class="three-col">
         <div class="vs-card">
-          <div class="vs-title">ZEU-A — Zona Eixo de Estruturação</div>
+          <div class="vs-title">ZE-2 — Zona Eixo de Estruturação</div>
           <div class="vs-row"><span>Imóveis identificados</span><span>412</span></div>
           <div class="vs-row"><span>Coef. aproveitamento</span><span>até 4,0</span></div>
           <div class="vs-row"><span>Gabarito médio</span><span>28 pav.</span></div>
@@ -275,7 +292,7 @@
           <div class="vs-row"><span>Score médio</span><span style="color:#4f46e5;">87/100</span></div>
         </div>
         <div class="vs-card">
-          <div class="vs-title">ZEU-B — Zona Eixo (faixa lateral)</div>
+          <div class="vs-title">ZD-1 — Zona Eixo (faixa lateral)</div>
           <div class="vs-row"><span>Imóveis identificados</span><span>298</span></div>
           <div class="vs-row"><span>Coef. aproveitamento</span><span>até 2,5</span></div>
           <div class="vs-row"><span>Gabarito médio</span><span>18 pav.</span></div>
@@ -283,7 +300,7 @@
           <div class="vs-row"><span>Score médio</span><span style="color:#4f46e5;">74/100</span></div>
         </div>
         <div class="vs-card">
-          <div class="vs-title">ZM-A/B — Zona Mista</div>
+          <div class="vs-title">ZEIS-3/B — Zona Mista</div>
           <div class="vs-row"><span>Imóveis identificados</span><span>137</span></div>
           <div class="vs-row"><span>Coef. aproveitamento</span><span>até 1,5</span></div>
           <div class="vs-row"><span>Gabarito médio</span><span>12 pav.</span></div>

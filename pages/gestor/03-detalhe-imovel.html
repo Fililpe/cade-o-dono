@@ -2,6 +2,7 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cadê o Dono? — Detalhe do Imóvel</title>
     <link
@@ -649,6 +650,15 @@
           flex-direction: column;
         }
       }
+    
+      .sb-sair {
+        display: flex; align-items: center; gap: 8px;
+        margin-top: 12px; padding: 9px 12px; border-radius: 8px;
+        font-size: 12px; font-weight: 500; color: var(--text-muted);
+        text-decoration: none; transition: background .15s, color .15s;
+        border: 1px solid var(--border);
+      }
+      .sb-sair:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
     </style>
   </head>
   <body>

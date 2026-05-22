@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapa Premium — Cadê o Dono? Enterprise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -378,6 +379,15 @@
     @media (max-width: 900px) {
       .map-panel-left, .map-panel-right { display: none; }
     }
+  
+    .ent-sb-sair {
+      display: flex; align-items: center; gap: 8px;
+      margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; color: #64748b;
+      text-decoration: none; transition: background .15s, color .15s;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
   </style>
 </head>
 <body>
@@ -388,11 +398,8 @@
   <aside class="ent-sidebar" id="sidebar">
     <div class="ent-sb-brand">
       <div class="ent-sb-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-      </div>
+          <img src="../../assets/img/logo.png" alt="Cadê o Dono?" style="width:100%;height:100%;object-fit:contain;">
+        </div>
       <div class="ent-sb-brand-text">
         <div class="ent-sb-brand-name">Cadê o Dono?</div>
         <div class="ent-badge-ent">Enterprise</div>
@@ -440,7 +447,12 @@
         <div class="ent-sb-user-name">Brookfield Brasil</div>
         <div class="ent-sb-user-role">Fundo Imobiliário</div>
       </div>
-    </div>
+    
+    <a href="../../index.html" class="ent-sb-sair">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair da plataforma
+    </a>
+  </div>
   </aside>
 
   <!-- Main -->
@@ -580,29 +592,29 @@
         <div class="map-zone" style="left:68%;top:28%;width:20%;height:40%;background:#ef4444;border-radius:8px;opacity:0.18;"></div>
 
         <!-- Region labels -->
-        <div class="map-label" style="left:11%;top:22%;">Pinheiros</div>
-        <div class="map-label" style="left:32%;top:10%;">Higienópolis</div>
-        <div class="map-label" style="left:52%;top:20%;">Consolação</div>
-        <div class="map-label" style="left:12%;top:65%;">Vila Madalena</div>
-        <div class="map-label" style="left:40%;top:52%;">Bela Vista</div>
-        <div class="map-label" style="left:68%;top:35%;">Itaim Bibi</div>
+        <div class="map-label" style="left:11%;top:22%;">Santo Antônio</div>
+        <div class="map-label" style="left:32%;top:10%;">Graças</div>
+        <div class="map-label" style="left:52%;top:20%;">Boa Vista</div>
+        <div class="map-label" style="left:12%;top:65%;">Soledade</div>
+        <div class="map-label" style="left:40%;top:52%;">São José</div>
+        <div class="map-label" style="left:68%;top:35%;">Ilha do Leite</div>
 
         <!-- Clusters -->
-        <div class="map-cluster cluster-lg cl-high" style="left:17%;top:18%;" onclick="selectCluster(this,142,'Pinheiros')">142</div>
-        <div class="map-cluster cluster-lg cl-high" style="left:35%;top:14%;" onclick="selectCluster(this,97,'Higienópolis')">97</div>
-        <div class="map-cluster cluster-md cl-med" style="left:56%;top:22%;" onclick="selectCluster(this,63,'Consolação')">63</div>
+        <div class="map-cluster cluster-lg cl-high" style="left:17%;top:18%;" onclick="selectCluster(this,142,'Santo Antônio')">142</div>
+        <div class="map-cluster cluster-lg cl-high" style="left:35%;top:14%;" onclick="selectCluster(this,97,'Graças')">97</div>
+        <div class="map-cluster cluster-md cl-med" style="left:56%;top:22%;" onclick="selectCluster(this,63,'Boa Vista')">63</div>
         <div class="map-cluster cluster-md cl-med" style="left:14%;top:58%;" onclick="selectCluster(this,58,'V. Madalena')">58</div>
-        <div class="map-cluster cluster-md cl-low" style="left:44%;top:48%;" onclick="selectCluster(this,41,'Bela Vista')">41</div>
-        <div class="map-cluster cluster-sm cl-alert" style="left:72%;top:38%;" onclick="selectCluster(this,12,'Itaim')">12</div>
-        <div class="map-cluster cluster-sm cl-low" style="left:61%;top:62%;" onclick="selectCluster(this,28,'Moema')">28</div>
+        <div class="map-cluster cluster-md cl-low" style="left:44%;top:48%;" onclick="selectCluster(this,41,'São José')">41</div>
+        <div class="map-cluster cluster-sm cl-alert" style="left:72%;top:38%;" onclick="selectCluster(this,12,'Ilha do Leite')">12</div>
+        <div class="map-cluster cluster-sm cl-low" style="left:61%;top:62%;" onclick="selectCluster(this,28,'Boa Viagem')">28</div>
 
         <!-- Individual pins -->
-        <div class="map-pin pin-available selected" style="left:19%;top:28%;" title="R. Mourato Coelho, 310" onclick="selectPin('R. Mourato Coelho, 310', 'Pinheiros')"></div>
-        <div class="map-pin pin-analysis" style="left:38%;top:20%;" title="Av. Paulista, 2.073" onclick="selectPin('Av. Paulista, 2.073', 'Bela Vista')"></div>
-        <div class="map-pin pin-available" style="left:58%;top:28%;" title="Rua Bela Cintra, 847" onclick="selectPin('Rua Bela Cintra, 847', 'Consolação')"></div>
-        <div class="map-pin pin-dispute" style="left:44%;top:55%;" title="R. da Consolação, 1.500" onclick="selectPin('R. da Consolação, 1.500', 'Higienópolis')"></div>
-        <div class="map-pin pin-pipeline" style="left:25%;top:68%;" title="Al. Lorena, 425" onclick="selectPin('Al. Lorena, 425', 'Jardins')"></div>
-        <div class="map-pin pin-available" style="left:74%;top:42%;" title="R. Leopoldo Couto de Magalhães, 110" onclick="selectPin('R. Leopoldo Couto, 110', 'Itaim')"></div>
+        <div class="map-pin pin-available selected" style="left:19%;top:28%;" title="Rua do Hospício, 234" onclick="selectPin('Rua do Hospício, 234', 'Santo Antônio')"></div>
+        <div class="map-pin pin-analysis" style="left:38%;top:20%;" title="Av. Dantas Barreto, 1.820" onclick="selectPin('Av. Dantas Barreto, 1.820', 'São José')"></div>
+        <div class="map-pin pin-available" style="left:58%;top:28%;" title="Rua da Aurora, 512" onclick="selectPin('Rua da Aurora, 512', 'Boa Vista')"></div>
+        <div class="map-pin pin-dispute" style="left:44%;top:55%;" title="R. da Boa Vista, 1.500" onclick="selectPin('R. da Boa Vista, 1.500', 'Graças')"></div>
+        <div class="map-pin pin-pipeline" style="left:25%;top:68%;" title="Rua do Riachuelo, 670" onclick="selectPin('Rua do Riachuelo, 670', 'Aflitos')"></div>
+        <div class="map-pin pin-available" style="left:74%;top:42%;" title="Rua Floriano Peixoto, 110" onclick="selectPin('Rua Floriano Peixoto, 110', 'Ilha do Leite')"></div>
 
         <!-- Toolbar -->
         <div class="map-toolbar">
@@ -656,8 +668,8 @@
         </div>
 
         <div class="prop-body">
-          <div class="prop-address" id="prop-address">R. Mourato Coelho, 310</div>
-          <div class="prop-neighborhood" id="prop-neighborhood">Pinheiros · São Paulo, SP</div>
+          <div class="prop-address" id="prop-address">Rua do Hospício, 234</div>
+          <div class="prop-neighborhood" id="prop-neighborhood">Santo Antônio · Recife, PE</div>
 
           <div class="prop-metrics">
             <div class="prop-metric">
@@ -684,7 +696,7 @@
 
           <div class="prop-zoning">
             <div class="prop-zoning-title">Inteligência Territorial</div>
-            <div class="prop-zoning-row"><span>Zoneamento</span><span>ZEU-A</span></div>
+            <div class="prop-zoning-row"><span>Zoneamento</span><span>ZE-2</span></div>
             <div class="prop-zoning-row"><span>Gabarito</span><span>28 pavimentos</span></div>
             <div class="prop-zoning-row"><span>Coef. aproveitamento</span><span>4,0</span></div>
             <div class="prop-zoning-row"><span>Recuo frontal</span><span>0 m (alinhado)</span></div>
@@ -733,7 +745,7 @@
       </div>
       <div>
         <div class="ent-modal-title">Solicitar Mediação de Contato</div>
-        <div class="ent-modal-sub">R. Mourato Coelho, 310 — Pinheiros, SP</div>
+        <div class="ent-modal-sub">Rua do Hospício, 234 — Santo Antônio, PE</div>
       </div>
     </div>
     <div class="ent-modal-bd">
@@ -784,13 +796,13 @@
   }
   function selectPin(address, neighborhood) {
     document.getElementById('prop-address').textContent = address;
-    document.getElementById('prop-neighborhood').textContent = neighborhood + ' · São Paulo, SP';
+    document.getElementById('prop-neighborhood').textContent = neighborhood + ' · Recife, PE';
     document.querySelectorAll('.map-pin').forEach(function(p) { p.classList.remove('selected'); });
     event.target.classList.add('selected');
   }
   function selectCluster(el, count, name) {
     document.getElementById('prop-address').textContent = name + ' — ' + count + ' imóveis';
-    document.getElementById('prop-neighborhood').textContent = 'Cluster · São Paulo, SP';
+    document.getElementById('prop-neighborhood').textContent = 'Cluster · Recife, PE';
   }
   function openContactModal() {
     document.getElementById('contact-modal').classList.add('open');

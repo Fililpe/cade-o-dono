@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Oportunidades — Cadê o Dono? Enterprise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -89,6 +90,15 @@
     .detail-item-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--ent-text-muted); margin-bottom: 4px; }
     .detail-item-value { font-size: 14px; font-weight: 700; color: var(--ent-text-primary); }
     .detail-actions { display: flex; gap: 8px; margin-top: 14px; }
+  
+    .ent-sb-sair {
+      display: flex; align-items: center; gap: 8px;
+      margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; color: #64748b;
+      text-decoration: none; transition: background .15s, color .15s;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
   </style>
 </head>
 <body>
@@ -98,8 +108,8 @@
   <aside class="ent-sidebar" id="sidebar">
     <div class="ent-sb-brand">
       <div class="ent-sb-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      </div>
+          <img src="../../assets/img/logo.png" alt="Cadê o Dono?" style="width:100%;height:100%;object-fit:contain;">
+        </div>
       <div class="ent-sb-brand-text">
         <div class="ent-sb-brand-name">Cadê o Dono?</div>
         <div class="ent-badge-ent">Enterprise</div>
@@ -125,7 +135,12 @@
     <div class="ent-sb-user">
       <div class="ent-sb-avatar">BR</div>
       <div><div class="ent-sb-user-name">Brookfield Brasil</div><div class="ent-sb-user-role">Fundo Imobiliário</div></div>
-    </div>
+    
+    <a href="../../index.html" class="ent-sb-sair">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair da plataforma
+    </a>
+  </div>
   </aside>
 
   <main class="ent-main">
@@ -149,7 +164,7 @@
     <div class="ent-content">
       <div class="ent-page-hd" style="margin-bottom:18px;">
         <div class="ent-page-title">Oportunidades Urbanas</div>
-        <div class="ent-page-sub">Imóveis identificados com potencial de aquisição — região: São Paulo Capital</div>
+        <div class="ent-page-sub">Imóveis identificados com potencial de aquisição — região: Centro do Recife</div>
       </div>
 
       <div class="page-layout">
@@ -223,15 +238,15 @@
             <div class="filter-block-title">Zoneamento</div>
             <div class="filter-option checked" onclick="this.classList.toggle('checked')">
               <div class="filter-checkbox"></div>
-              <div class="filter-option-label">ZEU-A</div>
+              <div class="filter-option-label">ZE-2</div>
             </div>
             <div class="filter-option checked" onclick="this.classList.toggle('checked')">
               <div class="filter-checkbox"></div>
-              <div class="filter-option-label">ZEU-B</div>
+              <div class="filter-option-label">ZD-1</div>
             </div>
             <div class="filter-option" onclick="this.classList.toggle('checked')">
               <div class="filter-checkbox"></div>
-              <div class="filter-option-label">ZM-A / ZM-B</div>
+              <div class="filter-option-label">ZEIS-3 / ZOR-1</div>
             </div>
             <div class="filter-option" onclick="this.classList.toggle('checked')">
               <div class="filter-checkbox"></div>
@@ -246,7 +261,7 @@
         <!-- Main content -->
         <div class="content-main">
           <div class="results-bar">
-            <div class="results-count">847 resultados <span>· São Paulo Capital</span></div>
+            <div class="results-count">847 resultados <span>· Centro do Recife</span></div>
             <select class="ent-select">
               <option>Ordenar: Score de oportunidade</option>
               <option>Ordenar: Maior VGV estimado</option>
@@ -328,16 +343,16 @@
 
 <script>
   var DATA = [
-    { addr:'Rua Bela Cintra, 847', bairro:'Consolação', tipo:'Terreno', area:'1.240', vgv:'R$ 28,4M', pot:'4.960 m²', risco:'baixo', score:94, status:'success', statusLabel:'Disponível' },
-    { addr:'Av. Paulista, 2.073',  bairro:'Bela Vista',  tipo:'Edificação', area:'3.800', vgv:'R$ 94,1M', pot:'15.200 m²', risco:'medio', score:81, status:'warning', statusLabel:'Em análise' },
-    { addr:'R. Mourato Coelho, 310', bairro:'Pinheiros', tipo:'Terreno', area:'680', vgv:'R$ 15,2M', pot:'2.720 m²', risco:'baixo', score:91, status:'success', statusLabel:'Disponível' },
-    { addr:'R. da Consolação, 1.500', bairro:'Higienópolis', tipo:'Edificação', area:'5.200', vgv:'R$ 136,8M', pot:'20.800 m²', risco:'alto', score:62, status:'danger', statusLabel:'Disputa judicial' },
-    { addr:'Al. Lorena, 425',       bairro:'Jardins',   tipo:'Galpão',    area:'2.100', vgv:'R$ 41,3M', pot:'8.400 m²', risco:'baixo', score:88, status:'success', statusLabel:'Disponível' },
-    { addr:'R. Haddock Lobo, 580',  bairro:'Cerqueira César', tipo:'Terreno', area:'920', vgv:'R$ 22,1M', pot:'3.680 m²', risco:'baixo', score:86, status:'success', statusLabel:'Disponível' },
-    { addr:'R. Groenlândia, 1.033', bairro:'Itaim Bibi', tipo:'Edificação', area:'4.100', vgv:'R$ 105,6M', pot:'16.400 m²', risco:'medio', score:79, status:'warning', statusLabel:'Em análise' },
-    { addr:'R. Deputado Lacerda Franco, 300', bairro:'Pinheiros', tipo:'Terreno', area:'760', vgv:'R$ 17,8M', pot:'3.040 m²', risco:'baixo', score:83, status:'success', statusLabel:'Disponível' },
-    { addr:'Av. Rebouças, 1.585',   bairro:'Pinheiros', tipo:'Galpão', area:'3.200', vgv:'R$ 78,4M', pot:'12.800 m²', risco:'medio', score:75, status:'warning', statusLabel:'Em análise' },
-    { addr:'R. Oscar Freire, 2.100', bairro:'Pinheiros', tipo:'Edificação', area:'6.800', vgv:'R$ 174,2M', pot:'27.200 m²', risco:'alto', score:58, status:'danger', statusLabel:'Disputa judicial' },
+    { addr:'Rua da Aurora, 512', bairro:'Boa Vista', tipo:'Terreno', area:'1.240', vgv:'R$ 28,4M', pot:'4.960 m²', risco:'baixo', score:94, status:'success', statusLabel:'Disponível' },
+    { addr:'Av. Dantas Barreto, 1.820',  bairro:'São José',  tipo:'Edificação', area:'3.800', vgv:'R$ 94,1M', pot:'15.200 m²', risco:'medio', score:81, status:'warning', statusLabel:'Em análise' },
+    { addr:'Rua do Hospício, 234', bairro:'Santo Antônio', tipo:'Terreno', area:'680', vgv:'R$ 15,2M', pot:'2.720 m²', risco:'baixo', score:91, status:'success', statusLabel:'Disponível' },
+    { addr:'R. da Boa Vista, 1.500', bairro:'Graças', tipo:'Edificação', area:'5.200', vgv:'R$ 136,8M', pot:'20.800 m²', risco:'alto', score:62, status:'danger', statusLabel:'Disputa judicial' },
+    { addr:'Rua do Riachuelo, 670',       bairro:'Aflitos',   tipo:'Galpão',    area:'2.100', vgv:'R$ 41,3M', pot:'8.400 m²', risco:'baixo', score:88, status:'success', statusLabel:'Disponível' },
+    { addr:'Rua do Imperador, 320',  bairro:'Torre', tipo:'Terreno', area:'920', vgv:'R$ 22,1M', pot:'3.680 m²', risco:'baixo', score:86, status:'success', statusLabel:'Disponível' },
+    { addr:'Rua Gervásio Pires, 450', bairro:'Ilha do Leite', tipo:'Edificação', area:'4.100', vgv:'R$ 105,6M', pot:'16.400 m²', risco:'medio', score:79, status:'warning', statusLabel:'Em análise' },
+    { addr:'Rua Henrique Dias, 300', bairro:'Santo Antônio', tipo:'Terreno', area:'760', vgv:'R$ 17,8M', pot:'3.040 m²', risco:'baixo', score:83, status:'success', statusLabel:'Disponível' },
+    { addr:'Av. Agamenon Magalhães, 1.200',   bairro:'Santo Antônio', tipo:'Galpão', area:'3.200', vgv:'R$ 78,4M', pot:'12.800 m²', risco:'medio', score:75, status:'warning', statusLabel:'Em análise' },
+    { addr:'Rua da Palma, 2.100', bairro:'Santo Antônio', tipo:'Edificação', area:'6.800', vgv:'R$ 174,2M', pot:'27.200 m²', risco:'alto', score:58, status:'danger', statusLabel:'Disputa judicial' },
   ];
 
   function renderTable() {
@@ -347,7 +362,7 @@
       var riskLabel = d.risco === 'baixo' ? 'Baixo' : d.risco === 'medio' ? 'Médio' : 'Alto';
       var scoreW = d.score + '%';
       return '<tr onclick="toggleDetail(' + i + ')">' +
-        '<td><div class="oport-address">' + d.addr + '</div><div class="oport-sub">' + d.bairro + ' · São Paulo</div></td>' +
+        '<td><div class="oport-address">' + d.addr + '</div><div class="oport-sub">' + d.bairro + ' · Recife</div></td>' +
         '<td><span class="ent-badge ent-badge-' + (d.tipo==='Terreno'?'info':'neutral') + '">' + d.tipo + '</span></td>' +
         '<td class="ent-td-primary">' + d.area + ' m²</td>' +
         '<td class="ent-td-primary" style="font-weight:700;">' + d.vgv + '</td>' +

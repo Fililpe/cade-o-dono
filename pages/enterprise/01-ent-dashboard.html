@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard — Cadê o Dono? Enterprise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -139,6 +140,15 @@
     @media (max-width: 900px) {
       .two-col, .three-col { grid-template-columns: 1fr; }
     }
+  
+    .ent-sb-sair {
+      display: flex; align-items: center; gap: 8px;
+      margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; color: #64748b;
+      text-decoration: none; transition: background .15s, color .15s;
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
   </style>
 </head>
 <body>
@@ -151,11 +161,8 @@
   <aside class="ent-sidebar" id="sidebar">
     <div class="ent-sb-brand">
       <div class="ent-sb-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-      </div>
+          <img src="../../assets/img/logo.png" alt="Cadê o Dono?" style="width:100%;height:100%;object-fit:contain;">
+        </div>
       <div class="ent-sb-brand-text">
         <div class="ent-sb-brand-name">Cadê o Dono?</div>
         <div class="ent-badge-ent">Enterprise</div>
@@ -216,7 +223,12 @@
         <div class="ent-sb-user-name">Brookfield Brasil</div>
         <div class="ent-sb-user-role">Fundo Imobiliário</div>
       </div>
-    </div>
+    
+    <a href="../../index.html" class="ent-sb-sair">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair da plataforma
+    </a>
+  </div>
   </aside>
 
   <!-- ── Main ── -->
@@ -253,7 +265,7 @@
       <div class="ent-page-hd" style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
         <div style="flex:1;">
           <div class="ent-page-title">Visão Geral</div>
-          <div class="ent-page-sub">Quinta-feira, 22 de maio de 2026 · São Paulo, SP</div>
+          <div class="ent-page-sub">Quinta-feira, 22 de maio de 2026 · Recife, PE</div>
         </div>
         <a class="ent-btn ent-btn-primary" href="02-ent-mapa.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
@@ -315,47 +327,47 @@
         <!-- Heatmap -->
         <div class="ent-card">
           <div class="ent-card-hd">
-            <div class="ent-card-title">Densidade de Oportunidades por Região — SP Capital</div>
+            <div class="ent-card-title">Densidade de Oportunidades por Região — Centro do Recife</div>
             <a class="ent-btn ent-btn-sm" href="04-ent-inteligencia.html">Ver mapa completo</a>
           </div>
           <div style="padding:14px 14px 0;">
             <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
               <span style="font-size:11px;font-weight:600;color:#64748b;">Bairros:</span>
-              <span style="font-size:11px;color:#475569;">Pinheiros · Vila Madalena · Bela Vista · Consolação · Higienópolis · Itaim · Moema · Liberdade · Perdizes · Lapa · Santana · Tucuruvi</span>
+              <span style="font-size:11px;color:#475569;">Santo Antônio · São José · Boa Vista · Soledade · Ilha do Leite · Recife Antigo · Coelhos · Aflitos · Graças · Torre · Espinheiro · Encruzilhada</span>
             </div>
             <div class="heatmap-grid">
               <!-- Row 1 -->
-              <div class="hm-cell hm-7" title="Pinheiros">Pinh.</div>
-              <div class="hm-cell hm-6" title="Itaim">Itaim</div>
-              <div class="hm-cell hm-5" title="Consolação">Cons.</div>
-              <div class="hm-cell hm-4" title="Bela Vista">BV</div>
-              <div class="hm-cell hm-3" title="Liberdade">Lib.</div>
-              <div class="hm-cell hm-2" title="Mooca">Mooca</div>
-              <div class="hm-cell hm-2" title="Tatuapé">Tatu.</div>
+              <div class="hm-cell hm-7" title="Santo Antônio">S.Ant.</div>
+              <div class="hm-cell hm-6" title="São José">S.José</div>
+              <div class="hm-cell hm-7" title="Boa Vista">B.Vista</div>
+              <div class="hm-cell hm-5" title="Soledade">Soled.</div>
+              <div class="hm-cell hm-4" title="Ilha do Leite">I.Leite</div>
+              <div class="hm-cell hm-3" title="Recife Antigo">R.Ant.</div>
+              <div class="hm-cell hm-2" title="Coelhos">Coelh.</div>
               <!-- Row 2 -->
-              <div class="hm-cell hm-6" title="V. Madalena">V.Mad.</div>
-              <div class="hm-cell hm-7" title="Higienópolis">Hig.</div>
-              <div class="hm-cell hm-5" title="Cerqueira César">C.Cés.</div>
-              <div class="hm-cell hm-3" title="Paraíso">Paraíso</div>
-              <div class="hm-cell hm-2" title="Saúde">Saúde</div>
-              <div class="hm-cell hm-1" title="Ipiranga">Ipir.</div>
-              <div class="hm-cell hm-1" title="Santo André">S.And.</div>
+              <div class="hm-cell hm-5" title="Aflitos">Aflitos</div>
+              <div class="hm-cell hm-6" title="Graças">Graças</div>
+              <div class="hm-cell hm-5" title="Espinheiro">Espin.</div>
+              <div class="hm-cell hm-4" title="Torre">Torre</div>
+              <div class="hm-cell hm-3" title="Encruzilhada">Encr.</div>
+              <div class="hm-cell hm-2" title="Torreão">Torr.</div>
+              <div class="hm-cell hm-1" title="Peixinhos">Peix.</div>
               <!-- Row 3 -->
-              <div class="hm-cell hm-4" title="Perdizes">Perd.</div>
-              <div class="hm-cell hm-5" title="Lapa">Lapa</div>
-              <div class="hm-cell hm-4" title="Pompeia">Pomp.</div>
-              <div class="hm-cell hm-3" title="Barra Funda">B.Fda</div>
-              <div class="hm-cell hm-2" title="Brás">Brás</div>
-              <div class="hm-cell hm-1" title="Belém">Belém</div>
-              <div class="hm-cell hm-1" title="Penha">Penha</div>
-              <!-- Row 4 -->
+              <div class="hm-cell hm-4" title="Jaqueira">Jaq.</div>
+              <div class="hm-cell hm-4" title="Parnamirim">Parna.</div>
               <div class="hm-cell hm-3" title="Santana">Sant.</div>
-              <div class="hm-cell hm-3" title="Tucuruvi">Tuc.</div>
-              <div class="hm-cell hm-2" title="Tremembé">Trem.</div>
-              <div class="hm-cell hm-2" title="Casa Verde">C.Vd.</div>
-              <div class="hm-cell hm-1" title="Jaçanã">Jaç.</div>
-              <div class="hm-cell hm-1" title="Vila Guilherme">VGu.</div>
-              <div class="hm-cell hm-1" title="Ermelino">Erm.</div>
+              <div class="hm-cell hm-3" title="Derby">Derby</div>
+              <div class="hm-cell hm-2" title="Tamarineira">Tama.</div>
+              <div class="hm-cell hm-2" title="Casa Amarela">C.Am.</div>
+              <div class="hm-cell hm-1" title="Dois Irmãos">2Irm.</div>
+              <!-- Row 4 -->
+              <div class="hm-cell hm-3" title="Boa Viagem">B.Viag.</div>
+              <div class="hm-cell hm-3" title="Pina">Pina</div>
+              <div class="hm-cell hm-2" title="Imbiribeira">Imbir.</div>
+              <div class="hm-cell hm-2" title="Ipsep">Ipsep</div>
+              <div class="hm-cell hm-1" title="Ibura">Ibura</div>
+              <div class="hm-cell hm-1" title="Jordão">Jordão</div>
+              <div class="hm-cell hm-1" title="Cohab">Cohab</div>
             </div>
           </div>
           <div class="hm-legend">
@@ -451,46 +463,46 @@
             </thead>
             <tbody>
               <tr onclick="window.location.href='03-ent-oportunidades.html'">
-                <td><div class="oport-address">Rua Bela Cintra, 847</div><div class="oport-sub">Consolação · São Paulo</div></td>
+                <td><div class="oport-address">Rua da Aurora, 512</div><div class="oport-sub">Boa Vista · Recife</div></td>
                 <td><span class="ent-badge ent-badge-info">Terreno</span></td>
-                <td class="ent-td-primary">1.240</td>
-                <td class="ent-td-primary" style="font-weight:700;">R$ 28,4M</td>
+                <td class="ent-td-primary">1.180</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 22,6M</td>
                 <td><span class="ent-risk risk-baixo">Baixo</span></td>
                 <td><span class="ent-badge ent-badge-success">Disponível</span></td>
                 <td><a class="ent-btn ent-btn-sm ent-btn-primary" href="03-ent-oportunidades.html">Analisar</a></td>
               </tr>
               <tr onclick="window.location.href='03-ent-oportunidades.html'">
-                <td><div class="oport-address">Av. Paulista, 2.073</div><div class="oport-sub">Bela Vista · São Paulo</div></td>
+                <td><div class="oport-address">Av. Dantas Barreto, 1.820</div><div class="oport-sub">Santo Antônio · Recife</div></td>
                 <td><span class="ent-badge ent-badge-neutral">Edificação</span></td>
-                <td class="ent-td-primary">3.800</td>
-                <td class="ent-td-primary" style="font-weight:700;">R$ 94,1M</td>
+                <td class="ent-td-primary">4.200</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 78,3M</td>
                 <td><span class="ent-risk risk-medio">Médio</span></td>
                 <td><span class="ent-badge ent-badge-warning">Em análise</span></td>
                 <td><a class="ent-btn ent-btn-sm" href="03-ent-oportunidades.html">Ver</a></td>
               </tr>
               <tr onclick="window.location.href='03-ent-oportunidades.html'">
-                <td><div class="oport-address">R. Mourato Coelho, 310</div><div class="oport-sub">Pinheiros · São Paulo</div></td>
+                <td><div class="oport-address">Rua do Hospício, 234</div><div class="oport-sub">Boa Vista · Recife</div></td>
                 <td><span class="ent-badge ent-badge-info">Terreno</span></td>
-                <td class="ent-td-primary">680</td>
-                <td class="ent-td-primary" style="font-weight:700;">R$ 15,2M</td>
+                <td class="ent-td-primary">720</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 12,8M</td>
                 <td><span class="ent-risk risk-baixo">Baixo</span></td>
                 <td><span class="ent-badge ent-badge-success">Disponível</span></td>
                 <td><a class="ent-btn ent-btn-sm ent-btn-primary" href="03-ent-oportunidades.html">Analisar</a></td>
               </tr>
               <tr onclick="window.location.href='03-ent-oportunidades.html'">
-                <td><div class="oport-address">R. da Consolação, 1.500</div><div class="oport-sub">Higienópolis · São Paulo</div></td>
+                <td><div class="oport-address">Av. Marquês de Olinda, 88</div><div class="oport-sub">Recife Antigo · Recife</div></td>
                 <td><span class="ent-badge ent-badge-neutral">Edificação</span></td>
-                <td class="ent-td-primary">5.200</td>
-                <td class="ent-td-primary" style="font-weight:700;">R$ 136,8M</td>
+                <td class="ent-td-primary">6.100</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 114,5M</td>
                 <td><span class="ent-risk risk-alto">Alto</span></td>
                 <td><span class="ent-badge ent-badge-danger">Disputa judicial</span></td>
                 <td><a class="ent-btn ent-btn-sm" href="03-ent-oportunidades.html">Ver</a></td>
               </tr>
               <tr onclick="window.location.href='03-ent-oportunidades.html'">
-                <td><div class="oport-address">Al. Lorena, 425</div><div class="oport-sub">Jardins · São Paulo</div></td>
+                <td><div class="oport-address">Rua do Riachuelo, 670</div><div class="oport-sub">São José · Recife</div></td>
                 <td><span class="ent-badge ent-badge-primary">Galpão</span></td>
-                <td class="ent-td-primary">2.100</td>
-                <td class="ent-td-primary" style="font-weight:700;">R$ 41,3M</td>
+                <td class="ent-td-primary">1.850</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 31,7M</td>
                 <td><span class="ent-risk risk-baixo">Baixo</span></td>
                 <td><span class="ent-badge ent-badge-success">Disponível</span></td>
                 <td><a class="ent-btn ent-btn-sm ent-btn-primary" href="03-ent-oportunidades.html">Analisar</a></td>
@@ -511,11 +523,11 @@
           </div>
           <div class="ent-card-bd" style="display:flex;flex-direction:column;gap:10px;">
             <div class="region-card">
-              <div class="region-name">Pinheiros · Vila Madalena</div>
+              <div class="region-name">Santo Antônio · São José</div>
               <div class="region-metrics">
-                <div class="region-metric"><strong>142</strong>imóveis</div>
-                <div class="region-metric"><strong>R$ 820M</strong>VGV est.</div>
-                <div class="region-metric"><strong>ZEU-A</strong>Zoneamento</div>
+                <div class="region-metric"><strong>138</strong>imóveis</div>
+                <div class="region-metric"><strong>R$ 680M</strong>VGV est.</div>
+                <div class="region-metric"><strong>ZE-2</strong>Zoneamento</div>
               </div>
               <div class="region-heat">
                 <div class="heat-bar"><div class="heat-fill" style="width:92%;"></div></div>
@@ -523,11 +535,11 @@
               </div>
             </div>
             <div class="region-card">
-              <div class="region-name">Consolação · Bela Vista</div>
+              <div class="region-name">Boa Vista · Soledade</div>
               <div class="region-metrics">
-                <div class="region-metric"><strong>97</strong>imóveis</div>
-                <div class="region-metric"><strong>R$ 1,1B</strong>VGV est.</div>
-                <div class="region-metric"><strong>ZM-B</strong>Zoneamento</div>
+                <div class="region-metric"><strong>104</strong>imóveis</div>
+                <div class="region-metric"><strong>R$ 920M</strong>VGV est.</div>
+                <div class="region-metric"><strong>ZD-1</strong>Zoneamento</div>
               </div>
               <div class="region-heat">
                 <div class="heat-bar"><div class="heat-fill" style="width:85%;"></div></div>
@@ -535,11 +547,11 @@
               </div>
             </div>
             <div class="region-card">
-              <div class="region-name">Higienópolis · Perdizes</div>
+              <div class="region-name">Ilha do Leite · Graças</div>
               <div class="region-metrics">
-                <div class="region-metric"><strong>78</strong>imóveis</div>
-                <div class="region-metric"><strong>R$ 640M</strong>VGV est.</div>
-                <div class="region-metric"><strong>ZEU-B</strong>Zoneamento</div>
+                <div class="region-metric"><strong>71</strong>imóveis</div>
+                <div class="region-metric"><strong>R$ 540M</strong>VGV est.</div>
+                <div class="region-metric"><strong>ZEP-3</strong>Zoneamento</div>
               </div>
               <div class="region-heat">
                 <div class="heat-bar"><div class="heat-fill" style="width:71%;background:#6366f1;"></div></div>
@@ -557,32 +569,32 @@
           <div class="activity-list">
             <div class="activity-item">
               <div class="act-dot" style="background:#4f46e5;"></div>
-              <div class="act-text"><strong>Nova oportunidade identificada</strong> — Terreno 1.240m² em Consolação adicionado ao radar.</div>
+              <div class="act-text"><strong>Nova oportunidade identificada</strong> — Terreno 1.180m² na Rua da Aurora adicionado ao radar.</div>
               <div class="act-time">Agora</div>
             </div>
             <div class="activity-item">
               <div class="act-dot" style="background:#059669;"></div>
-              <div class="act-text"><strong>Mediação iniciada</strong> — Solicitação de contato enviada para imóvel na Al. Lorena, 425.</div>
+              <div class="act-text"><strong>Mediação iniciada</strong> — Solicitação de contato enviada para imóvel na Rua do Riachuelo, 670.</div>
               <div class="act-time">2h</div>
             </div>
             <div class="activity-item">
               <div class="act-dot" style="background:#d97706;"></div>
-              <div class="act-text"><strong>Alerta de risco</strong> — Disputa judicial identificada na R. da Consolação, 1.500.</div>
+              <div class="act-text"><strong>Alerta de risco</strong> — Disputa judicial identificada na Av. Marquês de Olinda, 88.</div>
               <div class="act-time">5h</div>
             </div>
             <div class="activity-item">
               <div class="act-dot" style="background:#4f46e5;"></div>
-              <div class="act-text"><strong>Relatório exportado</strong> — Análise territorial Pinheiros · Maio 2026 gerado com sucesso.</div>
+              <div class="act-text"><strong>Relatório exportado</strong> — Análise territorial Boa Vista · Maio 2026 gerado com sucesso.</div>
               <div class="act-time">1d</div>
             </div>
             <div class="activity-item">
               <div class="act-dot" style="background:#0891b2;"></div>
-              <div class="act-text"><strong>Região quente</strong> — Higienópolis identificada como nova zona de alta oportunidade.</div>
+              <div class="act-text"><strong>Região quente</strong> — Ilha do Leite identificada como nova zona de alta oportunidade.</div>
               <div class="act-time">2d</div>
             </div>
             <div class="activity-item">
               <div class="act-dot" style="background:#059669;"></div>
-              <div class="act-text"><strong>Pipeline atualizado</strong> — Av. Paulista, 2.073 avançou para etapa de Negociação.</div>
+              <div class="act-text"><strong>Pipeline atualizado</strong> — Av. Dantas Barreto, 1.820 avançou para etapa de Negociação.</div>
               <div class="act-time">3d</div>
             </div>
           </div>
