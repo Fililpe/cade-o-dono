@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inteligência Territorial — Cadê o Dono? Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/enterprise.css" />
+  <style>
+    .two-col  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .three-col{ display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+    /* Trend chart (CSS bars) */
+    .trend-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+      padding: 10px 18px 14px;
+    }
+    .trend-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; height: 100%; justify-content: flex-end; }
+    .trend-bar { width: 100%; border-radius: 5px 5px 0 0; transition: opacity .14s; }
+    .trend-bar:hover { opacity: 0.8; }
+    .trend-label { font-size: 10px; color: #94a3b8; }
+    .trend-val   { font-size: 10px; font-weight: 700; color: #475569; }
+
+    /* Donut chart (pure CSS) */
+    .donut-wrap { display: flex; align-items: center; gap: 20px; }
+    .donut {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #4f46e5 0% 34%,
+        #6366f1 34% 56%,
+        #818cf8 56% 74%,
+        #a5b4fc 74% 88%,
+        #e0e7ff 88% 100%
+      );
+      position: relative;
+      flex-shrink: 0;
+    }
+    .donut::after {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      background: #fff;
+      border-radius: 50%;
+    }
+    .donut-legend { display: flex; flex-direction: column; gap: 6px; }
+    .donut-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #475569; }
+    .donut-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Heatmap full */
+    .big-heatmap { padding: 14px; }
+    .heatmap-row { display: flex; gap: 4px; margin-bottom: 4px; align-items: center; }
+    .hm-row-label { font-size: 10px; color: #94a3b8; width: 80px; flex-shrink: 0; text-align: right; padding-right: 8px; }
+    .hm-cell {
+      flex: 1;
+      aspect-ratio: 1.6;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: transform .12s;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: rgba(255,255,255,.85);
+    }
+    .hm-cell:hover { transform: scale(1.08); z-index: 2; }
+    .col-labels { display: flex; gap: 4px; padding-left: calc(80px + 8px); margin-bottom: 4px; }
+    .col-label  { flex: 1; font-size: 9px; color: #94a3b8; text-align: center; }
+
+    .hm-0 { background: #eff6ff; color: #3b82f6; }
+    .hm-1 { background: #bfdbfe; color: #1e40af; }
+    .hm-2 { background: #93c5fd; color: #1e3a8a; }
+    .hm-3 { background: #60a5fa; }
+    .hm-4 { background: #3b82f6; }
+    .hm-5 { background: #2563eb; }
+    .hm-6 { background: #1d4ed8; }
+    .hm-7 { background: #1e40af; }
+
+    /* Region table */
+    .region-score { display: flex; align-items: center; gap: 8px; }
+    .region-bar-bg { flex: 1; height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+    .region-bar-fill { height: 100%; border-radius: 3px; background: #4f46e5; }
+    .region-score-num { font-size: 12px; font-weight: 700; color: #0f172a; width: 28px; text-align: right; }
+
+    /* KPI comparison */
+    .vs-card {
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+    }
+    .vs-title { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 10px; }
+    .vs-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; margin-top: 6px; }
+    .vs-row span:first-child { color: #475569; }
+    .vs-row span:last-child  { color: #0f172a; font-weight: 700; }
+
+    @media (max-width: 900px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="ent-root">
+  <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+  <aside class="ent-sidebar" id="sidebar">
+    <div class="ent-sb-brand">
+      <div class="ent-sb-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="ent-sb-brand-text"><div class="ent-sb-brand-name">Cadê o Dono?</div><div class="ent-badge-ent">Enterprise</div></div>
+    </div>
+    <nav class="ent-sb-nav">
+      <div class="ent-sb-section">Principal</div>
+      <a class="ent-sb-link" href="01-ent-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a class="ent-sb-link" href="02-ent-mapa.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>Mapa Premium</a>
+      <a class="ent-sb-link" href="03-ent-oportunidades.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Oportunidades</a>
+      <a class="ent-sb-link active" href="04-ent-inteligencia.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Inteligência</a>
+      <a class="ent-sb-link" href="05-ent-pipeline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Pipeline</a>
+      <div class="ent-sb-divider"></div>
+      <div class="ent-sb-section">Gestão</div>
+      <a class="ent-sb-link" href="06-ent-billing.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Assinatura</a>
+      <div class="ent-sb-divider"></div>
+    </nav>
+    <div class="ent-sb-tier">
+      <div class="ent-sb-tier-label">Plano Atual</div>
+      <div class="ent-sb-tier-name">Urban Intelligence</div>
+      <div class="ent-sb-tier-bar"><div class="ent-sb-tier-fill" style="width:58%"></div></div>
+    </div>
+    <div class="ent-sb-user">
+      <div class="ent-sb-avatar">BR</div>
+      <div><div class="ent-sb-user-name">Brookfield Brasil</div><div class="ent-sb-user-role">Fundo Imobiliário</div></div>
+    </div>
+  </aside>
+
+  <main class="ent-main">
+    <header class="ent-topbar">
+      <button class="ent-hamburger" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="ent-tb-breadcrumb"><span>Enterprise</span><span class="sep">›</span><span class="active">Inteligência Territorial</span></div>
+      <div class="ent-tb-actions">
+        <select class="ent-select"><option>São Paulo Capital</option><option>Grande SP</option><option>Brasil (Tier 3)</option></select>
+        <button class="ent-btn ent-btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Gerar relatório
+        </button>
+        <div class="ent-tb-avatar">BR</div>
+      </div>
+    </header>
+
+    <div class="ent-content">
+      <div class="ent-page-hd" style="margin-bottom:20px;">
+        <div class="ent-page-title">Inteligência Territorial</div>
+        <div class="ent-page-sub">Análise de potencial construtivo, zoneamento, VGV e densidade urbana — São Paulo Capital · maio 2026</div>
+      </div>
+
+      <!-- Top KPIs -->
+      <div class="ent-kpi-row" style="margin-bottom:16px;">
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">VGV Total Identificado</div>
+          <div class="ent-kpi-value">R$ 4,2B</div>
+          <div class="ent-kpi-delta"><svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg><span class="delta-up">+18%</span> vs. trimestre</div>
+        </div>
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">Área Construtiva Potencial</div>
+          <div class="ent-kpi-value">2,8M m²</div>
+          <div class="ent-kpi-delta"><svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg><span class="delta-up">+340k m²</span> novo mês</div>
+        </div>
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">Imóveis ZEU mapeados</div>
+          <div class="ent-kpi-value">1.248</div>
+          <div class="ent-kpi-delta"><span style="color:#64748b;">67% do total disponível</span></div>
+        </div>
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">Ticket médio estimado</div>
+          <div class="ent-kpi-value">R$ 4,9M</div>
+          <div class="ent-kpi-delta"><svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg><span class="delta-up">+6,2%</span> vs. mês</div>
+        </div>
+      </div>
+
+      <!-- Trend + Donut -->
+      <div class="two-col">
+        <div class="ent-card">
+          <div class="ent-card-hd">
+            <div class="ent-card-title">Evolução de Oportunidades Identificadas</div>
+            <select class="ent-select" style="width:auto;"><option>Últimos 12 meses</option><option>Último trimestre</option></select>
+          </div>
+          <div class="trend-chart">
+            <div class="trend-col"><div class="trend-val">542</div><div class="trend-bar" style="height:55%;background:#c7d2fe;"></div><div class="trend-label">Jun</div></div>
+            <div class="trend-col"><div class="trend-val">581</div><div class="trend-bar" style="height:60%;background:#a5b4fc;"></div><div class="trend-label">Jul</div></div>
+            <div class="trend-col"><div class="trend-val">608</div><div class="trend-bar" style="height:63%;background:#a5b4fc;"></div><div class="trend-label">Ago</div></div>
+            <div class="trend-col"><div class="trend-val">624</div><div class="trend-bar" style="height:65%;background:#818cf8;"></div><div class="trend-label">Set</div></div>
+            <div class="trend-col"><div class="trend-val">661</div><div class="trend-bar" style="height:69%;background:#818cf8;"></div><div class="trend-label">Out</div></div>
+            <div class="trend-col"><div class="trend-val">695</div><div class="trend-bar" style="height:73%;background:#6366f1;"></div><div class="trend-label">Nov</div></div>
+            <div class="trend-col"><div class="trend-val">712</div><div class="trend-bar" style="height:75%;background:#6366f1;"></div><div class="trend-label">Dez</div></div>
+            <div class="trend-col"><div class="trend-val">741</div><div class="trend-bar" style="height:78%;background:#4f46e5;"></div><div class="trend-label">Jan</div></div>
+            <div class="trend-col"><div class="trend-val">780</div><div class="trend-bar" style="height:82%;background:#4f46e5;"></div><div class="trend-label">Fev</div></div>
+            <div class="trend-col"><div class="trend-val">798</div><div class="trend-bar" style="height:84%;background:#4338ca;"></div><div class="trend-label">Mar</div></div>
+            <div class="trend-col"><div class="trend-val">821</div><div class="trend-bar" style="height:87%;background:#4338ca;"></div><div class="trend-label">Abr</div></div>
+            <div class="trend-col"><div class="trend-val" style="color:#4f46e5;font-weight:800;">847</div><div class="trend-bar" style="height:90%;background:#3730a3;border:2px solid #4f46e5;"></div><div class="trend-label" style="color:#4f46e5;font-weight:700;">Mai</div></div>
+          </div>
+        </div>
+
+        <div class="ent-card">
+          <div class="ent-card-hd"><div class="ent-card-title">Distribuição por Tipo de Ativo</div></div>
+          <div class="ent-card-bd">
+            <div class="donut-wrap">
+              <div class="donut"></div>
+              <div class="donut-legend">
+                <div class="donut-item"><div class="donut-dot" style="background:#4f46e5;"></div>Edificação abandonada — 34%</div>
+                <div class="donut-item"><div class="donut-dot" style="background:#6366f1;"></div>Terreno vago — 22%</div>
+                <div class="donut-item"><div class="donut-dot" style="background:#818cf8;"></div>Imóvel irregular — 18%</div>
+                <div class="donut-item"><div class="donut-dot" style="background:#a5b4fc;"></div>Galpão ocioso — 14%</div>
+                <div class="donut-item"><div class="donut-dot" style="background:#e0e7ff;color:#4f46e5;"></div>Outros — 12%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heatmap by zone + Region ranking -->
+      <div class="two-col">
+        <div class="ent-card">
+          <div class="ent-card-hd">
+            <div class="ent-card-title">Heatmap — Intensidade de oportunidades por bairro</div>
+          </div>
+          <div class="big-heatmap">
+            <div class="col-labels">
+              <div class="col-label">Jan</div>
+              <div class="col-label">Fev</div>
+              <div class="col-label">Mar</div>
+              <div class="col-label">Abr</div>
+              <div class="col-label">Mai ▲</div>
+            </div>
+            <div class="heatmap-row"><div class="hm-row-label">Pinheiros</div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6"></div><div class="hm-cell hm-6"></div><div class="hm-cell hm-7"></div><div class="hm-cell hm-7">142</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Consolação</div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6">97</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Higienópolis</div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5">78</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Itaim Bibi</div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-5"></div><div class="hm-cell hm-6">63</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Bela Vista</div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-4"></div><div class="hm-cell hm-4">58</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Perdizes</div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3"></div><div class="hm-cell hm-3">41</div></div>
+            <div class="heatmap-row"><div class="hm-row-label">Moema</div><div class="hm-cell hm-1"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-2"></div><div class="hm-cell hm-3">28</div></div>
+          </div>
+        </div>
+
+        <div class="ent-card">
+          <div class="ent-card-hd"><div class="ent-card-title">Ranking de Regiões — Score de Oportunidade</div></div>
+          <div style="overflow-x:auto;">
+            <table class="ent-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Região</th>
+                  <th>Imóveis</th>
+                  <th>VGV est.</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="color:#94a3b8;font-weight:700;">1</td><td class="ent-td-primary">Pinheiros</td><td>142</td><td style="font-weight:700;">R$ 820M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:92%;"></div></div><div class="region-score-num">92</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">2</td><td class="ent-td-primary">Consolação</td><td>97</td><td style="font-weight:700;">R$ 1,1B</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:88%;"></div></div><div class="region-score-num">88</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">3</td><td class="ent-td-primary">Higienópolis</td><td>78</td><td style="font-weight:700;">R$ 640M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:81%;"></div></div><div class="region-score-num">81</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">4</td><td class="ent-td-primary">Itaim Bibi</td><td>63</td><td style="font-weight:700;">R$ 540M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:75%;"></div></div><div class="region-score-num">75</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">5</td><td class="ent-td-primary">Bela Vista</td><td>58</td><td style="font-weight:700;">R$ 490M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:71%;"></div></div><div class="region-score-num">71</div></div></td></tr>
+                <tr><td style="color:#94a3b8;font-weight:700;">6</td><td class="ent-td-primary">Perdizes</td><td>41</td><td style="font-weight:700;">R$ 320M</td><td><div class="region-score"><div class="region-bar-bg"><div class="region-bar-fill" style="width:64%;"></div></div><div class="region-score-num">64</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zoning breakdown -->
+      <div class="three-col">
+        <div class="vs-card">
+          <div class="vs-title">ZEU-A — Zona Eixo de Estruturação</div>
+          <div class="vs-row"><span>Imóveis identificados</span><span>412</span></div>
+          <div class="vs-row"><span>Coef. aproveitamento</span><span>até 4,0</span></div>
+          <div class="vs-row"><span>Gabarito médio</span><span>28 pav.</span></div>
+          <div class="vs-row"><span>VGV potencial total</span><span>R$ 1,8B</span></div>
+          <div class="vs-row"><span>Score médio</span><span style="color:#4f46e5;">87/100</span></div>
+        </div>
+        <div class="vs-card">
+          <div class="vs-title">ZEU-B — Zona Eixo (faixa lateral)</div>
+          <div class="vs-row"><span>Imóveis identificados</span><span>298</span></div>
+          <div class="vs-row"><span>Coef. aproveitamento</span><span>até 2,5</span></div>
+          <div class="vs-row"><span>Gabarito médio</span><span>18 pav.</span></div>
+          <div class="vs-row"><span>VGV potencial total</span><span>R$ 1,2B</span></div>
+          <div class="vs-row"><span>Score médio</span><span style="color:#4f46e5;">74/100</span></div>
+        </div>
+        <div class="vs-card">
+          <div class="vs-title">ZM-A/B — Zona Mista</div>
+          <div class="vs-row"><span>Imóveis identificados</span><span>137</span></div>
+          <div class="vs-row"><span>Coef. aproveitamento</span><span>até 1,5</span></div>
+          <div class="vs-row"><span>Gabarito médio</span><span>12 pav.</span></div>
+          <div class="vs-row"><span>VGV potencial total</span><span>R$ 620M</span></div>
+          <div class="vs-row"><span>Score médio</span><span style="color:#4f46e5;">62/100</span></div>
+        </div>
+      </div>
+
+      <!-- Upgrade notice -->
+      <div style="background:#0f172a;border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:0;">
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px;">Análise geotécnica completa disponível no Tier 3</div>
+          <div style="font-size:13px;color:#64748b;line-height:1.5;">Acesse laudos geotécnicos preliminares, risco de subsolo, viabilidade de fundação e mediação com empresas especializadas para cada imóvel mapeado.</div>
+        </div>
+        <a class="ent-btn" href="06-ent-billing.html" style="background:#4f46e5;border-color:#4f46e5;color:#fff;white-space:nowrap;height:40px;padding:0 18px;font-size:13px;border-radius:10px;">Ver planos Enterprise</a>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sb-overlay').classList.toggle('open'); }
+  function closeSidebar()  { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sb-overlay').classList.remove('open'); }
+</script>
+</body>
+</html>

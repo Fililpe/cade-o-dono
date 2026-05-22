@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadê o Dono? Enterprise — Acesso Institucional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Sora", -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Left panel (dark) ── */
+    .panel-left {
+      width: 420px;
+      flex-shrink: 0;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      top: -120px; right: -120px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: auto;
+    }
+    .brand-logo {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: #4f46e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(79,70,229,0.4);
+    }
+    .brand-logo svg { width: 19px; height: 19px; }
+    .brand-text { flex: 1; }
+    .brand-name { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
+    .brand-ent  { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #818cf8; }
+
+    .panel-left-content { margin-top: 52px; }
+    .panel-left-content h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.6px;
+      line-height: 1.3;
+    }
+    .panel-left-content p {
+      font-size: 14px;
+      color: #64748b;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .feature-list {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .feature-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(79,70,229,0.15);
+      border: 1px solid rgba(79,70,229,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .feature-icon svg { width: 15px; height: 15px; color: #818cf8; }
+    .feature-text { padding-top: 3px; }
+    .feature-text strong { display: block; font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
+    .feature-text span   { font-size: 12px; color: #475569; line-height: 1.4; }
+
+    .panel-left-footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 11px;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .panel-left-footer a { color: #4f46e5; text-decoration: none; }
+
+    /* ── Right panel (form) ── */
+    .panel-right {
+      flex: 1;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+    }
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748b;
+      text-decoration: none;
+      margin-bottom: 28px;
+      transition: color 0.14s;
+    }
+    .back-link:hover { color: #0f172a; }
+    .back-link svg { width: 14px; height: 14px; }
+
+    .login-box h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .login-box .sub {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    /* Profile type selector */
+    .profile-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 22px;
+    }
+    .profile-opt {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      background: #fff;
+      transition: border-color 0.14s, background 0.14s;
+      text-align: left;
+    }
+    .profile-opt:hover { border-color: #c7d2fe; background: #eef2ff; }
+    .profile-opt.selected { border-color: #4f46e5; background: #eef2ff; }
+    .profile-opt-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .profile-opt-name span { font-size: 14px; }
+    .profile-opt-desc { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    .form-fields { margin-top: 22px; display: flex; flex-direction: column; gap: 14px; }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #0f172a;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .field-input {
+      width: 100%;
+      height: 42px;
+      border-radius: 9px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      padding: 0 13px;
+      font-family: "Sora", sans-serif;
+      font-size: 13px;
+      color: #0f172a;
+      outline: none;
+      transition: border-color 0.14s, box-shadow 0.14s;
+    }
+    .field-input::placeholder { color: #94a3b8; font-size: 13px; }
+    .field-input:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.09); }
+
+    .field-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+    .forgot-link { font-size: 11px; color: #4f46e5; text-decoration: none; font-weight: 500; }
+    .forgot-link:hover { text-decoration: underline; }
+
+    .input-wrap { position: relative; }
+    .input-wrap .field-input { padding-right: 42px; }
+    .toggle-pwd {
+      position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: #94a3b8; padding: 4px;
+      display: flex; align-items: center;
+    }
+    .toggle-pwd svg { width: 15px; height: 15px; }
+
+    .form-error {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 9px;
+      padding: 10px 13px;
+      font-size: 12px;
+      color: #dc2626;
+    }
+    .form-error.visible { display: flex; }
+    .form-error svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    .btn-submit {
+      width: 100%;
+      height: 44px;
+      border-radius: 10px;
+      border: none;
+      background: #4f46e5;
+      color: #fff;
+      font-family: "Sora", sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      box-shadow: 0 1px 4px rgba(79,70,229,0.25);
+      transition: background 0.14s, transform 0.14s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-submit:hover { background: #4338ca; transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .login-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .login-footer a { color: #4f46e5; font-weight: 500; text-decoration: none; }
+    .login-footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .panel-left { display: none; }
+      .panel-right { background: #f8fafc; }
+    }
+    @media (max-width: 480px) {
+      .panel-right { padding: 24px 20px; align-items: flex-start; padding-top: 40px; }
+      .profile-selector { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left: branding + features -->
+  <div class="panel-left">
+    <div class="brand-mark">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-name">Cadê o Dono?</div>
+        <div class="brand-ent">Enterprise</div>
+      </div>
+    </div>
+
+    <div class="panel-left-content">
+      <h1>Inteligência imobiliária urbana para decisões institucionais</h1>
+      <p>Acesso a dados territoriais, análise de potencial construtivo e prospecção de ativos urbanos com conformidade LGPD.</p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>Mapa georreferenciado premium</strong>
+            <span>Clusters, heatmaps, zoneamento e camadas urbanas em tempo real</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>Inteligência territorial</strong>
+            <span>VGV, potencial construtivo, zoneamento e gabarito por região</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>Conformidade LGPD nativa</strong>
+            <span>Mediação institucional, auditoria e consentimento em toda cadeia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-left-footer">
+      Plataforma governada pela <a href="#">Política de Privacidade</a> e <a href="#">Termos Enterprise</a>. Todos os acessos são auditados.
+    </div>
+  </div>
+
+  <!-- Right: form -->
+  <div class="panel-right">
+    <div class="login-box">
+      <a class="back-link" href="../../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Voltar ao início
+      </a>
+
+      <h2>Acesso Empresarial</h2>
+      <p class="sub">Selecione seu perfil institucional e entre com as credenciais da sua organização.</p>
+
+      <!-- Profile selector -->
+      <div class="profile-selector">
+        <button class="profile-opt selected" onclick="selectProfile(this, 'investidor')" type="button">
+          <div class="profile-opt-name"><span>📈</span> Investidor</div>
+          <div class="profile-opt-desc">Fundo / Urbano</div>
+        </button>
+        <button class="profile-opt" onclick="selectProfile(this, 'construtora')" type="button">
+          <div class="profile-opt-name"><span>🏗️</span> Construtora</div>
+          <div class="profile-opt-desc">Desenvolvimento</div>
+        </button>
+        <button class="profile-opt" onclick="selectProfile(this, 'incorporadora')" type="button">
+          <div class="profile-opt-name"><span>🏢</span> Incorporadora</div>
+          <div class="profile-opt-desc">Empreendimentos</div>
+        </button>
+        <button class="profile-opt" onclick="selectProfile(this, 'fundo')" type="button">
+          <div class="profile-opt-name"><span>🏦</span> Fundo Imob.</div>
+          <div class="profile-opt-desc">FII / CRI</div>
+        </button>
+      </div>
+
+      <!-- Login form -->
+      <form class="form-fields" id="login-form" onsubmit="handleLogin(event)">
+        <div>
+          <label class="field-label" for="email">E-mail corporativo</label>
+          <input class="field-input" id="email" type="email" placeholder="nome@empresa.com.br" autocomplete="email" required />
+        </div>
+        <div>
+          <div class="field-row">
+            <label class="field-label" for="password">Senha</label>
+            <a class="forgot-link" href="#">Esqueci minha senha</a>
+          </div>
+          <div class="input-wrap">
+            <input class="field-input" id="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+            <button type="button" class="toggle-pwd" onclick="togglePwd('password', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-error" id="form-error">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          Credenciais inválidas. Verifique e-mail e senha.
+        </div>
+
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Entrar na plataforma
+        </button>
+      </form>
+
+      <div class="login-footer">
+        Não tem acesso? <a href="#">Solicitar demonstração</a> · <a href="../../../index.html">Plataforma cidadã</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var selectedProfile = 'investidor';
+    var DEST = '../01-ent-dashboard.html';
+
+    var MOCK = [
+      { email: 'investidor@brookfield.com', password: 'enterprise' },
+      { email: 'usuario@tegra.com.br',      password: 'enterprise' },
+      { email: 'demo@enterprise.com',        password: '123456'     },
+      { email: 'admin@fundo.com.br',         password: 'enterprise' },
+    ];
+
+    function selectProfile(el, profile) {
+      document.querySelectorAll('.profile-opt').forEach(function(b) { b.classList.remove('selected'); });
+      el.classList.add('selected');
+      selectedProfile = profile;
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      var email = document.getElementById('email').value.trim().toLowerCase();
+      var pwd   = document.getElementById('password').value;
+      var errEl = document.getElementById('form-error');
+      var btn   = document.getElementById('submit-btn');
+      var valid = MOCK.some(function(u) { return u.email === email && u.password === pwd; });
+      if (valid) {
+        errEl.classList.remove('visible');
+        btn.textContent = 'Entrando…';
+        btn.disabled = true;
+        localStorage.setItem('ent_profile', selectedProfile);
+        setTimeout(function() { window.location.href = DEST; }, 700);
+      } else {
+        errEl.classList.add('visible');
+      }
+    }
+
+    function togglePwd(id, btn) {
+      var inp = document.getElementById(id);
+      var show = inp.type === 'text';
+      inp.type = show ? 'password' : 'text';
+      btn.innerHTML = show
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Cadê o Dono? Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/enterprise.css" />
+  <style>
+    /* ── Page-specific ── */
+    .two-col { display: grid; grid-template-columns: 1fr 340px; gap: 14px; margin-bottom: 14px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+    /* Heatmap preview */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      padding: 4px;
+    }
+    .hm-cell {
+      aspect-ratio: 1;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      cursor: pointer;
+      transition: transform 0.12s;
+      position: relative;
+    }
+    .hm-cell:hover { transform: scale(1.08); z-index: 2; }
+    .hm-1 { background: #dbeafe; color: #1e40af; }
+    .hm-2 { background: #93c5fd; color: #1e3a8a; }
+    .hm-3 { background: #60a5fa; color: #fff; }
+    .hm-4 { background: #3b82f6; color: #fff; }
+    .hm-5 { background: #2563eb; color: #fff; }
+    .hm-6 { background: #1d4ed8; color: #fff; }
+    .hm-7 { background: #1e40af; color: #fff; }
+    .hm-legend {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px 14px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+    .hm-legend-bar {
+      flex: 1;
+      height: 6px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #dbeafe, #1e40af);
+    }
+
+    /* Mini bar chart */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 80px;
+      padding: 0 18px 14px;
+    }
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .bar-fill {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      background: #4f46e5;
+      opacity: 0.8;
+      transition: opacity 0.14s;
+    }
+    .bar-fill:hover { opacity: 1; }
+    .bar-label { font-size: 9px; color: #94a3b8; white-space: nowrap; }
+
+    /* Pipeline funnel */
+    .funnel { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
+    .funnel-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .funnel-label { font-size: 11px; color: #64748b; width: 90px; flex-shrink: 0; text-align: right; }
+    .funnel-bar-wrap { flex: 1; height: 22px; background: #f1f5f9; border-radius: 5px; overflow: hidden; }
+    .funnel-bar { height: 100%; border-radius: 5px; display: flex; align-items: center; padding-left: 8px; }
+    .funnel-bar span { font-size: 11px; font-weight: 600; color: #fff; }
+    .funnel-count { font-size: 12px; font-weight: 700; color: #0f172a; width: 28px; text-align: right; flex-shrink: 0; }
+
+    /* Recent table */
+    .oport-address { font-size: 13px; font-weight: 500; color: #0f172a; }
+    .oport-sub     { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+
+    /* Activity feed */
+    .activity-list { display: flex; flex-direction: column; }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 18px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .act-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .act-text { font-size: 12px; color: #475569; line-height: 1.5; flex: 1; }
+    .act-text strong { color: #0f172a; font-weight: 600; }
+    .act-time { font-size: 11px; color: #94a3b8; white-space: nowrap; }
+
+    /* Region cards */
+    .region-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .region-name { font-size: 13px; font-weight: 600; color: #0f172a; }
+    .region-metrics { display: flex; gap: 14px; margin-top: 8px; }
+    .region-metric { font-size: 12px; color: #64748b; }
+    .region-metric strong { color: #0f172a; display: block; font-size: 15px; font-weight: 700; }
+    .region-heat { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+    .heat-bar { flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+    .heat-fill { height: 100%; border-radius: 2px; background: #4f46e5; }
+    .heat-pct { font-size: 11px; color: #64748b; }
+
+    @media (max-width: 900px) {
+      .two-col, .three-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="ent-root">
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+  <!-- ── Sidebar ── -->
+  <aside class="ent-sidebar" id="sidebar">
+    <div class="ent-sb-brand">
+      <div class="ent-sb-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="ent-sb-brand-text">
+        <div class="ent-sb-brand-name">Cadê o Dono?</div>
+        <div class="ent-badge-ent">Enterprise</div>
+      </div>
+    </div>
+
+    <nav class="ent-sb-nav">
+      <div class="ent-sb-section">Principal</div>
+
+      <a class="ent-sb-link active" href="01-ent-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="ent-sb-link" href="02-ent-mapa.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        Mapa Premium
+      </a>
+      <a class="ent-sb-link" href="03-ent-oportunidades.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Oportunidades
+      </a>
+      <a class="ent-sb-link" href="04-ent-inteligencia.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Inteligência
+      </a>
+      <a class="ent-sb-link" href="05-ent-pipeline.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Pipeline
+      </a>
+
+      <div class="ent-sb-divider"></div>
+      <div class="ent-sb-section">Gestão</div>
+
+      <a class="ent-sb-link" href="06-ent-billing.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Assinatura
+      </a>
+      <a class="ent-sb-link" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        API & Integrações
+      </a>
+
+      <div class="ent-sb-divider"></div>
+    </nav>
+
+    <!-- Tier -->
+    <div class="ent-sb-tier">
+      <div class="ent-sb-tier-label">Plano Atual</div>
+      <div class="ent-sb-tier-name">Urban Intelligence</div>
+      <div class="ent-sb-tier-bar"><div class="ent-sb-tier-fill" style="width:58%"></div></div>
+      <div style="font-size:11px;color:#475569;margin-top:5px;">58% da cota mensal utilizada</div>
+    </div>
+
+    <!-- User -->
+    <div class="ent-sb-user">
+      <div class="ent-sb-avatar">BR</div>
+      <div>
+        <div class="ent-sb-user-name">Brookfield Brasil</div>
+        <div class="ent-sb-user-role">Fundo Imobiliário</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="ent-main">
+
+    <!-- Topbar -->
+    <header class="ent-topbar">
+      <button class="ent-hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="ent-tb-breadcrumb">
+        <span>Enterprise</span>
+        <span class="sep">›</span>
+        <span class="active">Dashboard</span>
+      </div>
+
+      <div class="ent-tb-actions">
+        <div class="ent-tier-pill">Urban Intelligence</div>
+        <button class="ent-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Exportar
+        </button>
+        <div class="ent-tb-avatar">BR</div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="ent-content">
+
+      <!-- Page header -->
+      <div class="ent-page-hd" style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="flex:1;">
+          <div class="ent-page-title">Visão Geral</div>
+          <div class="ent-page-sub">Quinta-feira, 22 de maio de 2026 · São Paulo, SP</div>
+        </div>
+        <a class="ent-btn ent-btn-primary" href="02-ent-mapa.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          Abrir mapa
+        </a>
+      </div>
+
+      <!-- KPIs -->
+      <div class="ent-kpi-row">
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Oportunidades Ativas
+          </div>
+          <div class="ent-kpi-value">847</div>
+          <div class="ent-kpi-delta">
+            <svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            <span class="delta-up">+12%</span> vs. mês anterior
+          </div>
+        </div>
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Imóveis Monitorados
+          </div>
+          <div class="ent-kpi-value">2.341</div>
+          <div class="ent-kpi-delta">
+            <svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            <span class="delta-up">+84</span> esta semana
+          </div>
+        </div>
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Regiões Quentes
+          </div>
+          <div class="ent-kpi-value">8</div>
+          <div class="ent-kpi-delta">
+            <svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            <span class="delta-up">+2 novas</span> identificadas
+          </div>
+        </div>
+        <div class="ent-kpi">
+          <div class="ent-kpi-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Potencial VGV
+          </div>
+          <div class="ent-kpi-value">R$ 4,2B</div>
+          <div class="ent-kpi-delta">
+            <svg class="delta-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            <span class="delta-up">+18%</span> vs. trimestre anterior
+          </div>
+        </div>
+      </div>
+
+      <!-- Heatmap + Pipeline -->
+      <div class="two-col" style="margin-bottom:14px;">
+
+        <!-- Heatmap -->
+        <div class="ent-card">
+          <div class="ent-card-hd">
+            <div class="ent-card-title">Densidade de Oportunidades por Região — SP Capital</div>
+            <a class="ent-btn ent-btn-sm" href="04-ent-inteligencia.html">Ver mapa completo</a>
+          </div>
+          <div style="padding:14px 14px 0;">
+            <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+              <span style="font-size:11px;font-weight:600;color:#64748b;">Bairros:</span>
+              <span style="font-size:11px;color:#475569;">Pinheiros · Vila Madalena · Bela Vista · Consolação · Higienópolis · Itaim · Moema · Liberdade · Perdizes · Lapa · Santana · Tucuruvi</span>
+            </div>
+            <div class="heatmap-grid">
+              <!-- Row 1 -->
+              <div class="hm-cell hm-7" title="Pinheiros">Pinh.</div>
+              <div class="hm-cell hm-6" title="Itaim">Itaim</div>
+              <div class="hm-cell hm-5" title="Consolação">Cons.</div>
+              <div class="hm-cell hm-4" title="Bela Vista">BV</div>
+              <div class="hm-cell hm-3" title="Liberdade">Lib.</div>
+              <div class="hm-cell hm-2" title="Mooca">Mooca</div>
+              <div class="hm-cell hm-2" title="Tatuapé">Tatu.</div>
+              <!-- Row 2 -->
+              <div class="hm-cell hm-6" title="V. Madalena">V.Mad.</div>
+              <div class="hm-cell hm-7" title="Higienópolis">Hig.</div>
+              <div class="hm-cell hm-5" title="Cerqueira César">C.Cés.</div>
+              <div class="hm-cell hm-3" title="Paraíso">Paraíso</div>
+              <div class="hm-cell hm-2" title="Saúde">Saúde</div>
+              <div class="hm-cell hm-1" title="Ipiranga">Ipir.</div>
+              <div class="hm-cell hm-1" title="Santo André">S.And.</div>
+              <!-- Row 3 -->
+              <div class="hm-cell hm-4" title="Perdizes">Perd.</div>
+              <div class="hm-cell hm-5" title="Lapa">Lapa</div>
+              <div class="hm-cell hm-4" title="Pompeia">Pomp.</div>
+              <div class="hm-cell hm-3" title="Barra Funda">B.Fda</div>
+              <div class="hm-cell hm-2" title="Brás">Brás</div>
+              <div class="hm-cell hm-1" title="Belém">Belém</div>
+              <div class="hm-cell hm-1" title="Penha">Penha</div>
+              <!-- Row 4 -->
+              <div class="hm-cell hm-3" title="Santana">Sant.</div>
+              <div class="hm-cell hm-3" title="Tucuruvi">Tuc.</div>
+              <div class="hm-cell hm-2" title="Tremembé">Trem.</div>
+              <div class="hm-cell hm-2" title="Casa Verde">C.Vd.</div>
+              <div class="hm-cell hm-1" title="Jaçanã">Jaç.</div>
+              <div class="hm-cell hm-1" title="Vila Guilherme">VGu.</div>
+              <div class="hm-cell hm-1" title="Ermelino">Erm.</div>
+            </div>
+          </div>
+          <div class="hm-legend">
+            <span>Baixa</span>
+            <div class="hm-legend-bar"></div>
+            <span>Alta densidade</span>
+          </div>
+        </div>
+
+        <!-- Pipeline snapshot -->
+        <div class="ent-card">
+          <div class="ent-card-hd">
+            <div class="ent-card-title">Pipeline de Aquisição</div>
+            <a class="ent-btn ent-btn-sm" href="05-ent-pipeline.html">Ver tudo</a>
+          </div>
+          <div class="ent-card-bd" style="padding:16px 18px;">
+            <div class="funnel">
+              <div class="funnel-row">
+                <div class="funnel-label">Prospecção</div>
+                <div class="funnel-bar-wrap">
+                  <div class="funnel-bar" style="width:100%;background:#4f46e5;">
+                    <span>127 imóveis</span>
+                  </div>
+                </div>
+                <div class="funnel-count">127</div>
+              </div>
+              <div class="funnel-row">
+                <div class="funnel-label">Análise</div>
+                <div class="funnel-bar-wrap">
+                  <div class="funnel-bar" style="width:68%;background:#6366f1;">
+                    <span>86</span>
+                  </div>
+                </div>
+                <div class="funnel-count">86</div>
+              </div>
+              <div class="funnel-row">
+                <div class="funnel-label">Negociação</div>
+                <div class="funnel-bar-wrap">
+                  <div class="funnel-bar" style="width:28%;background:#818cf8;">
+                    <span>36</span>
+                  </div>
+                </div>
+                <div class="funnel-count">36</div>
+              </div>
+              <div class="funnel-row">
+                <div class="funnel-label">Fechamento</div>
+                <div class="funnel-bar-wrap">
+                  <div class="funnel-bar" style="width:9%;background:#a5b4fc;">
+                    <span>11</span>
+                  </div>
+                </div>
+                <div class="funnel-count">11</div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid #f1f5f9;">
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;margin-bottom:10px;">Tendência mensal</div>
+              <div class="bar-chart" style="height:70px;padding:0;gap:4px;align-items:flex-end;">
+                <div class="bar-col"><div class="bar-fill" style="height:42px;"></div><div class="bar-label">Jan</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:55px;"></div><div class="bar-label">Fev</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:48px;"></div><div class="bar-label">Mar</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:62px;"></div><div class="bar-label">Abr</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:70px;background:#a5b4fc;"></div><div class="bar-label" style="color:#4f46e5;font-weight:700;">Mai</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Opportunities table -->
+      <div class="ent-table-wrap" style="margin-bottom:14px;">
+        <div class="ent-table-hd">
+          <div class="ent-table-title">Oportunidades Recentes</div>
+          <input class="ent-input" placeholder="Buscar endereço…" style="width:200px;" />
+          <a class="ent-btn" href="03-ent-oportunidades.html">Ver todas</a>
+          <a class="ent-btn ent-btn-primary" href="02-ent-mapa.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+            No mapa
+          </a>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="ent-table">
+            <thead>
+              <tr>
+                <th>Endereço / Região</th>
+                <th>Tipo</th>
+                <th>Área (m²)</th>
+                <th>Est. VGV</th>
+                <th>Risco</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="window.location.href='03-ent-oportunidades.html'">
+                <td><div class="oport-address">Rua Bela Cintra, 847</div><div class="oport-sub">Consolação · São Paulo</div></td>
+                <td><span class="ent-badge ent-badge-info">Terreno</span></td>
+                <td class="ent-td-primary">1.240</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 28,4M</td>
+                <td><span class="ent-risk risk-baixo">Baixo</span></td>
+                <td><span class="ent-badge ent-badge-success">Disponível</span></td>
+                <td><a class="ent-btn ent-btn-sm ent-btn-primary" href="03-ent-oportunidades.html">Analisar</a></td>
+              </tr>
+              <tr onclick="window.location.href='03-ent-oportunidades.html'">
+                <td><div class="oport-address">Av. Paulista, 2.073</div><div class="oport-sub">Bela Vista · São Paulo</div></td>
+                <td><span class="ent-badge ent-badge-neutral">Edificação</span></td>
+                <td class="ent-td-primary">3.800</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 94,1M</td>
+                <td><span class="ent-risk risk-medio">Médio</span></td>
+                <td><span class="ent-badge ent-badge-warning">Em análise</span></td>
+                <td><a class="ent-btn ent-btn-sm" href="03-ent-oportunidades.html">Ver</a></td>
+              </tr>
+              <tr onclick="window.location.href='03-ent-oportunidades.html'">
+                <td><div class="oport-address">R. Mourato Coelho, 310</div><div class="oport-sub">Pinheiros · São Paulo</div></td>
+                <td><span class="ent-badge ent-badge-info">Terreno</span></td>
+                <td class="ent-td-primary">680</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 15,2M</td>
+                <td><span class="ent-risk risk-baixo">Baixo</span></td>
+                <td><span class="ent-badge ent-badge-success">Disponível</span></td>
+                <td><a class="ent-btn ent-btn-sm ent-btn-primary" href="03-ent-oportunidades.html">Analisar</a></td>
+              </tr>
+              <tr onclick="window.location.href='03-ent-oportunidades.html'">
+                <td><div class="oport-address">R. da Consolação, 1.500</div><div class="oport-sub">Higienópolis · São Paulo</div></td>
+                <td><span class="ent-badge ent-badge-neutral">Edificação</span></td>
+                <td class="ent-td-primary">5.200</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 136,8M</td>
+                <td><span class="ent-risk risk-alto">Alto</span></td>
+                <td><span class="ent-badge ent-badge-danger">Disputa judicial</span></td>
+                <td><a class="ent-btn ent-btn-sm" href="03-ent-oportunidades.html">Ver</a></td>
+              </tr>
+              <tr onclick="window.location.href='03-ent-oportunidades.html'">
+                <td><div class="oport-address">Al. Lorena, 425</div><div class="oport-sub">Jardins · São Paulo</div></td>
+                <td><span class="ent-badge ent-badge-primary">Galpão</span></td>
+                <td class="ent-td-primary">2.100</td>
+                <td class="ent-td-primary" style="font-weight:700;">R$ 41,3M</td>
+                <td><span class="ent-risk risk-baixo">Baixo</span></td>
+                <td><span class="ent-badge ent-badge-success">Disponível</span></td>
+                <td><a class="ent-btn ent-btn-sm ent-btn-primary" href="03-ent-oportunidades.html">Analisar</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Regions + Activity -->
+      <div class="two-col" style="margin-bottom:0;">
+
+        <!-- Hot regions -->
+        <div class="ent-card">
+          <div class="ent-card-hd">
+            <div class="ent-card-title">Regiões com maior potencial</div>
+            <a class="ent-btn ent-btn-sm" href="04-ent-inteligencia.html">Análise completa</a>
+          </div>
+          <div class="ent-card-bd" style="display:flex;flex-direction:column;gap:10px;">
+            <div class="region-card">
+              <div class="region-name">Pinheiros · Vila Madalena</div>
+              <div class="region-metrics">
+                <div class="region-metric"><strong>142</strong>imóveis</div>
+                <div class="region-metric"><strong>R$ 820M</strong>VGV est.</div>
+                <div class="region-metric"><strong>ZEU-A</strong>Zoneamento</div>
+              </div>
+              <div class="region-heat">
+                <div class="heat-bar"><div class="heat-fill" style="width:92%;"></div></div>
+                <div class="heat-pct">92%</div>
+              </div>
+            </div>
+            <div class="region-card">
+              <div class="region-name">Consolação · Bela Vista</div>
+              <div class="region-metrics">
+                <div class="region-metric"><strong>97</strong>imóveis</div>
+                <div class="region-metric"><strong>R$ 1,1B</strong>VGV est.</div>
+                <div class="region-metric"><strong>ZM-B</strong>Zoneamento</div>
+              </div>
+              <div class="region-heat">
+                <div class="heat-bar"><div class="heat-fill" style="width:85%;"></div></div>
+                <div class="heat-pct">85%</div>
+              </div>
+            </div>
+            <div class="region-card">
+              <div class="region-name">Higienópolis · Perdizes</div>
+              <div class="region-metrics">
+                <div class="region-metric"><strong>78</strong>imóveis</div>
+                <div class="region-metric"><strong>R$ 640M</strong>VGV est.</div>
+                <div class="region-metric"><strong>ZEU-B</strong>Zoneamento</div>
+              </div>
+              <div class="region-heat">
+                <div class="heat-bar"><div class="heat-fill" style="width:71%;background:#6366f1;"></div></div>
+                <div class="heat-pct">71%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity -->
+        <div class="ent-card">
+          <div class="ent-card-hd">
+            <div class="ent-card-title">Atividade recente</div>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="act-dot" style="background:#4f46e5;"></div>
+              <div class="act-text"><strong>Nova oportunidade identificada</strong> — Terreno 1.240m² em Consolação adicionado ao radar.</div>
+              <div class="act-time">Agora</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot" style="background:#059669;"></div>
+              <div class="act-text"><strong>Mediação iniciada</strong> — Solicitação de contato enviada para imóvel na Al. Lorena, 425.</div>
+              <div class="act-time">2h</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot" style="background:#d97706;"></div>
+              <div class="act-text"><strong>Alerta de risco</strong> — Disputa judicial identificada na R. da Consolação, 1.500.</div>
+              <div class="act-time">5h</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot" style="background:#4f46e5;"></div>
+              <div class="act-text"><strong>Relatório exportado</strong> — Análise territorial Pinheiros · Maio 2026 gerado com sucesso.</div>
+              <div class="act-time">1d</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot" style="background:#0891b2;"></div>
+              <div class="act-text"><strong>Região quente</strong> — Higienópolis identificada como nova zona de alta oportunidade.</div>
+              <div class="act-time">2d</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-dot" style="background:#059669;"></div>
+              <div class="act-text"><strong>Pipeline atualizado</strong> — Av. Paulista, 2.073 avançou para etapa de Negociação.</div>
+              <div class="act-time">3d</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<script>
+  function toggleSidebar() {
+    var sb = document.getElementById('sidebar');
+    var ov = document.getElementById('sb-overlay');
+    var open = sb.classList.toggle('open');
+    ov.classList.toggle('open', open);
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sb-overlay').classList.remove('open');
+  }
+</script>
+</body>
+</html>

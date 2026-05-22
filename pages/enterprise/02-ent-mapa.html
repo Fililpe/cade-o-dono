@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapa Premium — Cadê o Dono? Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/enterprise.css" />
+  <style>
+    /* Map page is full-viewport */
+    body, html { height: 100%; overflow: hidden; }
+    .ent-root { height: 100vh; overflow: hidden; }
+    .ent-main { height: 100vh; overflow: hidden; }
+
+    /* ── Map layout: left panel + canvas + right panel ── */
+    .map-shell {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - var(--ent-topbar-h));
+      overflow: hidden;
+    }
+
+    /* Left: layers/filters */
+    .map-panel-left {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--ent-surface);
+      border-right: 1px solid var(--ent-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .map-panel-hd {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--ent-border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ent-text-primary);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .map-panel-hd svg { width: 13px; height: 13px; color: var(--ent-primary); }
+
+    .layer-section { padding: 10px 14px; border-bottom: 1px solid var(--ent-border); }
+    .layer-section-title {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--ent-text-muted);
+      margin-bottom: 8px;
+    }
+    .layer-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 0;
+      cursor: pointer;
+    }
+    .layer-toggle {
+      width: 30px; height: 16px;
+      border-radius: 8px;
+      background: var(--ent-border);
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .layer-toggle::after {
+      content: '';
+      position: absolute;
+      left: 2px; top: 2px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      transition: left 0.2s;
+    }
+    .layer-toggle.on { background: var(--ent-primary); }
+    .layer-toggle.on::after { left: 16px; }
+    .layer-label { font-size: 12px; color: var(--ent-text-secondary); flex: 1; }
+    .layer-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+    /* Filter section */
+    .filter-section { padding: 10px 14px; border-bottom: 1px solid var(--ent-border); }
+    .filter-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--ent-text-muted);
+      margin-bottom: 8px;
+    }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+    .filter-chip {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid var(--ent-border);
+      background: var(--ent-surface);
+      color: var(--ent-text-secondary);
+      cursor: pointer;
+      transition: background 0.14s, border-color 0.14s, color 0.14s;
+    }
+    .filter-chip:hover { border-color: var(--ent-primary-border); color: var(--ent-primary); }
+    .filter-chip.active { background: var(--ent-primary-light); border-color: var(--ent-primary-border); color: var(--ent-primary); }
+
+    .range-wrap { margin-top: 8px; }
+    .range-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--ent-text-muted); margin-bottom: 5px; }
+    input[type=range] { width: 100%; accent-color: var(--ent-primary); }
+
+    /* ── Map canvas ── */
+    .map-canvas {
+      flex: 1;
+      background: #e8eef7;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+    }
+    .map-canvas:active { cursor: grabbing; }
+
+    /* Street grid */
+    .map-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.55) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.55) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
+      background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+    }
+
+    /* Zones (colored areas simulating zoning) */
+    .map-zone {
+      position: absolute;
+      border-radius: 4px;
+      opacity: 0.28;
+    }
+
+    /* Clusters */
+    .map-cluster {
+      position: absolute;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .map-cluster:hover { transform: scale(1.15); box-shadow: 0 4px 16px rgba(0,0,0,0.28); }
+    .cluster-lg { width: 52px; height: 52px; font-size: 13px; }
+    .cluster-md { width: 40px; height: 40px; }
+    .cluster-sm { width: 30px; height: 30px; font-size: 10px; }
+    .cl-high { background: #1d4ed8; border: 2px solid rgba(255,255,255,0.3); }
+    .cl-med  { background: #4f46e5; border: 2px solid rgba(255,255,255,0.3); }
+    .cl-low  { background: #7c3aed; border: 2px solid rgba(255,255,255,0.3); }
+    .cl-alert{ background: #dc2626; border: 2px solid rgba(255,255,255,0.3); }
+
+    /* Point markers */
+    .map-pin {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      transition: transform 0.14s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .map-pin:hover { transform: scale(1.4); }
+    .pin-available { background: #059669; }
+    .pin-analysis  { background: #d97706; }
+    .pin-dispute   { background: #dc2626; }
+    .pin-pipeline  { background: #4f46e5; }
+
+    /* Selected marker */
+    .map-pin.selected {
+      width: 18px; height: 18px;
+      border-width: 3px;
+      transform: scale(1.2);
+    }
+
+    /* Label floats */
+    .map-label {
+      position: absolute;
+      background: rgba(15,23,42,0.75);
+      color: #e2e8f0;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Toolbar */
+    .map-toolbar {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 6px 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .map-tb-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      border-radius: 7px;
+      border: none;
+      background: none;
+      font-family: "Sora", sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: #475569;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+    .map-tb-btn:hover { background: #f1f5f9; color: #0f172a; }
+    .map-tb-btn.active { background: #eef2ff; color: #4f46e5; }
+    .map-tb-btn svg { width: 13px; height: 13px; }
+    .map-tb-sep { width: 1px; height: 20px; background: #e2e8f0; }
+
+    /* Zoom controls */
+    .map-zoom {
+      position: absolute;
+      bottom: 24px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 10;
+    }
+    .zoom-btn {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: rgba(255,255,255,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #475569;
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .zoom-btn:hover { background: #fff; color: #0f172a; }
+
+    /* Scale bar */
+    .map-scale {
+      position: absolute;
+      bottom: 24px;
+      left: 14px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    /* ── Right panel: property detail ── */
+    .map-panel-right {
+      width: 300px;
+      flex-shrink: 0;
+      background: var(--ent-surface);
+      border-left: 1px solid var(--ent-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .prop-preview {
+      height: 130px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .prop-preview-icon { opacity: 0.2; }
+    .prop-preview-icon svg { width: 48px; height: 48px; color: #fff; }
+    .prop-preview-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+    }
+    .prop-coord {
+      position: absolute;
+      bottom: 8px; left: 10px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.45);
+      font-family: "SF Mono", monospace;
+    }
+
+    .prop-body { padding: 16px; flex: 1; }
+    .prop-address { font-size: 14px; font-weight: 700; color: #0f172a; letter-spacing: -0.2px; }
+    .prop-neighborhood { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+    .prop-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .prop-metric {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .prop-metric-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; color: #94a3b8; margin-bottom: 4px; }
+    .prop-metric-value { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .prop-metric-unit  { font-size: 11px; color: #64748b; }
+
+    .prop-zoning {
+      margin-top: 14px;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .prop-zoning-title { font-size: 11px; font-weight: 600; color: #4f46e5; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .prop-zoning-row { display: flex; justify-content: space-between; font-size: 12px; margin-top: 4px; }
+    .prop-zoning-row span:first-child { color: #475569; }
+    .prop-zoning-row span:last-child  { color: #0f172a; font-weight: 600; }
+
+    .prop-lgpd {
+      margin-top: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .prop-lgpd-title { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+    .prop-lgpd-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748b; margin-top: 4px; }
+    .prop-lgpd-row svg { width: 13px; height: 13px; color: #94a3b8; flex-shrink: 0; }
+
+    .prop-actions { padding: 14px 16px; border-top: 1px solid var(--ent-border); display: flex; flex-direction: column; gap: 8px; }
+    .prop-action-btn {
+      width: 100%;
+      height: 38px;
+      border-radius: 9px;
+      border: none;
+      font-family: "Sora", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.14s;
+    }
+    .prop-action-btn svg { width: 14px; height: 14px; }
+    .prop-action-primary { background: #4f46e5; color: #fff; }
+    .prop-action-primary:hover { background: #4338ca; }
+    .prop-action-secondary { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; }
+    .prop-action-secondary:hover { background: #e2e8f0; }
+
+    @media (max-width: 900px) {
+      .map-panel-left, .map-panel-right { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="ent-root">
+  <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar (same nav) -->
+  <aside class="ent-sidebar" id="sidebar">
+    <div class="ent-sb-brand">
+      <div class="ent-sb-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="ent-sb-brand-text">
+        <div class="ent-sb-brand-name">Cadê o Dono?</div>
+        <div class="ent-badge-ent">Enterprise</div>
+      </div>
+    </div>
+    <nav class="ent-sb-nav">
+      <div class="ent-sb-section">Principal</div>
+      <a class="ent-sb-link" href="01-ent-dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a class="ent-sb-link active" href="02-ent-mapa.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        Mapa Premium
+      </a>
+      <a class="ent-sb-link" href="03-ent-oportunidades.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Oportunidades
+      </a>
+      <a class="ent-sb-link" href="04-ent-inteligencia.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Inteligência
+      </a>
+      <a class="ent-sb-link" href="05-ent-pipeline.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Pipeline
+      </a>
+      <div class="ent-sb-divider"></div>
+      <div class="ent-sb-section">Gestão</div>
+      <a class="ent-sb-link" href="06-ent-billing.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Assinatura
+      </a>
+      <div class="ent-sb-divider"></div>
+    </nav>
+    <div class="ent-sb-tier">
+      <div class="ent-sb-tier-label">Plano Atual</div>
+      <div class="ent-sb-tier-name">Urban Intelligence</div>
+      <div class="ent-sb-tier-bar"><div class="ent-sb-tier-fill" style="width:58%"></div></div>
+      <div style="font-size:11px;color:#475569;margin-top:5px;">58% da cota utilizada</div>
+    </div>
+    <div class="ent-sb-user">
+      <div class="ent-sb-avatar">BR</div>
+      <div>
+        <div class="ent-sb-user-name">Brookfield Brasil</div>
+        <div class="ent-sb-user-role">Fundo Imobiliário</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="ent-main">
+    <!-- Topbar -->
+    <header class="ent-topbar">
+      <button class="ent-hamburger" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <div class="ent-tb-breadcrumb">
+        <span>Enterprise</span><span class="sep">›</span>
+        <span class="active">Mapa Premium</span>
+      </div>
+      <div class="ent-tb-actions">
+        <div class="ent-tier-pill">Urban Intelligence</div>
+        <button class="ent-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar
+        </button>
+        <div class="ent-tb-avatar">BR</div>
+      </div>
+    </header>
+
+    <!-- Map shell -->
+    <div class="map-shell">
+
+      <!-- Left panel -->
+      <div class="map-panel-left">
+        <div class="map-panel-hd">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+          Camadas e Filtros
+        </div>
+
+        <div class="layer-section">
+          <div class="layer-section-title">Camadas de Dados</div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle on"></div>
+            <div class="layer-dot" style="background:#059669;"></div>
+            <div class="layer-label">Disponíveis</div>
+          </div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle on"></div>
+            <div class="layer-dot" style="background:#d97706;"></div>
+            <div class="layer-label">Em análise</div>
+          </div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle on"></div>
+            <div class="layer-dot" style="background:#dc2626;"></div>
+            <div class="layer-label">Disputa judicial</div>
+          </div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle on"></div>
+            <div class="layer-dot" style="background:#4f46e5;"></div>
+            <div class="layer-label">No pipeline</div>
+          </div>
+        </div>
+
+        <div class="layer-section">
+          <div class="layer-section-title">Camadas Urbanas</div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle on"></div>
+            <div class="layer-dot" style="background:#bfdbfe;border-radius:2px;"></div>
+            <div class="layer-label">Zoneamento</div>
+          </div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle"></div>
+            <div class="layer-dot" style="background:#fde68a;border-radius:2px;"></div>
+            <div class="layer-label">Heatmap VGV</div>
+          </div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle"></div>
+            <div class="layer-dot" style="background:#fecaca;border-radius:2px;"></div>
+            <div class="layer-label">Risco territorial</div>
+          </div>
+          <div class="layer-row" onclick="toggleLayer(this)">
+            <div class="layer-toggle"></div>
+            <div class="layer-dot" style="background:#d1fae5;border-radius:2px;"></div>
+            <div class="layer-label">Densidade urbana</div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-label">Tipo de Imóvel</div>
+          <div class="filter-chips">
+            <div class="filter-chip active" onclick="toggleChip(this)">Todos</div>
+            <div class="filter-chip" onclick="toggleChip(this)">Terreno</div>
+            <div class="filter-chip" onclick="toggleChip(this)">Edificação</div>
+            <div class="filter-chip" onclick="toggleChip(this)">Galpão</div>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-label">Área mínima</div>
+          <div class="range-wrap">
+            <div class="range-row"><span>0 m²</span><span id="area-val">500 m²</span></div>
+            <input type="range" min="0" max="5000" value="500" step="100" oninput="document.getElementById('area-val').textContent=this.value+'m²'" />
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-label">VGV mínimo estimado</div>
+          <div class="range-wrap">
+            <div class="range-row"><span>R$ 0</span><span id="vgv-val">R$ 10M</span></div>
+            <input type="range" min="0" max="200" value="10" step="5" oninput="document.getElementById('vgv-val').textContent='R$ '+this.value+'M'" />
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-label">Nível de Risco</div>
+          <div class="filter-chips">
+            <div class="filter-chip active" onclick="toggleChip(this)">Todos</div>
+            <div class="filter-chip" onclick="toggleChip(this)" style="color:#166534;">Baixo</div>
+            <div class="filter-chip" onclick="toggleChip(this)" style="color:#854d0e;">Médio</div>
+            <div class="filter-chip" onclick="toggleChip(this)" style="color:#991b1b;">Alto</div>
+          </div>
+        </div>
+
+        <div style="padding:12px 14px;">
+          <button class="ent-btn ent-btn-primary" style="width:100%;justify-content:center;" onclick="">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Aplicar filtros
+          </button>
+        </div>
+      </div>
+
+      <!-- Map canvas -->
+      <div class="map-canvas" id="map-canvas">
+
+        <!-- Zone overlays -->
+        <div class="map-zone" style="left:8%;top:12%;width:22%;height:28%;background:#3b82f6;border-radius:8px;"></div>
+        <div class="map-zone" style="left:30%;top:5%;width:18%;height:22%;background:#8b5cf6;border-radius:8px;"></div>
+        <div class="map-zone" style="left:50%;top:15%;width:20%;height:25%;background:#06b6d4;border-radius:8px;"></div>
+        <div class="map-zone" style="left:10%;top:48%;width:25%;height:30%;background:#10b981;border-radius:8px;"></div>
+        <div class="map-zone" style="left:38%;top:40%;width:28%;height:35%;background:#f59e0b;border-radius:8px;"></div>
+        <div class="map-zone" style="left:68%;top:28%;width:20%;height:40%;background:#ef4444;border-radius:8px;opacity:0.18;"></div>
+
+        <!-- Region labels -->
+        <div class="map-label" style="left:11%;top:22%;">Pinheiros</div>
+        <div class="map-label" style="left:32%;top:10%;">Higienópolis</div>
+        <div class="map-label" style="left:52%;top:20%;">Consolação</div>
+        <div class="map-label" style="left:12%;top:65%;">Vila Madalena</div>
+        <div class="map-label" style="left:40%;top:52%;">Bela Vista</div>
+        <div class="map-label" style="left:68%;top:35%;">Itaim Bibi</div>
+
+        <!-- Clusters -->
+        <div class="map-cluster cluster-lg cl-high" style="left:17%;top:18%;" onclick="selectCluster(this,142,'Pinheiros')">142</div>
+        <div class="map-cluster cluster-lg cl-high" style="left:35%;top:14%;" onclick="selectCluster(this,97,'Higienópolis')">97</div>
+        <div class="map-cluster cluster-md cl-med" style="left:56%;top:22%;" onclick="selectCluster(this,63,'Consolação')">63</div>
+        <div class="map-cluster cluster-md cl-med" style="left:14%;top:58%;" onclick="selectCluster(this,58,'V. Madalena')">58</div>
+        <div class="map-cluster cluster-md cl-low" style="left:44%;top:48%;" onclick="selectCluster(this,41,'Bela Vista')">41</div>
+        <div class="map-cluster cluster-sm cl-alert" style="left:72%;top:38%;" onclick="selectCluster(this,12,'Itaim')">12</div>
+        <div class="map-cluster cluster-sm cl-low" style="left:61%;top:62%;" onclick="selectCluster(this,28,'Moema')">28</div>
+
+        <!-- Individual pins -->
+        <div class="map-pin pin-available selected" style="left:19%;top:28%;" title="R. Mourato Coelho, 310" onclick="selectPin('R. Mourato Coelho, 310', 'Pinheiros')"></div>
+        <div class="map-pin pin-analysis" style="left:38%;top:20%;" title="Av. Paulista, 2.073" onclick="selectPin('Av. Paulista, 2.073', 'Bela Vista')"></div>
+        <div class="map-pin pin-available" style="left:58%;top:28%;" title="Rua Bela Cintra, 847" onclick="selectPin('Rua Bela Cintra, 847', 'Consolação')"></div>
+        <div class="map-pin pin-dispute" style="left:44%;top:55%;" title="R. da Consolação, 1.500" onclick="selectPin('R. da Consolação, 1.500', 'Higienópolis')"></div>
+        <div class="map-pin pin-pipeline" style="left:25%;top:68%;" title="Al. Lorena, 425" onclick="selectPin('Al. Lorena, 425', 'Jardins')"></div>
+        <div class="map-pin pin-available" style="left:74%;top:42%;" title="R. Leopoldo Couto de Magalhães, 110" onclick="selectPin('R. Leopoldo Couto, 110', 'Itaim')"></div>
+
+        <!-- Toolbar -->
+        <div class="map-toolbar">
+          <button class="map-tb-btn active" onclick="setTool(this,'select')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>
+            Selecionar
+          </button>
+          <div class="map-tb-sep"></div>
+          <button class="map-tb-btn" onclick="setTool(this,'measure')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="22" x2="22" y2="2"/><path d="M8 22H2v-6"/><path d="M22 8V2h-6"/></svg>
+            Medir
+          </button>
+          <button class="map-tb-btn" onclick="setTool(this,'draw')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Área
+          </button>
+          <div class="map-tb-sep"></div>
+          <button class="map-tb-btn" onclick="setTool(this,'cluster')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Clusters
+          </button>
+          <button class="map-tb-btn" onclick="setTool(this,'heat')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+            Heatmap
+          </button>
+        </div>
+
+        <!-- Zoom -->
+        <div class="map-zoom">
+          <div class="zoom-btn">+</div>
+          <div class="zoom-btn">−</div>
+        </div>
+
+        <!-- Scale -->
+        <div class="map-scale">≈ 500m</div>
+      </div>
+
+      <!-- Right panel: property detail -->
+      <div class="map-panel-right" id="prop-panel">
+        <div class="prop-preview">
+          <div class="prop-preview-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <div class="prop-preview-badge">
+            <span class="ent-badge ent-badge-success">Disponível</span>
+          </div>
+          <div class="prop-coord">-23.5629, -46.6544</div>
+        </div>
+
+        <div class="prop-body">
+          <div class="prop-address" id="prop-address">R. Mourato Coelho, 310</div>
+          <div class="prop-neighborhood" id="prop-neighborhood">Pinheiros · São Paulo, SP</div>
+
+          <div class="prop-metrics">
+            <div class="prop-metric">
+              <div class="prop-metric-label">Área</div>
+              <div class="prop-metric-value">680</div>
+              <div class="prop-metric-unit">m²</div>
+            </div>
+            <div class="prop-metric">
+              <div class="prop-metric-label">Est. VGV</div>
+              <div class="prop-metric-value">R$ 15M</div>
+              <div class="prop-metric-unit">referência</div>
+            </div>
+            <div class="prop-metric">
+              <div class="prop-metric-label">Risco</div>
+              <div class="prop-metric-value" style="font-size:13px;"><span class="ent-risk risk-baixo">Baixo</span></div>
+              <div class="prop-metric-unit">territorial</div>
+            </div>
+            <div class="prop-metric">
+              <div class="prop-metric-label">Tipo</div>
+              <div class="prop-metric-value" style="font-size:13px;">Terreno</div>
+              <div class="prop-metric-unit">urbano</div>
+            </div>
+          </div>
+
+          <div class="prop-zoning">
+            <div class="prop-zoning-title">Inteligência Territorial</div>
+            <div class="prop-zoning-row"><span>Zoneamento</span><span>ZEU-A</span></div>
+            <div class="prop-zoning-row"><span>Gabarito</span><span>28 pavimentos</span></div>
+            <div class="prop-zoning-row"><span>Coef. aproveitamento</span><span>4,0</span></div>
+            <div class="prop-zoning-row"><span>Recuo frontal</span><span>0 m (alinhado)</span></div>
+            <div class="prop-zoning-row"><span>Pot. construtivo</span><span>2.720 m²</span></div>
+          </div>
+
+          <div class="prop-lgpd">
+            <div class="prop-lgpd-title">Dados do Proprietário (LGPD)</div>
+            <div class="prop-lgpd-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Contato via mediação institucional
+            </div>
+            <div class="prop-lgpd-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Dados protegidos por LGPD
+            </div>
+            <div class="prop-lgpd-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Auditoria registrada
+            </div>
+          </div>
+        </div>
+
+        <div class="prop-actions">
+          <button class="prop-action-btn prop-action-primary" onclick="openContactModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.8 19.79 19.79 0 0 1 1.61 5.2 2 2 0 0 1 3.58 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6l.92-1.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.5 17l1.42 -0.08z"/></svg>
+            Solicitar mediação
+          </button>
+          <button class="prop-action-btn prop-action-secondary" onclick="window.location.href='05-ent-pipeline.html'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adicionar ao pipeline
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /map-shell -->
+  </main>
+</div>
+
+<!-- Contact mediation modal -->
+<div class="ent-modal-backdrop" id="contact-modal" onclick="closeContactModal(event)">
+  <div class="ent-modal">
+    <div class="ent-modal-hd">
+      <div class="ent-modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div>
+        <div class="ent-modal-title">Solicitar Mediação de Contato</div>
+        <div class="ent-modal-sub">R. Mourato Coelho, 310 — Pinheiros, SP</div>
+      </div>
+    </div>
+    <div class="ent-modal-bd">
+      <div class="ent-lgpd-shield">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div><strong>Conformidade LGPD:</strong> Dados do proprietário nunca são exibidos diretamente. Toda comunicação ocorre via mediação institucional da plataforma, com auditoria completa e consentimento registrado.</div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#0f172a;display:block;margin-bottom:5px;">Finalidade da solicitação</label>
+        <select class="ent-select" style="width:100%;height:40px;">
+          <option>Interesse na aquisição do imóvel</option>
+          <option>Due diligence / avaliação técnica</option>
+          <option>Proposta de parceria</option>
+          <option>Consulta sobre situação jurídica</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#0f172a;display:block;margin-bottom:5px;">Mensagem (opcional)</label>
+        <textarea class="ent-input" style="width:100%;height:80px;padding:10px;resize:none;height:auto;min-height:70px;" placeholder="Descreva seu interesse…"></textarea>
+      </div>
+    </div>
+    <div class="ent-modal-ft">
+      <button class="ent-btn" onclick="closeContactModal()">Cancelar</button>
+      <button class="ent-btn ent-btn-primary" onclick="sendMediation()">Enviar solicitação</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sb-overlay').classList.toggle('open');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sb-overlay').classList.remove('open');
+  }
+  function toggleLayer(row) {
+    var toggle = row.querySelector('.layer-toggle');
+    toggle.classList.toggle('on');
+  }
+  function toggleChip(chip) {
+    chip.classList.toggle('active');
+  }
+  function setTool(btn, tool) {
+    document.querySelectorAll('.map-tb-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+  function selectPin(address, neighborhood) {
+    document.getElementById('prop-address').textContent = address;
+    document.getElementById('prop-neighborhood').textContent = neighborhood + ' · São Paulo, SP';
+    document.querySelectorAll('.map-pin').forEach(function(p) { p.classList.remove('selected'); });
+    event.target.classList.add('selected');
+  }
+  function selectCluster(el, count, name) {
+    document.getElementById('prop-address').textContent = name + ' — ' + count + ' imóveis';
+    document.getElementById('prop-neighborhood').textContent = 'Cluster · São Paulo, SP';
+  }
+  function openContactModal() {
+    document.getElementById('contact-modal').classList.add('open');
+  }
+  function closeContactModal(e) {
+    if (!e || e.target === document.getElementById('contact-modal') || e === undefined) {
+      document.getElementById('contact-modal').classList.remove('open');
+    }
+  }
+  function sendMediation() {
+    document.getElementById('contact-modal').classList.remove('open');
+    alert('✓ Solicitação de mediação enviada. Nossa equipe notificará o proprietário em até 48h, com auditoria registrada na plataforma.');
+  }
+</script>
+</body>
+</html>

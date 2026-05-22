@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline — Cadê o Dono? Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/enterprise.css" />
+  <style>
+    body, html { height: 100%; }
+    .ent-root { height: 100vh; }
+    .ent-main { height: 100vh; overflow: hidden; }
+    .pipeline-shell { display: flex; flex-direction: column; height: calc(100vh - var(--ent-topbar-h)); }
+    .pipeline-summary { padding: 16px 24px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--ent-border); background: var(--ent-surface); flex-shrink: 0; }
+    .pipeline-stat { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ent-text-secondary); }
+    .pipeline-stat strong { color: var(--ent-text-primary); font-size: 14px; font-weight: 700; }
+    .pipeline-stat-sep { width: 1px; height: 20px; background: var(--ent-border); }
+
+    /* Kanban board */
+    .kanban-board {
+      display: flex;
+      gap: 12px;
+      flex: 1;
+      overflow-x: auto;
+      padding: 20px 24px;
+      align-items: flex-start;
+    }
+    .kanban-col {
+      width: 280px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 100%;
+    }
+    .kanban-col-hd {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--ent-surface);
+      border: 1px solid var(--ent-border);
+      border-radius: 10px;
+      position: sticky;
+      top: 0;
+    }
+    .col-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .col-name { font-size: 12px; font-weight: 700; color: var(--ent-text-primary); flex: 1; }
+    .col-count {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--ent-slate-100);
+      color: var(--ent-text-muted);
+      border-radius: 10px;
+      padding: 1px 7px;
+    }
+    .col-vgv { font-size: 10px; color: var(--ent-text-muted); margin-top: 1px; }
+
+    .kanban-cards { display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto; }
+
+    /* Pipeline card */
+    .pipe-card {
+      background: var(--ent-surface);
+      border: 1px solid var(--ent-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: box-shadow .15s, border-color .15s, transform .15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .pipe-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: var(--ent-primary-border); transform: translateY(-1px); }
+    .pipe-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .pipe-card-address { font-size: 12px; font-weight: 600; color: var(--ent-text-primary); line-height: 1.4; }
+    .pipe-card-bairro  { font-size: 11px; color: var(--ent-text-muted); margin-top: 2px; }
+    .pipe-card-meta { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .pipe-meta-item { font-size: 11px; color: var(--ent-text-secondary); display: flex; align-items: center; gap: 4px; }
+    .pipe-meta-item svg { width: 11px; height: 11px; color: var(--ent-text-muted); }
+    .pipe-card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--ent-border); }
+    .pipe-card-vgv { font-size: 13px; font-weight: 700; color: var(--ent-text-primary); }
+    .pipe-card-days { font-size: 10px; color: var(--ent-text-muted); }
+    .pipe-card-priority {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      border-radius: 10px 0 0 10px;
+    }
+    .pipe-card { position: relative; padding-left: 17px; }
+
+    /* Add card button */
+    .kanban-add {
+      border: 1px dashed var(--ent-border);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--ent-text-muted);
+      cursor: pointer;
+      transition: background .14s, border-color .14s, color .14s;
+    }
+    .kanban-add:hover { background: var(--ent-primary-light); border-color: var(--ent-primary-border); color: var(--ent-primary); }
+  </style>
+</head>
+<body>
+<div class="ent-root">
+  <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+  <aside class="ent-sidebar" id="sidebar">
+    <div class="ent-sb-brand">
+      <div class="ent-sb-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="ent-sb-brand-text"><div class="ent-sb-brand-name">Cadê o Dono?</div><div class="ent-badge-ent">Enterprise</div></div>
+    </div>
+    <nav class="ent-sb-nav">
+      <div class="ent-sb-section">Principal</div>
+      <a class="ent-sb-link" href="01-ent-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a class="ent-sb-link" href="02-ent-mapa.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>Mapa Premium</a>
+      <a class="ent-sb-link" href="03-ent-oportunidades.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Oportunidades</a>
+      <a class="ent-sb-link" href="04-ent-inteligencia.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Inteligência</a>
+      <a class="ent-sb-link active" href="05-ent-pipeline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Pipeline</a>
+      <div class="ent-sb-divider"></div>
+      <div class="ent-sb-section">Gestão</div>
+      <a class="ent-sb-link" href="06-ent-billing.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Assinatura</a>
+      <div class="ent-sb-divider"></div>
+    </nav>
+    <div class="ent-sb-tier">
+      <div class="ent-sb-tier-label">Plano Atual</div>
+      <div class="ent-sb-tier-name">Urban Intelligence</div>
+      <div class="ent-sb-tier-bar"><div class="ent-sb-tier-fill" style="width:58%"></div></div>
+    </div>
+    <div class="ent-sb-user">
+      <div class="ent-sb-avatar">BR</div>
+      <div><div class="ent-sb-user-name">Brookfield Brasil</div><div class="ent-sb-user-role">Fundo Imobiliário</div></div>
+    </div>
+  </aside>
+
+  <main class="ent-main">
+    <header class="ent-topbar">
+      <button class="ent-hamburger" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="ent-tb-breadcrumb"><span>Enterprise</span><span class="sep">›</span><span class="active">Pipeline de Aquisição</span></div>
+      <div class="ent-tb-actions">
+        <button class="ent-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar
+        </button>
+        <button class="ent-btn ent-btn-primary" onclick="">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Adicionar imóvel
+        </button>
+        <div class="ent-tb-avatar">BR</div>
+      </div>
+    </header>
+
+    <div class="pipeline-shell">
+      <!-- Summary bar -->
+      <div class="pipeline-summary">
+        <div class="pipeline-stat"><strong>260</strong>imóveis no pipeline</div>
+        <div class="pipeline-stat-sep"></div>
+        <div class="pipeline-stat">VGV total: <strong>R$ 1,87B</strong></div>
+        <div class="pipeline-stat-sep"></div>
+        <div class="pipeline-stat">Taxa de conversão: <strong>8,7%</strong></div>
+        <div class="pipeline-stat-sep"></div>
+        <div class="pipeline-stat">Tempo médio no pipeline: <strong>47 dias</strong></div>
+        <div style="flex:1;"></div>
+        <input class="ent-input" placeholder="Filtrar…" style="width:160px;" />
+        <select class="ent-select"><option>Toda equipe</option><option>Meus itens</option></select>
+      </div>
+
+      <!-- Kanban -->
+      <div class="kanban-board">
+
+        <!-- Prospecção -->
+        <div class="kanban-col">
+          <div class="kanban-col-hd">
+            <div class="col-dot" style="background:#94a3b8;"></div>
+            <div>
+              <div class="col-name">Prospecção</div>
+              <div class="col-vgv">R$ 840M estimado</div>
+            </div>
+            <div class="col-count">127</div>
+          </div>
+          <div class="kanban-cards">
+            <div class="pipe-card">
+              <div class="pipe-card-priority" style="background:#059669;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">R. Haddock Lobo, 580</div><div class="pipe-card-bairro">Cerqueira César · SP</div></div>
+                <span class="ent-risk risk-baixo">Baixo</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Terreno 920 m²</div>
+                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZEU-A</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 22,1M</div>
+                <div class="pipe-card-days">há 3 dias</div>
+              </div>
+            </div>
+            <div class="pipe-card">
+              <div class="pipe-card-priority" style="background:#d97706;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">Al. Campinas, 800</div><div class="pipe-card-bairro">Jardim Paulista · SP</div></div>
+                <span class="ent-risk risk-medio">Médio</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Edificação 2.400 m²</div>
+                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 6px;">ZM-A</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 48,6M</div>
+                <div class="pipe-card-days">há 5 dias</div>
+              </div>
+            </div>
+            <div class="pipe-card">
+              <div class="pipe-card-priority" style="background:#059669;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">R. Tupi, 345</div><div class="pipe-card-bairro">Perdizes · SP</div></div>
+                <span class="ent-risk risk-baixo">Baixo</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Terreno 580 m²</div>
+                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZEU-B</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 13,8M</div>
+                <div class="pipe-card-days">há 1 semana</div>
+              </div>
+            </div>
+          </div>
+          <div class="kanban-add" onclick="">+ Adicionar imóvel</div>
+        </div>
+
+        <!-- Análise -->
+        <div class="kanban-col">
+          <div class="kanban-col-hd">
+            <div class="col-dot" style="background:#4f46e5;"></div>
+            <div>
+              <div class="col-name">Análise</div>
+              <div class="col-vgv">R$ 620M estimado</div>
+            </div>
+            <div class="col-count">86</div>
+          </div>
+          <div class="kanban-cards">
+            <div class="pipe-card">
+              <div class="pipe-card-priority" style="background:#4f46e5;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">Av. Paulista, 2.073</div><div class="pipe-card-bairro">Bela Vista · SP</div></div>
+                <span class="ent-risk risk-medio">Médio</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Edificação 3.800 m²</div>
+                <span class="ent-badge ent-badge-warning" style="font-size:10px;padding:1px 6px;">Due diligence</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 94,1M</div>
+                <div class="pipe-card-days">12 dias</div>
+              </div>
+            </div>
+            <div class="pipe-card">
+              <div class="pipe-card-priority" style="background:#059669;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">R. Groenlândia, 1.033</div><div class="pipe-card-bairro">Itaim Bibi · SP</div></div>
+                <span class="ent-risk risk-baixo">Baixo</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Edificação 4.100 m²</div>
+                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 6px;">ZEU-A</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 105,6M</div>
+                <div class="pipe-card-days">18 dias</div>
+              </div>
+            </div>
+            <div class="pipe-card">
+              <div class="pipe-card-priority" style="background:#d97706;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">R. Vergueiro, 3.200</div><div class="pipe-card-bairro">Paraíso · SP</div></div>
+                <span class="ent-risk risk-medio">Médio</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item">Galpão 2.800 m²</div>
+                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 6px;">ZM-B</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 62,4M</div>
+                <div class="pipe-card-days">22 dias</div>
+              </div>
+            </div>
+          </div>
+          <div class="kanban-add">+ Mover da prospecção</div>
+        </div>
+
+        <!-- Negociação -->
+        <div class="kanban-col">
+          <div class="kanban-col-hd">
+            <div class="col-dot" style="background:#d97706;"></div>
+            <div>
+              <div class="col-name">Negociação</div>
+              <div class="col-vgv">R$ 310M estimado</div>
+            </div>
+            <div class="col-count">36</div>
+          </div>
+          <div class="kanban-cards">
+            <div class="pipe-card" style="border-color:#c7d2fe;">
+              <div class="pipe-card-priority" style="background:#4f46e5;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">R. Mourato Coelho, 310</div><div class="pipe-card-bairro">Pinheiros · SP</div></div>
+                <span class="ent-risk risk-baixo">Baixo</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item">Terreno 680 m²</div>
+                <span class="ent-badge ent-badge-primary" style="font-size:10px;padding:1px 6px;">Mediação ativa</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 15,2M</div>
+                <div class="pipe-card-days">34 dias</div>
+              </div>
+            </div>
+            <div class="pipe-card" style="border-color:#c7d2fe;">
+              <div class="pipe-card-priority" style="background:#4f46e5;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">Al. Lorena, 425</div><div class="pipe-card-bairro">Jardins · SP</div></div>
+                <span class="ent-risk risk-baixo">Baixo</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item">Galpão 2.100 m²</div>
+                <span class="ent-badge ent-badge-primary" style="font-size:10px;padding:1px 6px;">Proposta enviada</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 41,3M</div>
+                <div class="pipe-card-days">41 dias</div>
+              </div>
+            </div>
+          </div>
+          <div class="kanban-add">+ Da análise</div>
+        </div>
+
+        <!-- Fechamento -->
+        <div class="kanban-col">
+          <div class="kanban-col-hd">
+            <div class="col-dot" style="background:#059669;"></div>
+            <div>
+              <div class="col-name">Fechamento</div>
+              <div class="col-vgv">R$ 98M estimado</div>
+            </div>
+            <div class="col-count">11</div>
+          </div>
+          <div class="kanban-cards">
+            <div class="pipe-card" style="border-color:#6ee7b7;">
+              <div class="pipe-card-priority" style="background:#059669;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">R. Bela Cintra, 847</div><div class="pipe-card-bairro">Consolação · SP</div></div>
+                <span class="ent-badge ent-badge-success" style="font-size:10px;padding:1px 8px;">✓ Assinado</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item">Terreno 1.240 m²</div>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv" style="color:#059669;">R$ 28,4M</div>
+                <div class="pipe-card-days">52 dias</div>
+              </div>
+            </div>
+            <div class="pipe-card" style="border-color:#a5f3fc;">
+              <div class="pipe-card-priority" style="background:#0891b2;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">Av. Rebouças, 980</div><div class="pipe-card-bairro">Pinheiros · SP</div></div>
+                <span class="ent-badge ent-badge-info" style="font-size:10px;padding:1px 8px;">Em cartório</span>
+              </div>
+              <div class="pipe-card-meta">
+                <div class="pipe-meta-item">Terreno 1.600 m²</div>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 38,8M</div>
+                <div class="pipe-card-days">61 dias</div>
+              </div>
+            </div>
+          </div>
+          <div class="kanban-add">+ Da negociação</div>
+        </div>
+
+        <!-- Concluídos -->
+        <div class="kanban-col">
+          <div class="kanban-col-hd">
+            <div class="col-dot" style="background:#0f172a;"></div>
+            <div>
+              <div class="col-name">Concluídos</div>
+              <div class="col-vgv">este ano</div>
+            </div>
+            <div class="col-count">23</div>
+          </div>
+          <div class="kanban-cards">
+            <div class="pipe-card" style="opacity:.65;">
+              <div class="pipe-card-priority" style="background:#0f172a;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">R. Oscar Freire, 800</div><div class="pipe-card-bairro">Pinheiros · SP</div></div>
+                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 8px;">✓ Concluído</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 62,1M</div>
+                <div class="pipe-card-days">Mar 2026</div>
+              </div>
+            </div>
+            <div class="pipe-card" style="opacity:.65;">
+              <div class="pipe-card-priority" style="background:#0f172a;"></div>
+              <div class="pipe-card-top">
+                <div><div class="pipe-card-address">Al. Itu, 1.250</div><div class="pipe-card-bairro">Cerqueira César · SP</div></div>
+                <span class="ent-badge ent-badge-neutral" style="font-size:10px;padding:1px 8px;">✓ Concluído</span>
+              </div>
+              <div class="pipe-card-bottom">
+                <div class="pipe-card-vgv">R$ 44,9M</div>
+                <div class="pipe-card-days">Fev 2026</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sb-overlay').classList.toggle('open'); }
+  function closeSidebar()  { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sb-overlay').classList.remove('open'); }
+</script>
+</body>
+</html>

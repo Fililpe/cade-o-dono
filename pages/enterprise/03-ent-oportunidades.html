@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oportunidades — Cadê o Dono? Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/enterprise.css" />
+  <style>
+    .page-layout { display: flex; gap: 16px; align-items: flex-start; }
+    /* Filter sidebar */
+    .filter-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--ent-surface);
+      border: 1px solid var(--ent-border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: sticky;
+      top: calc(var(--ent-topbar-h) + 24px);
+    }
+    .filter-sidebar-hd {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--ent-border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ent-text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .filter-clear { font-size: 11px; color: var(--ent-primary); cursor: pointer; font-weight: 500; }
+    .filter-block { padding: 12px 14px; border-bottom: 1px solid var(--ent-border); }
+    .filter-block-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ent-text-muted); margin-bottom: 8px; }
+    .filter-option { display: flex; align-items: center; gap: 7px; padding: 4px 0; cursor: pointer; }
+    .filter-checkbox {
+      width: 15px; height: 15px;
+      border-radius: 4px;
+      border: 1px solid var(--ent-border-strong);
+      background: var(--ent-surface);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .filter-option.checked .filter-checkbox { background: var(--ent-primary); border-color: var(--ent-primary); }
+    .filter-option.checked .filter-checkbox::after {
+      content: '';
+      width: 8px; height: 5px;
+      border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .filter-option-label { font-size: 12px; color: var(--ent-text-secondary); }
+    .filter-count { font-size: 10px; color: var(--ent-text-muted); margin-left: auto; }
+
+    /* Main content */
+    .content-main { flex: 1; min-width: 0; }
+
+    /* Sort/view bar */
+    .results-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .results-count { font-size: 13px; font-weight: 600; color: var(--ent-text-primary); flex: 1; }
+    .results-count span { color: var(--ent-text-muted); font-weight: 400; }
+
+    .oport-address { font-size: 13px; font-weight: 500; color: var(--ent-text-primary); }
+    .oport-sub     { font-size: 11px; color: var(--ent-text-muted); margin-top: 2px; }
+
+    .score-bar { display: flex; align-items: center; gap: 6px; }
+    .score-fill { height: 4px; border-radius: 2px; background: var(--ent-primary); }
+    .score-bg { width: 50px; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; }
+    .score-num { font-size: 11px; font-weight: 700; color: var(--ent-text-primary); }
+
+    .row-actions { display: flex; gap: 5px; }
+
+    /* Detail drawer */
+    .detail-drawer {
+      display: none;
+      background: var(--ent-primary-light);
+      border-left: 3px solid var(--ent-primary);
+    }
+    .detail-drawer.open { display: table-row; }
+    .detail-inner { padding: 16px 20px; }
+    .detail-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 12px; }
+    .detail-item-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--ent-text-muted); margin-bottom: 4px; }
+    .detail-item-value { font-size: 14px; font-weight: 700; color: var(--ent-text-primary); }
+    .detail-actions { display: flex; gap: 8px; margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div class="ent-root">
+  <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+  <aside class="ent-sidebar" id="sidebar">
+    <div class="ent-sb-brand">
+      <div class="ent-sb-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="ent-sb-brand-text">
+        <div class="ent-sb-brand-name">Cadê o Dono?</div>
+        <div class="ent-badge-ent">Enterprise</div>
+      </div>
+    </div>
+    <nav class="ent-sb-nav">
+      <div class="ent-sb-section">Principal</div>
+      <a class="ent-sb-link" href="01-ent-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a class="ent-sb-link" href="02-ent-mapa.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>Mapa Premium</a>
+      <a class="ent-sb-link active" href="03-ent-oportunidades.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Oportunidades</a>
+      <a class="ent-sb-link" href="04-ent-inteligencia.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Inteligência</a>
+      <a class="ent-sb-link" href="05-ent-pipeline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Pipeline</a>
+      <div class="ent-sb-divider"></div>
+      <div class="ent-sb-section">Gestão</div>
+      <a class="ent-sb-link" href="06-ent-billing.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Assinatura</a>
+      <div class="ent-sb-divider"></div>
+    </nav>
+    <div class="ent-sb-tier">
+      <div class="ent-sb-tier-label">Plano Atual</div>
+      <div class="ent-sb-tier-name">Urban Intelligence</div>
+      <div class="ent-sb-tier-bar"><div class="ent-sb-tier-fill" style="width:58%"></div></div>
+    </div>
+    <div class="ent-sb-user">
+      <div class="ent-sb-avatar">BR</div>
+      <div><div class="ent-sb-user-name">Brookfield Brasil</div><div class="ent-sb-user-role">Fundo Imobiliário</div></div>
+    </div>
+  </aside>
+
+  <main class="ent-main">
+    <header class="ent-topbar">
+      <button class="ent-hamburger" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="ent-tb-breadcrumb">
+        <span>Enterprise</span><span class="sep">›</span><span class="active">Oportunidades</span>
+      </div>
+      <div class="ent-tb-actions">
+        <input class="ent-input" placeholder="Buscar endereço, bairro…" style="width:220px;" />
+        <button class="ent-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar CSV
+        </button>
+        <div class="ent-tb-avatar">BR</div>
+      </div>
+    </header>
+
+    <div class="ent-content">
+      <div class="ent-page-hd" style="margin-bottom:18px;">
+        <div class="ent-page-title">Oportunidades Urbanas</div>
+        <div class="ent-page-sub">Imóveis identificados com potencial de aquisição — região: São Paulo Capital</div>
+      </div>
+
+      <div class="page-layout">
+
+        <!-- Filter sidebar -->
+        <div class="filter-sidebar">
+          <div class="filter-sidebar-hd">
+            Filtros
+            <span class="filter-clear">Limpar tudo</span>
+          </div>
+          <div class="filter-block">
+            <div class="filter-block-title">Tipo de imóvel</div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">Terreno</div>
+              <div class="filter-count">312</div>
+            </div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">Edificação</div>
+              <div class="filter-count">418</div>
+            </div>
+            <div class="filter-option" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">Galpão / Industrial</div>
+              <div class="filter-count">87</div>
+            </div>
+            <div class="filter-option" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">Conjunto comercial</div>
+              <div class="filter-count">30</div>
+            </div>
+          </div>
+          <div class="filter-block">
+            <div class="filter-block-title">Status</div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">Disponível</div>
+              <div class="filter-count">524</div>
+            </div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">Em análise</div>
+              <div class="filter-count">189</div>
+            </div>
+            <div class="filter-option" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">Disputa judicial</div>
+              <div class="filter-count">134</div>
+            </div>
+          </div>
+          <div class="filter-block">
+            <div class="filter-block-title">Nível de risco</div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label" style="color:#166534;">Baixo</div>
+              <div class="filter-count">398</div>
+            </div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label" style="color:#854d0e;">Médio</div>
+              <div class="filter-count">312</div>
+            </div>
+            <div class="filter-option" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label" style="color:#991b1b;">Alto</div>
+              <div class="filter-count">137</div>
+            </div>
+          </div>
+          <div class="filter-block">
+            <div class="filter-block-title">Zoneamento</div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">ZEU-A</div>
+            </div>
+            <div class="filter-option checked" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">ZEU-B</div>
+            </div>
+            <div class="filter-option" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">ZM-A / ZM-B</div>
+            </div>
+            <div class="filter-option" onclick="this.classList.toggle('checked')">
+              <div class="filter-checkbox"></div>
+              <div class="filter-option-label">ZEPEC</div>
+            </div>
+          </div>
+          <div style="padding:12px 14px;">
+            <button class="ent-btn ent-btn-primary" style="width:100%;justify-content:center;">Aplicar filtros</button>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="content-main">
+          <div class="results-bar">
+            <div class="results-count">847 resultados <span>· São Paulo Capital</span></div>
+            <select class="ent-select">
+              <option>Ordenar: Score de oportunidade</option>
+              <option>Ordenar: Maior VGV estimado</option>
+              <option>Ordenar: Maior área</option>
+              <option>Ordenar: Menor risco</option>
+              <option>Ordenar: Mais recentes</option>
+            </select>
+            <a class="ent-btn" href="02-ent-mapa.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+              Ver no mapa
+            </a>
+          </div>
+
+          <div class="ent-table-wrap">
+            <div style="overflow-x:auto;">
+              <table class="ent-table" id="oport-table">
+                <thead>
+                  <tr>
+                    <th>Endereço / Bairro</th>
+                    <th>Tipo</th>
+                    <th>Área</th>
+                    <th>Est. VGV</th>
+                    <th>Pot. construtivo</th>
+                    <th>Risco</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="oport-tbody">
+                  <!-- Rows injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Contact modal -->
+<div class="ent-modal-backdrop" id="contact-modal" onclick="closeModal(event)">
+  <div class="ent-modal">
+    <div class="ent-modal-hd">
+      <div class="ent-modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div>
+        <div class="ent-modal-title">Solicitar Mediação de Contato</div>
+        <div class="ent-modal-sub" id="modal-prop-name">Imóvel selecionado</div>
+      </div>
+    </div>
+    <div class="ent-modal-bd">
+      <div class="ent-lgpd-shield">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <div>Dados do proprietário são protegidos pela LGPD. O contato ocorre exclusivamente via mediação institucional da plataforma, com trilha de auditoria e registro de consentimento.</div>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#0f172a;display:block;margin-bottom:5px;">Finalidade</label>
+        <select class="ent-select" style="width:100%;height:40px;">
+          <option>Interesse na aquisição</option>
+          <option>Due diligence / avaliação</option>
+          <option>Proposta de parceria</option>
+          <option>Consulta jurídica</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#0f172a;display:block;margin-bottom:5px;">Mensagem</label>
+        <textarea class="ent-input" style="width:100%;min-height:70px;resize:none;padding:10px;" placeholder="Descreva brevemente seu interesse…"></textarea>
+      </div>
+    </div>
+    <div class="ent-modal-ft">
+      <button class="ent-btn" onclick="closeModal()">Cancelar</button>
+      <button class="ent-btn ent-btn-primary" onclick="sendMediation()">Enviar solicitação</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var DATA = [
+    { addr:'Rua Bela Cintra, 847', bairro:'Consolação', tipo:'Terreno', area:'1.240', vgv:'R$ 28,4M', pot:'4.960 m²', risco:'baixo', score:94, status:'success', statusLabel:'Disponível' },
+    { addr:'Av. Paulista, 2.073',  bairro:'Bela Vista',  tipo:'Edificação', area:'3.800', vgv:'R$ 94,1M', pot:'15.200 m²', risco:'medio', score:81, status:'warning', statusLabel:'Em análise' },
+    { addr:'R. Mourato Coelho, 310', bairro:'Pinheiros', tipo:'Terreno', area:'680', vgv:'R$ 15,2M', pot:'2.720 m²', risco:'baixo', score:91, status:'success', statusLabel:'Disponível' },
+    { addr:'R. da Consolação, 1.500', bairro:'Higienópolis', tipo:'Edificação', area:'5.200', vgv:'R$ 136,8M', pot:'20.800 m²', risco:'alto', score:62, status:'danger', statusLabel:'Disputa judicial' },
+    { addr:'Al. Lorena, 425',       bairro:'Jardins',   tipo:'Galpão',    area:'2.100', vgv:'R$ 41,3M', pot:'8.400 m²', risco:'baixo', score:88, status:'success', statusLabel:'Disponível' },
+    { addr:'R. Haddock Lobo, 580',  bairro:'Cerqueira César', tipo:'Terreno', area:'920', vgv:'R$ 22,1M', pot:'3.680 m²', risco:'baixo', score:86, status:'success', statusLabel:'Disponível' },
+    { addr:'R. Groenlândia, 1.033', bairro:'Itaim Bibi', tipo:'Edificação', area:'4.100', vgv:'R$ 105,6M', pot:'16.400 m²', risco:'medio', score:79, status:'warning', statusLabel:'Em análise' },
+    { addr:'R. Deputado Lacerda Franco, 300', bairro:'Pinheiros', tipo:'Terreno', area:'760', vgv:'R$ 17,8M', pot:'3.040 m²', risco:'baixo', score:83, status:'success', statusLabel:'Disponível' },
+    { addr:'Av. Rebouças, 1.585',   bairro:'Pinheiros', tipo:'Galpão', area:'3.200', vgv:'R$ 78,4M', pot:'12.800 m²', risco:'medio', score:75, status:'warning', statusLabel:'Em análise' },
+    { addr:'R. Oscar Freire, 2.100', bairro:'Pinheiros', tipo:'Edificação', area:'6.800', vgv:'R$ 174,2M', pot:'27.200 m²', risco:'alto', score:58, status:'danger', statusLabel:'Disputa judicial' },
+  ];
+
+  function renderTable() {
+    var tbody = document.getElementById('oport-tbody');
+    tbody.innerHTML = DATA.map(function(d, i) {
+      var riskClass = d.risco === 'baixo' ? 'risk-baixo' : d.risco === 'medio' ? 'risk-medio' : 'risk-alto';
+      var riskLabel = d.risco === 'baixo' ? 'Baixo' : d.risco === 'medio' ? 'Médio' : 'Alto';
+      var scoreW = d.score + '%';
+      return '<tr onclick="toggleDetail(' + i + ')">' +
+        '<td><div class="oport-address">' + d.addr + '</div><div class="oport-sub">' + d.bairro + ' · São Paulo</div></td>' +
+        '<td><span class="ent-badge ent-badge-' + (d.tipo==='Terreno'?'info':'neutral') + '">' + d.tipo + '</span></td>' +
+        '<td class="ent-td-primary">' + d.area + ' m²</td>' +
+        '<td class="ent-td-primary" style="font-weight:700;">' + d.vgv + '</td>' +
+        '<td style="color:#64748b;">' + d.pot + '</td>' +
+        '<td><span class="ent-risk ' + riskClass + '">' + riskLabel + '</span></td>' +
+        '<td><div class="score-bar"><div class="score-bg"><div class="score-fill" style="width:' + scoreW + '"></div></div><div class="score-num">' + d.score + '</div></div></td>' +
+        '<td><span class="ent-badge ent-badge-' + d.status + '">' + d.statusLabel + '</span></td>' +
+        '<td><div class="row-actions">' +
+          '<button class="ent-btn ent-btn-sm ent-btn-primary" onclick="openModal(event,\'' + d.addr + '\')">Contato</button>' +
+          '<a class="ent-btn ent-btn-sm" href="05-ent-pipeline.html" onclick="event.stopPropagation()">Pipeline</a>' +
+        '</div></td>' +
+      '</tr>' +
+      '<tr class="detail-drawer" id="detail-' + i + '">' +
+        '<td colspan="9"><div class="detail-inner">' +
+          '<div class="ent-lgpd-shield" style="max-width:600px;">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' +
+            'Dados do proprietário protegidos por LGPD. Mediação obrigatória. Auditoria registrada em toda interação.' +
+          '</div>' +
+          '<div class="detail-grid">' +
+            '<div><div class="detail-item-label">Potencial VGV</div><div class="detail-item-value">' + d.vgv + '</div></div>' +
+            '<div><div class="detail-item-label">Área Total</div><div class="detail-item-value">' + d.area + ' m²</div></div>' +
+            '<div><div class="detail-item-label">Pot. construtivo</div><div class="detail-item-value">' + d.pot + '</div></div>' +
+            '<div><div class="detail-item-label">Score de oport.</div><div class="detail-item-value">' + d.score + '/100</div></div>' +
+          '</div>' +
+          '<div class="detail-actions">' +
+            '<button class="ent-btn ent-btn-primary" onclick="openModal(event,\'' + d.addr + '\')">Solicitar mediação de contato</button>' +
+            '<a class="ent-btn" href="02-ent-mapa.html">Ver no mapa</a>' +
+            '<a class="ent-btn" href="05-ent-pipeline.html">Adicionar ao pipeline</a>' +
+          '</div>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function toggleDetail(i) {
+    var row = document.getElementById('detail-' + i);
+    row.classList.toggle('open');
+  }
+
+  function openModal(e, addr) {
+    e.stopPropagation();
+    document.getElementById('modal-prop-name').textContent = addr;
+    document.getElementById('contact-modal').classList.add('open');
+  }
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById('contact-modal')) {
+      document.getElementById('contact-modal').classList.remove('open');
+    }
+  }
+  function sendMediation() {
+    document.getElementById('contact-modal').classList.remove('open');
+    alert('✓ Solicitação enviada. O proprietário será notificado via plataforma em até 48h, com auditoria registrada.');
+  }
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sb-overlay').classList.toggle('open');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sb-overlay').classList.remove('open');
+  }
+
+  renderTable();
+</script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assinatura — Cadê o Dono? Enterprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/enterprise.css" />
+  <style>
+    /* Pricing cards */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px; }
+
+    .price-card {
+      background: var(--ent-surface);
+      border: 1px solid var(--ent-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      transition: box-shadow .15s;
+    }
+    .price-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .price-card.current {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,.1), 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .price-card.enterprise-tier {
+      background: #0f172a;
+      border-color: #1e293b;
+    }
+
+    .current-badge {
+      position: absolute;
+      top: -11px; left: 50%;
+      transform: translateX(-50%);
+      background: #4f46e5;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+    }
+
+    .price-tier {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: 8px;
+    }
+    .price-card:not(.enterprise-tier) .price-tier { color: #94a3b8; }
+    .price-card.enterprise-tier .price-tier { color: #475569; }
+
+    .price-name {
+      font-size: 19px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -.3px;
+      margin-bottom: 4px;
+    }
+    .enterprise-tier .price-name { color: #fff; }
+
+    .price-range {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .enterprise-tier .price-range { color: #475569; }
+    .price-range strong {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -.5px;
+    }
+    .enterprise-tier .price-range strong { color: #fff; }
+
+    .price-divider { height: 1px; background: #e2e8f0; margin: 16px 0; }
+    .enterprise-tier .price-divider { background: #1e293b; }
+
+    .feature-list { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.4;
+    }
+    .enterprise-tier .feature-item { color: #64748b; }
+    .feature-item.included .fi-icon { color: #4f46e5; }
+    .feature-item.dimmed { opacity: .5; }
+    .fi-icon { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+
+    .price-cta {
+      width: 100%;
+      height: 42px;
+      border-radius: 10px;
+      border: none;
+      font-family: "Sora", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background .14s, transform .14s;
+    }
+    .price-cta:hover { transform: translateY(-1px); }
+    .cta-current  { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+    .cta-upgrade  { background: #4f46e5; color: #fff; }
+    .cta-upgrade:hover { background: #4338ca; }
+    .cta-enterprise { background: #fff; color: #0f172a; }
+    .cta-enterprise:hover { background: #f1f5f9; }
+
+    /* Usage meters */
+    .usage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .usage-card {
+      background: var(--ent-surface);
+      border: 1px solid var(--ent-border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .usage-label { font-size: 12px; font-weight: 600; color: var(--ent-text-primary); margin-bottom: 6px; }
+    .usage-sub   { font-size: 11px; color: var(--ent-text-muted); }
+    .usage-bar-wrap { height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; margin: 10px 0 6px; }
+    .usage-bar { height: 100%; border-radius: 4px; }
+    .usage-numbers { display: flex; justify-content: space-between; font-size: 11px; }
+    .usage-used  { font-weight: 700; color: var(--ent-text-primary); }
+    .usage-limit { color: var(--ent-text-muted); }
+
+    /* Invoice table */
+    .invoice-row { cursor: default; }
+    .invoice-row:hover td { background: var(--ent-slate-50); }
+
+    @media (max-width: 900px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+      .usage-grid   { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="ent-root">
+  <div class="ent-sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+  <aside class="ent-sidebar" id="sidebar">
+    <div class="ent-sb-brand">
+      <div class="ent-sb-logo"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="ent-sb-brand-text"><div class="ent-sb-brand-name">Cadê o Dono?</div><div class="ent-badge-ent">Enterprise</div></div>
+    </div>
+    <nav class="ent-sb-nav">
+      <div class="ent-sb-section">Principal</div>
+      <a class="ent-sb-link" href="01-ent-dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a class="ent-sb-link" href="02-ent-mapa.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>Mapa Premium</a>
+      <a class="ent-sb-link" href="03-ent-oportunidades.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Oportunidades</a>
+      <a class="ent-sb-link" href="04-ent-inteligencia.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Inteligência</a>
+      <a class="ent-sb-link" href="05-ent-pipeline.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Pipeline</a>
+      <div class="ent-sb-divider"></div>
+      <div class="ent-sb-section">Gestão</div>
+      <a class="ent-sb-link active" href="06-ent-billing.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Assinatura</a>
+      <div class="ent-sb-divider"></div>
+    </nav>
+    <div class="ent-sb-tier">
+      <div class="ent-sb-tier-label">Plano Atual</div>
+      <div class="ent-sb-tier-name">Urban Intelligence</div>
+      <div class="ent-sb-tier-bar"><div class="ent-sb-tier-fill" style="width:58%"></div></div>
+    </div>
+    <div class="ent-sb-user">
+      <div class="ent-sb-avatar">BR</div>
+      <div><div class="ent-sb-user-name">Brookfield Brasil</div><div class="ent-sb-user-role">Fundo Imobiliário</div></div>
+    </div>
+  </aside>
+
+  <main class="ent-main">
+    <header class="ent-topbar">
+      <button class="ent-hamburger" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="ent-tb-breadcrumb"><span>Enterprise</span><span class="sep">›</span><span class="active">Assinatura & Planos</span></div>
+      <div class="ent-tb-actions">
+        <button class="ent-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Baixar fatura
+        </button>
+        <div class="ent-tb-avatar">BR</div>
+      </div>
+    </header>
+
+    <div class="ent-content">
+      <div class="ent-page-hd" style="margin-bottom:22px;">
+        <div class="ent-page-title">Assinatura & Planos</div>
+        <div class="ent-page-sub">Plano atual: <strong>Urban Intelligence</strong> · Próxima cobrança: 22 de junho de 2026</div>
+      </div>
+
+      <!-- Pricing cards -->
+      <div class="pricing-grid">
+
+        <!-- Tier 1 -->
+        <div class="price-card">
+          <div class="price-tier">Tier 1</div>
+          <div class="price-name">Base Investor</div>
+          <div class="price-range"><strong>R$ 350</strong> – R$ 650<span style="font-size:11px;color:#94a3b8;">/mês</span></div>
+          <div class="price-divider"></div>
+          <div class="feature-list">
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Mapa georreferenciado (região limitada)
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Status de ocupação e situação jurídica
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Estimativa de valor por m²
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Mediação automatizada de contato (LGPD)
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Até 200 imóveis monitorados/mês
+            </div>
+            <div class="feature-item dimmed">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Potencial construtivo / VGV
+            </div>
+            <div class="feature-item dimmed">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Heatmaps e análise territorial
+            </div>
+            <div class="feature-item dimmed">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              API & exportação
+            </div>
+          </div>
+          <button class="price-cta cta-upgrade" onclick="">Fazer upgrade</button>
+        </div>
+
+        <!-- Tier 2 — CURRENT -->
+        <div class="price-card current">
+          <div class="current-badge">Plano atual</div>
+          <div class="price-tier">Tier 2</div>
+          <div class="price-name">Urban Intelligence</div>
+          <div class="price-range"><strong>R$ 1.500</strong> – R$ 3.000<span style="font-size:11px;color:#94a3b8;">/mês</span></div>
+          <div class="price-divider"></div>
+          <div class="feature-list">
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Tudo do Tier 1
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Potencial construtivo e estimativa de VGV
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Zoneamento, gabarito e recuos
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Acesso cidade inteira + heatmaps
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Análise territorial avançada
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Filtros avançados e pipeline de aquisição
+            </div>
+            <div class="feature-item included">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Até 2.500 imóveis monitorados/mês
+            </div>
+            <div class="feature-item dimmed">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              API para CRMs & exportação
+            </div>
+            <div class="feature-item dimmed">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Análise geotécnica e cobertura nacional
+            </div>
+          </div>
+          <button class="price-cta cta-current">Plano atual</button>
+        </div>
+
+        <!-- Tier 3 -->
+        <div class="price-card enterprise-tier">
+          <div class="price-tier">Tier 3</div>
+          <div class="price-name" style="color:#fff;">Enterprise / National</div>
+          <div class="price-range"><strong>R$ 5.000</strong> – R$ 9.000<span style="font-size:11px;color:#334155;">/mês</span></div>
+          <div class="price-divider"></div>
+          <div class="feature-list">
+            <div class="feature-item included" style="color:#94a3b8;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Tudo do Tier 2
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Cobertura nacional ilimitada
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Análises geotécnicas preliminares
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Mediação de laudos geotécnicos completos
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              API REST para CRMs e sistemas internos
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Exportação completa (CSV, PDF, GeoJSON)
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Dashboards customizados e relatórios auto.
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Suporte dedicado + CSM exclusivo
+            </div>
+            <div class="feature-item" style="color:#64748b;">
+              <svg class="fi-icon" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Imóveis monitorados ilimitados
+            </div>
+          </div>
+          <button class="price-cta cta-enterprise" onclick="alert('Nossa equipe de vendas entrará em contato para apresentar a proposta Enterprise personalizada.')">Falar com vendas</button>
+        </div>
+      </div>
+
+      <!-- Usage meters -->
+      <div style="font-size:14px;font-weight:700;color:#0f172a;margin-bottom:14px;letter-spacing:-.2px;">Uso este mês — Urban Intelligence</div>
+      <div class="usage-grid" style="margin-bottom:24px;">
+        <div class="usage-card">
+          <div class="usage-label">Imóveis monitorados</div>
+          <div class="usage-bar-wrap"><div class="usage-bar" style="width:58%;background:#4f46e5;"></div></div>
+          <div class="usage-numbers"><div class="usage-used">1.362 utilizados</div><div class="usage-limit">de 2.500/mês</div></div>
+        </div>
+        <div class="usage-card">
+          <div class="usage-label">Solicitações de mediação</div>
+          <div class="usage-bar-wrap"><div class="usage-bar" style="width:34%;background:#6366f1;"></div></div>
+          <div class="usage-numbers"><div class="usage-used">34 enviadas</div><div class="usage-limit">de 100/mês</div></div>
+        </div>
+        <div class="usage-card">
+          <div class="usage-label">Exportações de relatório</div>
+          <div class="usage-bar-wrap"><div class="usage-bar" style="width:24%;background:#818cf8;"></div></div>
+          <div class="usage-numbers"><div class="usage-used">12 gerados</div><div class="usage-limit">de 50/mês</div></div>
+        </div>
+        <div class="usage-card">
+          <div class="usage-label">Consultas de inteligência</div>
+          <div class="usage-bar-wrap"><div class="usage-bar" style="width:77%;background:#4338ca;"></div></div>
+          <div class="usage-numbers"><div class="usage-used">1.924 consultas</div><div class="usage-limit">de 2.500/mês</div></div>
+        </div>
+      </div>
+
+      <!-- Invoice history -->
+      <div class="ent-table-wrap">
+        <div class="ent-table-hd">
+          <div class="ent-table-title">Histórico de faturas</div>
+          <button class="ent-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Baixar todas
+          </button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="ent-table">
+            <thead>
+              <tr><th>Mês de referência</th><th>Plano</th><th>Valor</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr class="invoice-row"><td class="ent-td-primary">Maio 2026</td><td>Urban Intelligence</td><td style="font-weight:700;">R$ 1.800,00</td><td><span class="ent-badge ent-badge-warning">Pendente</span></td><td><button class="ent-btn ent-btn-sm">Pagar</button></td></tr>
+              <tr class="invoice-row"><td class="ent-td-primary">Abril 2026</td><td>Urban Intelligence</td><td style="font-weight:700;">R$ 1.800,00</td><td><span class="ent-badge ent-badge-success">Pago</span></td><td><button class="ent-btn ent-btn-sm">PDF</button></td></tr>
+              <tr class="invoice-row"><td class="ent-td-primary">Março 2026</td><td>Urban Intelligence</td><td style="font-weight:700;">R$ 1.800,00</td><td><span class="ent-badge ent-badge-success">Pago</span></td><td><button class="ent-btn ent-btn-sm">PDF</button></td></tr>
+              <tr class="invoice-row"><td class="ent-td-primary">Fevereiro 2026</td><td>Base Investor</td><td style="font-weight:700;">R$ 450,00</td><td><span class="ent-badge ent-badge-success">Pago</span></td><td><button class="ent-btn ent-btn-sm">PDF</button></td></tr>
+              <tr class="invoice-row"><td class="ent-td-primary">Janeiro 2026</td><td>Base Investor</td><td style="font-weight:700;">R$ 450,00</td><td><span class="ent-badge ent-badge-success">Pago</span></td><td><button class="ent-btn ent-btn-sm">PDF</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script>
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sb-overlay').classList.toggle('open'); }
+  function closeSidebar()  { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sb-overlay').classList.remove('open'); }
+</script>
+</body>
+</html>

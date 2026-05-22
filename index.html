@@ -239,18 +239,8 @@
         border: 1px solid var(--border);
       }
 
-      .card-builder {
-        opacity: 0.72;
-        background: var(--neutral-light);
-        border-style: dashed;
-      }
-
-      .card-builder:hover {
-        opacity: 0.88;
-        transform: translateY(-1px);
-      }
-
-      .divider-row {
+      /* ── Enterprise CTA ── */
+      .enterprise-divider {
         display: flex;
         align-items: center;
         gap: 12px;
@@ -258,45 +248,136 @@
         width: 100%;
         margin-bottom: 16px;
       }
-
-      .div-line {
+      .ent-div-line {
         flex: 1;
         height: 1px;
-        background: var(--border);
+        background: linear-gradient(90deg, transparent, #6366f1 40%, #6366f1 60%, transparent);
+        opacity: 0.25;
       }
-
-      .div-label {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--text-muted);
+      .ent-div-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #6366f1;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
         white-space: nowrap;
       }
 
-      .builder-row {
+      .enterprise-row {
         max-width: 860px;
         width: 100%;
+        margin-bottom: 0;
       }
 
-      .card-builder-h {
-        background: var(--neutral-light);
-        border: 1.5px dashed var(--border);
-        border-radius: 16px;
-        padding: 18px 24px;
+      .card-enterprise {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        border-radius: 20px;
+        padding: 28px 32px;
         display: flex;
         align-items: center;
-        gap: 16px;
-        cursor: default;
-        opacity: 0.75;
+        gap: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 0 4px 24px rgba(99, 102, 241, 0.15);
+        position: relative;
+        overflow: hidden;
+      }
+      .card-enterprise::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, transparent 60%);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .card-enterprise:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.28);
+        border-color: rgba(99, 102, 241, 0.6);
+      }
+      .card-enterprise:hover::before { opacity: 1; }
+
+      .ent-icon-wrap {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: rgba(99, 102, 241, 0.2);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .ent-icon-wrap svg { width: 26px; height: 26px; color: #a5b4fc; }
+
+      .ent-card-content { flex: 1; min-width: 0; }
+      .ent-card-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #818cf8;
+        margin-bottom: 5px;
+      }
+      .ent-card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #f1f5f9;
+        letter-spacing: -0.02em;
+        margin-bottom: 6px;
+      }
+      .ent-card-sub {
+        font-size: 13px;
+        color: #94a3b8;
+        line-height: 1.55;
+        margin-bottom: 14px;
+      }
+      .ent-features {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .ent-feat-chip {
+        font-size: 11px;
+        font-weight: 500;
+        color: #a5b4fc;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 20px;
+        padding: 3px 10px;
       }
 
-      .builder-h-text .card-title {
-        font-size: 14px;
-        margin-bottom: 3px;
+      .ent-cta-btn {
+        background: #4f46e5;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 13px 22px;
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        box-shadow: 0 2px 10px rgba(79, 70, 229, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
+      .ent-cta-btn:hover {
+        background: #4338ca;
+        box-shadow: 0 4px 16px rgba(79, 70, 229, 0.55);
+      }
+      .ent-cta-btn svg { width: 14px; height: 14px; }
 
-      .builder-h-text .card-sub {
-        font-size: 12px;
-        margin-bottom: 0;
+      @media (max-width: 680px) {
+        .card-enterprise { flex-direction: column; align-items: flex-start; gap: 16px; padding: 22px 20px; }
+        .ent-cta-btn { width: 100%; justify-content: center; }
+        .ent-features { display: none; }
       }
 
       .bottom-note {
@@ -371,7 +452,7 @@
         <!-- CIDADÃO -->
         <div
           class="profile-card card-citizen"
-          onclick="window.location.href='pages/morador/cade_o_dono_home_morador.html'"
+          onclick="window.location.href='pages/auth/auth-login-cidadao.html'"
           role="button"
           tabindex="0"
         >
@@ -414,7 +495,7 @@
         <!-- AGENTE -->
         <div
           class="profile-card card-agent"
-          onclick="window.location.href='pages/agente/17-agente-mapa.html'"
+          onclick="window.location.href='pages/auth/auth-login-agente.html'"
           role="button"
           tabindex="0"
         >
@@ -456,10 +537,11 @@
           <button class="card-cta cta-agent">Entrar como agente</button>
         </div>
 
+
         <!-- GESTOR -->
         <div
           class="profile-card card-manager"
-          onclick="window.location.href='pages/gestor/02-dashboard-gestor.html'"
+          onclick="window.location.href='pages/auth/auth-login-gestor.html'"
           role="button"
           tabindex="0"
         >
@@ -502,45 +584,41 @@
         </div>
       </div>
 
-      <!-- DIVIDER -->
-      <div class="divider-row">
-        <div class="div-line"></div>
-        <span class="div-label">Expansão futura</span>
-        <div class="div-line"></div>
+      <!-- ENTERPRISE DIVIDER -->
+      <div class="enterprise-divider">
+        <div class="ent-div-line"></div>
+        <span class="ent-div-label">⬡ Enterprise B2B</span>
+        <div class="ent-div-line"></div>
       </div>
 
-      <!-- CONSTRUTORA HORIZONTAL -->
-      <div class="builder-row">
-        <div class="card-builder-h">
-          <div
-            class="card-icon icon-builder"
-            style="margin-bottom: 0; flex-shrink: 0"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="3" width="20" height="14" rx="2" />
-              <path d="M8 21h8M12 17v4" />
-              <path d="M7 8h10M7 12h4" />
+      <!-- ENTERPRISE CARD -->
+      <div class="enterprise-row">
+        <a class="card-enterprise" href="pages/enterprise/auth/ent-login.html">
+          <div class="ent-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+              <path d="M7 8h10M7 12h4"/>
             </svg>
           </div>
-          <div class="builder-h-text">
-            <div class="card-title" style="color: var(--neutral)">
-              🏗️ Construtora / Investidor urbano
+          <div class="ent-card-content">
+            <div class="ent-card-eyebrow">Construtora · Incorporadora · Fundo Imobiliário</div>
+            <div class="ent-card-title">Plataforma Enterprise</div>
+            <p class="ent-card-sub">Mapeamento territorial avançado, inteligência de oportunidades e pipeline de aquisição de imóveis para times B2B.</p>
+            <div class="ent-features">
+              <span class="ent-feat-chip">Mapa georreferenciado</span>
+              <span class="ent-feat-chip">Score de oportunidade</span>
+              <span class="ent-feat-chip">Pipeline de negociação</span>
+              <span class="ent-feat-chip">Inteligência territorial</span>
             </div>
-            <p class="card-sub">
-              Identificar imóveis com potencial de aquisição, cruzar dados
-              jurídicos e gerar propostas via prefeitura.
-              <em>Off label — em pesquisa.</em>
-            </p>
           </div>
-          <span class="future-flag">Em breve</span>
-        </div>
+          <button class="ent-cta-btn" onclick="event.preventDefault(); window.location.href='pages/enterprise/auth/ent-login.html'">
+            Acessar Enterprise
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </a>
       </div>
 
       <!-- NOTA -->
