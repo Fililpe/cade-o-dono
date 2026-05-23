@@ -98,7 +98,24 @@
     .vs-row span:last-child  { color: #0f172a; font-weight: 700; }
 
     @media (max-width: 900px) { .two-col, .three-col { grid-template-columns: 1fr; } }
-  
+
+    @media (max-width: 640px) {
+      /* Heatmap: scroll horizontal */
+      .heatmap-wrap, .heatmap-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .heatmap-table { min-width: 480px; }
+
+      /* Ranking table: oculta colunas 4+ */
+      .ranking-table th:nth-child(n+4),
+      .ranking-table td:nth-child(n+4) { display: none; }
+
+      /* Zoning cards: 1 coluna */
+      .zone-grid, .zoning-grid { grid-template-columns: 1fr !important; }
+
+      /* Donut chart: menor */
+      .donut-wrap { height: 160px !important; }
+      .trend-chart { overflow-x: auto; }
+    }
+
     .ent-sb-sair {
       display: flex; align-items: center; gap: 8px;
       margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px;

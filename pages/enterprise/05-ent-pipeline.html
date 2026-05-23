@@ -110,6 +110,33 @@
       border: 1px solid rgba(255,255,255,.07);
     }
     .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
+
+    /* Mobile pipeline */
+    @media (max-width: 640px) {
+      /* Kanban: scroll horizontal com snap */
+      .kanban-board {
+        padding: 12px;
+        gap: 12px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      }
+      .kanban-col {
+        min-width: 82vw;
+        max-width: 82vw;
+        scroll-snap-align: start;
+        flex-shrink: 0;
+      }
+      /* Summary bar acima do kanban */
+      .pipeline-summary {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 12px;
+      }
+      .pipeline-summary > * { flex: 1 1 auto; }
+
+      /* Altura do kanban: descontando topbar + summary */
+      .ent-main { overflow: hidden; }
+    }
   </style>
 </head>
 <body>

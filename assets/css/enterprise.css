@@ -694,6 +694,7 @@ table.ent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 /* ══════════════════════════════
    RESPONSIVE
    ══════════════════════════════ */
+/* ── 900px: sidebar vira drawer ── */
 @media (max-width: 900px) {
   .ent-sidebar {
     transform: translateX(-100%);
@@ -707,8 +708,66 @@ table.ent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .ent-kpi-row { grid-template-columns: 1fr 1fr; }
   .ent-grid-2, .ent-grid-3 { grid-template-columns: 1fr; }
 }
-@media (max-width: 480px) {
-  .ent-kpi-row { grid-template-columns: 1fr; }
+
+/* ── 640px: topbar e layout ── */
+@media (max-width: 640px) {
+  /* Topbar compacta */
+  .ent-topbar { padding: 0 12px; gap: 8px; }
+
+  /* Esconde elementos não essenciais do topbar */
+  .ent-tier-pill { display: none; }
+  .ent-tb-actions .ent-btn { display: none; }
+  .ent-tb-actions .ent-select { display: none; }
+  .ent-tb-actions .ent-input { display: none; }
+
+  /* Breadcrumb: esconde prefixo "Enterprise ›", mostra só a página atual */
+  .ent-tb-breadcrumb > span:first-child,
+  .ent-tb-breadcrumb > .sep:first-of-type { display: none; }
+  .ent-tb-breadcrumb .active { font-size: 14px; font-weight: 700; }
+
+  /* Page header: empilha título e botão */
+  .ent-page-hd {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+  .ent-page-hd > a.ent-btn,
+  .ent-page-hd > button.ent-btn { width: 100%; justify-content: center; }
+
+  /* Content padding menor */
+  .ent-content { padding: 12px; }
+
+  /* KPI: 2 colunas */
+  .ent-kpi-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ent-kpi { padding: 14px 12px; }
+  .ent-kpi-value { font-size: 22px; }
+
+  /* Cards */
+  .ent-card { padding: 14px; }
+  .ent-card-hd { flex-wrap: wrap; gap: 8px; }
+  .ent-card-hd .ent-btn { font-size: 11px; padding: 6px 10px; }
+
+  /* Tabelas: oculta colunas 4+ */
   .ent-table th:nth-child(n+4),
   .ent-table td:nth-child(n+4) { display: none; }
+
+  /* Grids */
+  .ent-grid-2, .ent-grid-3,
+  .two-col, .three-col { grid-template-columns: 1fr !important; }
+}
+
+/* ── 480px: ajustes finais ── */
+@media (max-width: 480px) {
+  .ent-kpi-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ent-kpi-value { font-size: 20px; }
+  .ent-kpi-label { font-size: 11px; }
+  .ent-page-title { font-size: 18px; }
+  .ent-page-sub { font-size: 12px; }
+
+  /* Tabela: só 3 colunas */
+  .ent-table th:nth-child(n+4),
+  .ent-table td:nth-child(n+4) { display: none; }
+
+  /* Topbar ainda mais compacta */
+  .ent-topbar { height: 50px; }
 }

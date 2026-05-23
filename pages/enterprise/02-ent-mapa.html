@@ -377,6 +377,8 @@
     .prop-action-secondary:hover { background: #e2e8f0; }
 
     @media (max-width: 900px) {
+      .map-panel-left { display: none; }
+      .map-prop-panel { display: none; }
       .map-panel-left, .map-panel-right { display: none; }
     }
   
@@ -388,6 +390,14 @@
       border: 1px solid rgba(255,255,255,.07);
     }
     .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
+
+    /* Mobile: mapa ocupa tela inteira */
+    @media (max-width: 640px) {
+      body, html { overflow: hidden; }
+      .map-panel-left { display: none !important; }
+      .map-panel-right, .map-prop-panel { display: none !important; }
+      .map-canvas { flex: 1 !important; border-radius: 0 !important; }
+    }
   </style>
 </head>
 <body>

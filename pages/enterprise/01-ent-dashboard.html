@@ -140,7 +140,25 @@
     @media (max-width: 900px) {
       .two-col, .three-col { grid-template-columns: 1fr; }
     }
-  
+
+    @media (max-width: 640px) {
+      /* Page header: empilha título + botão */
+      .ent-page-hd {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+      }
+      .ent-page-hd .ent-btn { width: 100%; justify-content: center; text-align: center; }
+
+      /* Activity list: compacta */
+      .act-row { gap: 10px; padding: 10px 14px; }
+      .act-meta { gap: 4px; }
+
+      /* Heatmap: scroll horizontal */
+      .heat-grid { overflow-x: auto; }
+      .heat-table { min-width: 400px; }
+    }
+
     .ent-sb-sair {
       display: flex; align-items: center; gap: 8px;
       margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px;

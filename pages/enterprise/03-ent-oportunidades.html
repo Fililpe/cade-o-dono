@@ -99,6 +99,25 @@
       border: 1px solid rgba(255,255,255,.07);
     }
     .ent-sb-sair:hover { background: rgba(239,68,68,.12); color: #f87171; border-color: rgba(239,68,68,.25); }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      /* Empilha layout: filtros somem, tabela ocupa tudo */
+      .page-layout { flex-direction: column; }
+      .filter-sidebar { display: none; }
+
+      /* Input de busca no topbar: compacto */
+      .ent-tb-actions .ent-input { display: block !important; width: 130px !important; font-size: 12px; }
+
+      /* Tabela: oculta colunas menos essenciais */
+      .ent-table th:nth-child(n+5),
+      .ent-table td:nth-child(n+5) { display: none; }
+
+      /* Detalhe expandido: grid 2 colunas */
+      .detail-grid { grid-template-columns: 1fr 1fr !important; }
+      .detail-actions { flex-wrap: wrap; }
+      .detail-actions .ent-btn { flex: 1; justify-content: center; }
+    }
   </style>
 </head>
 <body>
