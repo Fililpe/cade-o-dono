@@ -458,7 +458,6 @@
             type="email"
             placeholder="seu@email.com"
             autocomplete="email"
-            required
           />
         </div>
 
@@ -474,7 +473,6 @@
               type="password"
               placeholder="••••••••"
               autocomplete="current-password"
-              required
             />
             <button
               type="button"
@@ -546,36 +544,16 @@
     </div>
 
     <script>
-      // Mock credentials — replace with real auth when backend is available
-      var MOCK_USERS = [
-        { email: "cidadao@demo.com", password: "123456" },
-        { email: "demo@demo.com", password: "demo" },
-      ];
       var DEST = "../morador/cade_o_dono_home_morador.html";
 
       function handleEmailLogin(e) {
         e.preventDefault();
-        var email = document.getElementById("email").value.trim().toLowerCase();
-        var password = document.getElementById("password").value;
-        var errorEl = document.getElementById("form-error");
         var btn = document.getElementById("submit-btn");
-
-        // Basic mock validation
-        var valid = MOCK_USERS.some(function (u) {
-          return u.email === email && u.password === password;
-        });
-
-        if (valid) {
-          errorEl.classList.remove("visible");
-          btn.textContent = "Entrando…";
-          btn.disabled = true;
-          // Simulate brief loading, then redirect
-          setTimeout(function () {
-            window.location.href = DEST;
-          }, 600);
-        } else {
-          errorEl.classList.add("visible");
-        }
+        btn.textContent = "Entrando…";
+        btn.disabled = true;
+        setTimeout(function () {
+          window.location.href = DEST;
+        }, 600);
       }
 
       function mockSocialLogin(provider) {

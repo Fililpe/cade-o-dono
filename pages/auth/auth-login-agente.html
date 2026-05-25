@@ -369,7 +369,6 @@
             type="email"
             placeholder="agente@prefeitura.gov.br"
             autocomplete="email"
-            required
           />
         </div>
 
@@ -385,7 +384,6 @@
               type="password"
               placeholder="••••••••"
               autocomplete="current-password"
-              required
             />
             <button
               type="button"
@@ -495,31 +493,16 @@
     </div>
 
     <script>
-      var MOCK_USERS = [
-        { email: "agente@campo.gov.br", password: "123456" },
-        { email: "vistoria@agente.gov.br", password: "agente" },
-      ];
       var DEST = "../agente/17-agente-mapa.html";
 
       function handleLogin(e) {
         e.preventDefault();
-        var email = document.getElementById("email").value.trim().toLowerCase();
-        var password = document.getElementById("password").value;
-        var errorEl = document.getElementById("form-error");
         var btn = document.getElementById("submit-btn");
-        var valid = MOCK_USERS.some(function (u) {
-          return u.email === email && u.password === password;
-        });
-        if (valid) {
-          errorEl.classList.remove("visible");
-          btn.textContent = "Entrando…";
-          btn.disabled = true;
-          setTimeout(function () {
-            window.location.href = DEST;
-          }, 600);
-        } else {
-          errorEl.classList.add("visible");
-        }
+        btn.textContent = "Entrando…";
+        btn.disabled = true;
+        setTimeout(function () {
+          window.location.href = DEST;
+        }, 600);
       }
 
       function togglePassword(id, btn) {

@@ -575,7 +575,6 @@
               type="email"
               placeholder="nome@empresa.com.br"
               autocomplete="email"
-              required
             />
           </div>
           <div>
@@ -590,7 +589,6 @@
                 type="password"
                 placeholder="••••••••"
                 autocomplete="current-password"
-                required
               />
               <button
                 type="button"
@@ -662,13 +660,6 @@
       var selectedProfile = "investidor";
       var DEST = "../01-ent-dashboard.html";
 
-      var MOCK = [
-        { email: "investidor@brookfield.com", password: "enterprise" },
-        { email: "usuario@tegra.com.br", password: "enterprise" },
-        { email: "demo@enterprise.com", password: "123456" },
-        { email: "admin@fundo.com.br", password: "enterprise" },
-      ];
-
       function selectProfile(el, profile) {
         document.querySelectorAll(".profile-opt").forEach(function (b) {
           b.classList.remove("selected");
@@ -679,24 +670,13 @@
 
       function handleLogin(e) {
         e.preventDefault();
-        var email = document.getElementById("email").value.trim().toLowerCase();
-        var pwd = document.getElementById("password").value;
-        var errEl = document.getElementById("form-error");
         var btn = document.getElementById("submit-btn");
-        var valid = MOCK.some(function (u) {
-          return u.email === email && u.password === pwd;
-        });
-        if (valid) {
-          errEl.classList.remove("visible");
-          btn.textContent = "Entrando…";
-          btn.disabled = true;
-          localStorage.setItem("ent_profile", selectedProfile);
-          setTimeout(function () {
-            window.location.href = DEST;
-          }, 700);
-        } else {
-          errEl.classList.add("visible");
-        }
+        btn.textContent = "Entrando…";
+        btn.disabled = true;
+        localStorage.setItem("ent_profile", selectedProfile);
+        setTimeout(function () {
+          window.location.href = DEST;
+        }, 700);
       }
 
       function togglePwd(id, btn) {

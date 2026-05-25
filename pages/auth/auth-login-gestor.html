@@ -473,7 +473,6 @@
             type="email"
             placeholder="nome@prefeitura.gov.br"
             autocomplete="email"
-            required
           />
           <span class="field-hint"
             >Use o e-mail fornecido pela sua instituição</span
@@ -492,7 +491,6 @@
               type="password"
               placeholder="••••••••"
               autocomplete="current-password"
-              required
             />
             <button
               type="button"
@@ -633,31 +631,16 @@
     </div>
 
     <script>
-      var MOCK_USERS = [
-        { email: "gestor@prefeitura.gov.br", password: "123456" },
-        { email: "admin@gestor.gov.br", password: "gestor" },
-      ];
       var DEST = "../gestor/02-dashboard-gestor.html";
 
       function handleLogin(e) {
         e.preventDefault();
-        var email = document.getElementById("email").value.trim().toLowerCase();
-        var password = document.getElementById("password").value;
-        var errorEl = document.getElementById("form-error");
         var btn = document.getElementById("submit-btn");
-        var valid = MOCK_USERS.some(function (u) {
-          return u.email === email && u.password === password;
-        });
-        if (valid) {
-          errorEl.classList.remove("visible");
-          btn.textContent = "Entrando…";
-          btn.disabled = true;
-          setTimeout(function () {
-            window.location.href = DEST;
-          }, 600);
-        } else {
-          errorEl.classList.add("visible");
-        }
+        btn.textContent = "Entrando…";
+        btn.disabled = true;
+        setTimeout(function () {
+          window.location.href = DEST;
+        }, 600);
       }
 
       function togglePassword(id, btn) {

@@ -466,7 +466,6 @@
             type="text"
             placeholder="Seu nome completo"
             autocomplete="name"
-            required
           />
           <span class="field-error" id="name-error"
             >Por favor, informe seu nome.</span
@@ -481,7 +480,6 @@
             type="email"
             placeholder="seu@email.com"
             autocomplete="email"
-            required
           />
           <span class="field-error" id="email-error"
             >Informe um e-mail válido.</span
@@ -497,7 +495,6 @@
               type="password"
               placeholder="Mínimo 6 caracteres"
               autocomplete="new-password"
-              required
               oninput="checkStrength(this.value)"
             />
             <button
@@ -542,7 +539,6 @@
               type="password"
               placeholder="Repita a senha"
               autocomplete="new-password"
-              required
             />
             <button
               type="button"
@@ -689,63 +685,9 @@
 
       function handleRegister(e) {
         e.preventDefault();
-        var name = document.getElementById("name").value.trim();
-        var email = document.getElementById("email").value.trim();
-        var pwd = document.getElementById("password").value;
-        var confirm = document.getElementById("confirm").value;
-        var terms = document.getElementById("terms").checked;
-        var formErr = document.getElementById("form-error");
-
-        var valid = true;
-
-        if (!name) {
-          showFieldError("name", true);
-          valid = false;
-        } else {
-          showFieldError("name", false);
-        }
-
-        var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRe.test(email)) {
-          showFieldError("email", true);
-          valid = false;
-        } else {
-          showFieldError("email", false);
-        }
-
-        if (pwd.length < 6) {
-          showFieldError("password", true);
-          valid = false;
-        } else {
-          showFieldError("password", false);
-        }
-
-        if (pwd !== confirm) {
-          showFieldError("confirm", true);
-          valid = false;
-        } else {
-          showFieldError("confirm", false);
-        }
-
-        if (!terms) {
-          showFieldError("terms", true);
-          valid = false;
-        } else {
-          showFieldError("terms", false);
-        }
-
-        if (!valid) {
-          formErr.classList.add("visible");
-          return;
-        }
-
-        formErr.classList.remove("visible");
-
-        // Mock registration success
         var btn = document.getElementById("submit-btn");
         btn.textContent = "Criando conta…";
         btn.disabled = true;
-
         setTimeout(function () {
           document.getElementById("register-form").style.display = "none";
           document.getElementById("login-prompt").style.display = "none";
