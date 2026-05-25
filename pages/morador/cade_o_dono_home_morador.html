@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cadê o Dono? — Home do Morador</title>
     <link
@@ -444,7 +444,9 @@
         gap: 24px;
         margin-bottom: 20px;
         cursor: pointer;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
       }
       .cta-block:hover {
         transform: translateY(-1px);
@@ -792,10 +794,8 @@
       .map-grid-bg {
         position: absolute;
         inset: 0;
-        background-image: linear-gradient(
-            rgba(21, 101, 192, 0.06) 1px,
-            transparent 1px
-          ),
+        background-image:
+          linear-gradient(rgba(21, 101, 192, 0.06) 1px, transparent 1px),
           linear-gradient(90deg, rgba(21, 101, 192, 0.06) 1px, transparent 1px);
         background-size: 20px 20px;
       }
@@ -931,7 +931,9 @@
         justify-content: center;
         cursor: pointer;
         transform: translateY(-14px);
-        transition: box-shadow 0.2s, transform 0.2s;
+        transition:
+          box-shadow 0.2s,
+          transform 0.2s;
       }
       .fab-core svg {
         width: 24px;
@@ -1243,7 +1245,7 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 aria-hidden="true"
-                onclick="window.location.href='06-notificacoes.html'"
+                onclick="window.location.href = '06-notificacoes.html'"
               >
                 <path
                   d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3z"
@@ -1271,7 +1273,7 @@
               role="button"
               tabindex="0"
               aria-label="Perfil"
-              onclick="window.location.href='08-meu-perfil.html'"
+              onclick="window.location.href = '08-meu-perfil.html'"
             >
               MG
             </div>
@@ -1326,8 +1328,12 @@
                 class="cta-block"
                 role="button"
                 tabindex="0"
-                onclick="window.location.href='denuncia.html'"
-                onkeydown="if(event.key==='Enter'||event.key===' '){this.click()}"
+                onclick="window.location.href = 'denuncia.html'"
+                onkeydown="
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    this.click();
+                  }
+                "
               >
                 <div>
                   <div class="cta-tag">
@@ -1341,7 +1347,10 @@
                   </p>
                   <button
                     class="cta-btn"
-                    onclick="event.stopPropagation();window.location.href='denuncia.html'"
+                    onclick="
+                      event.stopPropagation();
+                      window.location.href = 'denuncia.html';
+                    "
                   >
                     Denunciar agora
                   </button>
@@ -1391,7 +1400,7 @@
                 <h2>Acompanhamento</h2>
                 <button
                   class="see-all"
-                  onclick="window.location.href='04-status-denuncia.html'"
+                  onclick="window.location.href = '04-status-denuncia.html'"
                 >
                   Ver todas &rarr;
                 </button>
@@ -1546,7 +1555,7 @@
                 <div class="quick-grid">
                   <button
                     class="quick-btn"
-                    onclick="window.location.href='denuncia.html'"
+                    onclick="window.location.href = 'denuncia.html'"
                   >
                     <div class="q-icon q-blue">
                       <svg
@@ -1566,7 +1575,7 @@
                   </button>
                   <button
                     class="quick-btn"
-                    onclick="window.location.href='denuncia.html'"
+                    onclick="window.location.href = 'denuncia.html'"
                   >
                     <div class="q-icon q-red">
                       <svg
@@ -1589,7 +1598,9 @@
                   </button>
                   <button
                     class="quick-btn"
-                    onclick="window.location.href='../gestor/05-mapa-imoveis.html'"
+                    onclick="
+                      window.location.href = '../gestor/05-mapa-imoveis.html'
+                    "
                   >
                     <div class="q-icon q-green">
                       <svg
@@ -1611,7 +1622,7 @@
                   </button>
                   <button
                     class="quick-btn"
-                    onclick="window.location.href='04-status-denuncia.html'"
+                    onclick="window.location.href = '04-status-denuncia.html'"
                   >
                     <div class="q-icon q-gray">
                       <svg
@@ -1666,7 +1677,9 @@
                 </div>
                 <button
                   class="map-open"
-                  onclick="window.location.href='../gestor/05-mapa-imoveis.html'"
+                  onclick="
+                    window.location.href = '../gestor/05-mapa-imoveis.html'
+                  "
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -1752,7 +1765,7 @@
             <button
               class="mnav-item"
               aria-label="Mapa"
-              onclick="window.location.href='../gestor/05-mapa-imoveis.html'"
+              onclick="window.location.href = '../gestor/05-mapa-imoveis.html'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -1771,7 +1784,7 @@
             <div class="fab-wrap">
               <button
                 class="fab-core"
-                onclick="window.location.href='denuncia.html'"
+                onclick="window.location.href = 'denuncia.html'"
                 aria-label="Nova denúncia"
               >
                 <svg
@@ -1792,7 +1805,7 @@
             <button
               class="mnav-item"
               aria-label="Histórico"
-              onclick="window.location.href='04-status-denuncia.html'"
+              onclick="window.location.href = '04-status-denuncia.html'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -1811,7 +1824,7 @@
             <button
               class="mnav-item"
               aria-label="Perfil"
-              onclick="window.location.href='08-meu-perfil.html'"
+              onclick="window.location.href = '08-meu-perfil.html'"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -1873,4 +1886,3 @@
     <script src="../../assets/js/router.js"></script>
   </body>
 </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="../../assets/img/logo.png">
+    <link rel="icon" type="image/png" href="../../assets/img/logo.png" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Cad&ecirc; o Dono? &mdash; Agente &mdash; Mapa</title>
     <link
@@ -85,7 +85,7 @@
         width: 32px;
         height: 32px;
         border-radius: 9px;
-        
+
         display: flex;
         align-items: center;
         justify-content: center;
@@ -340,7 +340,6 @@
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        
       }
       .ic svg {
         width: 20px;
@@ -397,7 +396,7 @@
         padding: 13px 24px;
         background: var(--pg);
         box-shadow: var(--ps);
-        
+
         border-radius: 9999px;
         color: #fff;
         font-family: "Sora", sans-serif;
@@ -410,7 +409,6 @@
       }
       .btn-primary:hover {
         transform: translateY(-1px);
-        
       }
       .btn-ghost {
         padding: 11px 20px;
@@ -447,10 +445,8 @@
       .map-bg {
         position: absolute;
         inset: 0;
-        background-image: linear-gradient(
-            rgba(37, 99, 235, 0.06) 1px,
-            transparent 1px
-          ),
+        background-image:
+          linear-gradient(rgba(37, 99, 235, 0.06) 1px, transparent 1px),
           linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px);
         background-size: 22px 22px;
       }
@@ -545,31 +541,46 @@
         color: var(--ts);
         flex-shrink: 0;
       }
-      .hamburger svg { width: 18px; height: 18px; }
+      .hamburger svg {
+        width: 18px;
+        height: 18px;
+      }
 
       /* ── Overlay ── */
       .sidebar-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.4);
+        background: rgba(0, 0, 0, 0.4);
         z-index: 99;
       }
 
       @media (max-width: 768px) {
-        .hamburger { display: flex; }
+        .hamburger {
+          display: flex;
+        }
         .sidebar {
           display: flex !important;
           position: fixed;
-          top: 0; left: 0; bottom: 0;
+          top: 0;
+          left: 0;
+          bottom: 0;
           z-index: 100;
           transform: translateX(-100%);
-          transition: transform 0.3s cubic-bezier(0.23,1,0.32,1);
+          transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .sidebar.open { transform: translateX(0); }
-        .sidebar-overlay.open { display: block; }
-        .main { margin-left: 0; }
-        .page { padding: 16px 14px 80px; }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .sidebar-overlay.open {
+          display: block;
+        }
+        .main {
+          margin-left: 0;
+        }
+        .page {
+          padding: 16px 14px 80px;
+        }
       }
       .offline-banner {
         display: flex;
@@ -601,10 +612,8 @@
       .map-bg2 {
         position: absolute;
         inset: 0;
-        background-image: linear-gradient(
-            rgba(98, 117, 175, 0.06) 1px,
-            transparent 1px
-          ),
+        background-image:
+          linear-gradient(rgba(98, 117, 175, 0.06) 1px, transparent 1px),
           linear-gradient(90deg, rgba(98, 117, 175, 0.06) 1px, transparent 1px);
         background-size: 22px 22px;
       }
@@ -674,7 +683,6 @@
         font-weight: 800;
         color: #fff;
         flex-shrink: 0;
-        
       }
       .oc-info {
         flex: 1;
@@ -694,25 +702,46 @@
         font-weight: 700;
         color: var(--secondary);
       }
-    
+
       .sb-sair-btn {
-        display: flex; align-items: center; gap: 8px;
-        margin-top: 12px; padding: 9px 12px; border-radius: 8px;
-        font-size: 12px; font-weight: 500; color: #94a3b8;
-        text-decoration: none; transition: background .15s, color .15s;
-        border: 1px solid rgba(255,255,255,.08);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #94a3b8;
+        text-decoration: none;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        border: 1px solid rgba(255, 255, 255, 0.08);
       }
-      .sb-sair-btn:hover { background: rgba(239,68,68,.15); color: #f87171; border-color: rgba(239,68,68,.3); }
+      .sb-sair-btn:hover {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+        border-color: rgba(239, 68, 68, 0.3);
+      }
     </style>
   </head>
   <body>
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div
+      class="sidebar-overlay"
+      id="sidebar-overlay"
+      onclick="closeSidebar()"
+    ></div>
     <div class="app">
       <aside class="sidebar">
         <div class="sb-logo">
           <div class="sb-lm">
-          <img src="../../assets/img/logo.png" alt="Cadê o Dono?" style="width:100%;height:100%;object-fit:contain;">
-        </div>
+            <img
+              src="../../assets/img/logo.png"
+              alt="Cadê o Dono?"
+              style="width: 100%; height: 100%; object-fit: contain"
+            />
+          </div>
           <div>
             <div class="sb-lt">Cad&ecirc; o Dono?</div>
             <div class="sb-ls">Agente de Campo</div>
@@ -772,11 +801,7 @@
           <div class="sb-user">
             <div
               class="sb-av"
-              style="
-                background: var(--sg);
-                box-shadow: var(--ss);
-                
-              "
+              style="background: var(--sg); box-shadow: var(--ss)"
             >
               CE
             </div>
@@ -785,17 +810,42 @@
               <div class="sb-ur">Agente &middot; Vig. Ambiental</div>
             </div>
           </div>
-        
+
           <a href="../../index.html" class="sb-sair-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex-shrink:0;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 15px; height: 15px; flex-shrink: 0"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
             Sair
           </a>
         </div>
       </aside>
       <div class="main">
         <header class="topbar">
-          <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Abrir menu" aria-expanded="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <button
+            class="hamburger"
+            id="hamburger"
+            onclick="toggleSidebar()"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="18" x2="21" y2="18" />
@@ -823,11 +873,7 @@
             </button>
             <div
               class="tb-av"
-              style="
-                background: var(--sg);
-                box-shadow: var(--ss);
-                
-              "
+              style="background: var(--sg); box-shadow: var(--ss)"
             >
               CE
             </div>
@@ -974,4 +1020,62 @@
           <div class="oc-list-item">
             <div
               class="oc-pri"
-              style="background: var(--sg)
+              style="background: var(--sg); box-shadow: var(--ss)"
+            >
+              Q2
+            </div>
+            <div class="oc-info">
+              <div class="oc-addr">
+                Av. das Palmeiras, 112 &mdash; Vila Nova
+              </div>
+              <div class="oc-meta">
+                Sanit&aacute;ria &middot; 1 den&uacute;ncia &middot; em
+                andamento
+              </div>
+            </div>
+            <div class="oc-dist">520m</div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+  <script>
+    function toggleSidebar() {
+      var sb = document.getElementById("sidebar"),
+        ov = document.getElementById("overlay"),
+        hb = document.getElementById("hamburger"),
+        open = sb.classList.toggle("open");
+      ov.classList.toggle("open", open);
+      hb.setAttribute("aria-expanded", open);
+    }
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.remove("open");
+      document.getElementById("overlay").classList.remove("open");
+      document
+        .getElementById("hamburger")
+        .setAttribute("aria-expanded", "false");
+    }
+    window.addEventListener("load", function () {
+      document.querySelectorAll(".pfill[data-w]").forEach(function (el) {
+        setTimeout(function () {
+          el.style.transition = "width 1s cubic-bezier(.23,1,.32,1)";
+          el.style.width = el.getAttribute("data-w");
+        }, 300);
+      });
+      document
+        .querySelectorAll(".stat-value[data-target]")
+        .forEach(function (el) {
+          var target = parseInt(el.getAttribute("data-target")),
+            suffix = el.getAttribute("data-suffix") || "",
+            cur = 0,
+            step = Math.ceil(target / 18);
+          var iv = setInterval(function () {
+            cur = Math.min(cur + step, target);
+            el.textContent = cur + suffix;
+            if (cur >= target) clearInterval(iv);
+          }, 45);
+        });
+    });
+  </script>
+  <script src="../../assets/js/router.js"></script>
+</html>
