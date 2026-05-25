@@ -1,0 +1,7 @@
+*.log
+*.tmp
+node_modules/
+.env
+__pycache__/
+integrate.py
+STATUS.md
