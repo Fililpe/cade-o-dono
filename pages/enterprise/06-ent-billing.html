@@ -253,7 +253,7 @@
               API & exportação
             </div>
           </div>
-          <button class="price-cta cta-upgrade" onclick="">Fazer upgrade</button>
+          <button class="price-cta cta-upgrade" onclick="showUpgradeModal()">Fazer upgrade</button>
         </div>
 
         <!-- Tier 2 — CURRENT -->
@@ -408,6 +408,9 @@
 <script>
   function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sb-overlay').classList.toggle('open'); }
   function closeSidebar()  { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sb-overlay').classList.remove('open'); }
+  function showUpgradeModal() {
+    alert('Para fazer upgrade para Urban Intelligence (Tier 2), entre em contato com nossa equipe: vendas@cadeodono.com.br');
+  }
 </script>
 </body>
 </html>
