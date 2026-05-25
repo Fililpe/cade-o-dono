@@ -4,6 +4,43 @@
 
 Projeto integrado de plataforma para identificação de imóveis abandonados, com fluxos para Cidadãos, Agentes de Campo e Gestores.
 
+---
+
+## 🏚️ Escopo do Problema
+
+**Programa de Mapeamento e Ação Integrada em Imóveis Fechados e Abandonados**
+**Origem:** Prefeitura do Recife — Secretaria de Saúde | Prazo: 29/08/2025 | **ODS 3 · ODS 11**
+
+### Contexto
+Imóveis fechados ou abandonados em Recife são inacessíveis para agentes de vigilância, tornando-se criadouros de *Aedes aegypti*, ratos e escorpiões. O abandono gera insalubridade, risco de desabamento, desvalorização da vizinhança e degradação urbana progressiva.
+
+### Objetivo
+Criar um sistema integrado de mapeamento, vistoria e intervenção nesses imóveis, unificando o fluxo de trabalho entre **Saúde, Defesa Civil e Urbanismo**. Meta de longo prazo: tolerância zero com imóveis que violem sua função social.
+
+### Resultados Esperados
+- 🗺️ Cadastro georreferenciado de imóveis abandonados (vistorias + denúncias)
+- 📋 Protocolo de Ação Integrada entre secretarias com responsabilidades definidas
+- ⚖️ Processo legal otimizado para notificação de proprietários e entrada forçada
+- 🔄 Programa contínuo de vistorias e intervenções saneadoras
+
+### Indicadores de Sucesso
+| Indicador | Direção |
+|-----------|---------|
+| Índice de Infestação Predial do *Aedes aegypti* nos quarteirões com imóveis intervenciados | ↓ Reduzir |
+| Imóveis vistoriados e regularizados por ano | ↑ Aumentar |
+| Tempo médio entre denúncia e primeira vistoria | ↓ Reduzir |
+| Ocorrências de desabamento em imóveis abandonados | ↓ Reduzir |
+
+### Riscos
+| Tipo | Descrição |
+|------|-----------|
+| ⚖️ Jurídico | Dificuldade em localizar proprietários; entraves legais para entrada em propriedade privada |
+| 💰 Financeiro | Custo de intervenções (limpeza, demolição) sem garantia de ressarcimento |
+| 🔧 Operacional | Equipes insuficientes para o volume e complexidade das operações conjuntas |
+| 👥 Social | Heranças em litígio ou proprietários sem condições financeiras de manutenção |
+
+---
+
 ## 🎯 Entregáveis Implementados
 
 ### ✅ Estrutura de Diretórios
